@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:background="#FFFFFF"
@@ -7,10 +7,19 @@
              android:padding="16dp">
 
     <TextView
-        android:id="@+id/fragment_1_text"
-        android:layout_gravity="center"
-        android:text="FRAGMENT 1"
+        android:id="@+id/last_updated"
+        android:gravity="center"
+        android:text="last updated"
+        android:textAlignment="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/fragment_1_text"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="@android:dimen/app_icon_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

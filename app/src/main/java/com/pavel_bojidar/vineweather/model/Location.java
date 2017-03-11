@@ -4,17 +4,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Location {
+public class Location implements Serializable{
+
+    private String location;
     private int id;
     private Forecast currentWeather;
     private List<Forecast> forecasts = new ArrayList<>();
 
-    public int getId() {
-        return id;
-    }
 
     public List<Forecast> getForecasts() {
         return forecasts;
@@ -35,18 +35,32 @@ public class Location {
         this.currentWeather = new Forecast(json);
     }
 
-    public void printForecasts() {
-        for (int i = 0; i < forecasts.size(); i++) {
-            forecasts.get(i).printLocation();
-            System.out.println("-----------------------");
-        }
-    }
-
     public void printCurrentForecast() {
         this.currentWeather.printLocation();
     }
 
-    private class Forecast {
+    public int getId() {
+        return id;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Forecast getCurrentWeather() {
+        return currentWeather;
+    }
+
+
+    public static class Forecast {
         private static final double COEF_FOR_CONVERT_CELSIUS = 273.15;
         private static final String JSON_NODE_MAIN = "main";
         private static final String JSON_NODE_WIND = "wind";
@@ -95,6 +109,10 @@ public class Location {
                 this.weatherConditionDescription = weatherCondition.getJSONObject(0).getString(JSON_KEY_WEATHER_DESCRIPTION);
                 this.weatherConditionIcon = weatherCondition.getJSONObject(0).getString(JSON_KEY_WEATHER_ICON);
             }
+        }
+
+        public Forecast(Integer temp) {
+            temperature = temp;
         }
 
         public void printLocation() {
