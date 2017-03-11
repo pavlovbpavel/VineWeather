@@ -71,11 +71,11 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         tabLayout.addTab(tabLayout.newTab().setText("7Days"));
         viewPager = (ViewPager) findViewById(R.id.pager);
 
-        if(AppManager.getOurInstance().getCurrentLocation() == null){
-            tabLayout.setVisibility(View.GONE);
-            viewPager.setVisibility(View.GONE);
-            //todo task
-        }
+//        if(AppManager.getOurInstance().getCurrentLocation() == null){
+//            tabLayout.setVisibility(View.GONE);
+//            viewPager.setVisibility(View.GONE);
+//            //todo task
+//        }
 
         tabLayout.setOnTabSelectedListener(new OnTabSelectedListener() {
             @Override
