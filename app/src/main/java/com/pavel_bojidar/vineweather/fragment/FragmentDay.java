@@ -47,16 +47,10 @@ public class FragmentDay extends WeatherFragment {
     }
 
     @Override
-    void onLocationChanged() {
-
-    }
-
-    @Override
     protected BroadcastReceiver getReceiver() {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                onLocationChanged();
                 Log.d("Receiver", "I received the message");
             }
         };
