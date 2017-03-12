@@ -20,6 +20,10 @@ public class Location implements Serializable{
         return forecasts;
     }
 
+    public void setForecasts(ArrayList<Forecast> forecasts){
+        this.forecasts = forecasts;
+    }
+
     public void setForecasts(JSONArray forecastsArray) {
         forecasts.clear();
         for (int i = 0; i < forecastsArray.length(); i++) {

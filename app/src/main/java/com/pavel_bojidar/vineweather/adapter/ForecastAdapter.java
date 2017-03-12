@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.pavel_bojidar.vineweather.R;
 import com.pavel_bojidar.vineweather.adapter.ForecastAdapter.ForecastViewHolder;
 import com.pavel_bojidar.vineweather.model.Location.Forecast;
+
 import java.util.List;
 
 /**
@@ -29,14 +30,14 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastViewHolder>{
 
     @Override
     public void onBindViewHolder(ForecastViewHolder holder, int position) {
-        //Forecast forecast = forecasts.get(position);
+        Forecast forecast = forecasts.get(position);
         holder.itemView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 //todo show detailed forecast
             }
         });
-
+        holder.content.setText(String.valueOf(forecast.getTemperature()));
     }
 
     @Override

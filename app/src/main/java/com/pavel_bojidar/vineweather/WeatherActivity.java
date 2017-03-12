@@ -41,6 +41,15 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_drawer);
+        //todo remove static data and replace with actual data from server
+        Location sofia = new Location();
+        sofia.setLocation("Sofia");
+        ArrayList<Forecast> forecasts = new ArrayList<>();
+        for (int i = 0; i < 25; i++){
+            forecasts.add(new Forecast(i));
+        }
+        sofia.setForecasts(forecasts);
+        AppManager.getOurInstance().setCurrentLocation(sofia);
 
         //app_bar_navigation_drawer - toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
