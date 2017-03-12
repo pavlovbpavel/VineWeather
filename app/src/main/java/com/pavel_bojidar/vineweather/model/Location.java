@@ -35,10 +35,6 @@ public class Location implements Serializable{
         this.currentWeather = new Forecast(json);
     }
 
-    public void printCurrentForecast() {
-        this.currentWeather.printLocation();
-    }
-
     public int getId() {
         return id;
     }
@@ -113,13 +109,6 @@ public class Location implements Serializable{
 
         public Forecast(Integer temp) {
             temperature = temp;
-        }
-
-        public void printLocation() {
-            System.out.println("Date: " + this.date);
-            System.out.format("Temp: %.2f C\n", (this.temperature - COEF_FOR_CONVERT_CELSIUS));
-            System.out.println("Wind Speed: " + this.windSpeed);
-            System.out.println("Humidity: " + this.humidity);
         }
 
         public long getUnixTimestamp() {

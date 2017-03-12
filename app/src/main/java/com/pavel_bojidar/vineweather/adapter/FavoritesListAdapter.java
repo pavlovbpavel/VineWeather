@@ -5,11 +5,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.pavel_bojidar.vineweather.R;
 import com.pavel_bojidar.vineweather.adapter.FavoritesListAdapter.FavoriteLocationViewHolder;
 import com.pavel_bojidar.vineweather.model.Location;
-
 import java.util.List;
 
 /**

@@ -18,8 +18,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-
 import com.pavel_bojidar.vineweather.adapter.FavoritesListAdapter;
 import com.pavel_bojidar.vineweather.adapter.FavoritesListAdapter.OnFavouriteSelected;
 import com.pavel_bojidar.vineweather.fragment.FragmentDay;
@@ -57,6 +55,7 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
 
         //activity_navigation_drawer - navigation view
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
 
         //initialize favorite location list
         setFavoritesList();
@@ -137,11 +136,12 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
     }
 
     private void setFavoritesList() {
+
+        //static temporary data for demo
         String[] cityNames = {"Sofia", "Pernik", "Plovdiv", "Varna", "Bourgas", "Ihtiman", "Vidin",
-                "Sofia", "Pernik", "Plovdiv", "Varna", "Bourgas", "Ihtiman", "Vidin",
-                "Sofia", "Pernik", "Plovdiv", "Varna", "Bourgas", "Ihtiman", "Vidin",
-                "Sofia", "Pernik", "Plovdiv", "Varna", "Bourgas", "Ihtiman", "Vidin",
-                "Sofia", "Pernik", "Plovdiv", "Varna", "Bourgas", "Ihtiman", "Vidin"};
+                "Veliko Tarnovo", "Pazardjik", "London", "Leicester", "Liverpool", "New York", "Tokyo",
+                "Bern", "Rome", "Barcelona", "Paris", "Amsterdam", "Copenhagen", "Ruse"};
+
         List<Location> favoritesList = new ArrayList<>();
         for (int i = 0; i < cityNames.length; i++){
             favoritesList.add(new Location());
@@ -165,14 +165,20 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         AppManager.getOurInstance().setCurrentLocation(selectedLocation);
         selectedLocation.getForecasts().clear();
 
+        //static temporary data for demo
         if(selectedLocation.getLocation().equals("Sofia")){
             selectedLocation.getForecasts().add(new Forecast(15));
         } else if (selectedLocation.getLocation().equals("Plovdiv")){
             selectedLocation.getForecasts().add(new Forecast(10));
+        } else if (selectedLocation.getLocation().equals("Pernik")){
+            selectedLocation.getForecasts().add(new Forecast(19));
+        } else if (selectedLocation.getLocation().equals("Bourgas")){
+            selectedLocation.getForecasts().add(new Forecast(29));
         } else {
             selectedLocation.getForecasts().add(new Forecast(5));
         }
         LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(BroadcastActions.ACTION_LOCATION_CHANGED));
         drawer.closeDrawer(GravityCompat.START);
     }
+
 }

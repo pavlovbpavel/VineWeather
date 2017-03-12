@@ -2,7 +2,6 @@ package com.pavel_bojidar.vineweather.singleton;
 
 import com.pavel_bojidar.vineweather.model.Location;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
