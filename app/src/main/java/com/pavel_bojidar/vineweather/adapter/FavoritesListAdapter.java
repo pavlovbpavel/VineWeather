@@ -5,38 +5,39 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.pavel_bojidar.vineweather.R;
 import com.pavel_bojidar.vineweather.adapter.FavoritesListAdapter.FavoriteLocationViewHolder;
-import com.pavel_bojidar.vineweather.model.Location;
-import java.util.List;
+
+import java.util.ArrayList;
 
 /**
  * Created by Pavel Pavlov on 3/11/2017.
  */
 
-public class FavoritesListAdapter extends RecyclerView.Adapter<FavoriteLocationViewHolder>{
+public class FavoritesListAdapter extends RecyclerView.Adapter<FavoriteLocationViewHolder> {
 
-    List<Location> locations;
+    private ArrayList<String> locations;
 
     private OnFavouriteSelected listener;
 
-    public FavoritesListAdapter(List<Location> locations, OnFavouriteSelected listener) {
+    public FavoritesListAdapter(ArrayList<String> locations, OnFavouriteSelected listener) {
         this.locations = locations;
         this.listener = listener;
     }
 
     @Override
     public FavoriteLocationViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new FavoriteLocationViewHolder(parent.inflate(parent.getContext(),R.layout.row_favorites,null));
+        return new FavoriteLocationViewHolder(parent.inflate(parent.getContext(), R.layout.row_favorites, null));
     }
 
     @Override
     public void onBindViewHolder(FavoriteLocationViewHolder holder, final int position) {
-        final String location = locations.get(position).getLocation();
+        final String location = locations.get(position);
         holder.itemView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onFavouriteSelected(locations.get(position));
+                listener.onFavouriteSelected(location);
             }
         });
         holder.name.setText(location);
@@ -47,7 +48,7 @@ public class FavoritesListAdapter extends RecyclerView.Adapter<FavoriteLocationV
         return locations.size();
     }
 
-    public class FavoriteLocationViewHolder extends RecyclerView.ViewHolder{
+    public class FavoriteLocationViewHolder extends RecyclerView.ViewHolder {
 
         TextView name;
 
@@ -57,7 +58,7 @@ public class FavoritesListAdapter extends RecyclerView.Adapter<FavoriteLocationV
         }
     }
 
-    public interface OnFavouriteSelected{
-        void onFavouriteSelected(Location selectedLocation);
+    public interface OnFavouriteSelected {
+        void onFavouriteSelected(String selectedLocation);
     }
 }

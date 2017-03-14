@@ -12,7 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
+import com.pavel_bojidar.vineweather.model.Location;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 
 /**
@@ -32,19 +34,16 @@ public class FragmentNow extends WeatherFragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (AppManager.getOurInstance().getCurrentLocation() != null) {
-            degrees.setText(String.valueOf(AppManager.getOurInstance().getCurrentLocation().getForecasts().get(0).getTemperature()).concat(getResources().getString(R.string.c)));
-        }
-    }
-
-    @Override
     protected BroadcastReceiver getReceiver() {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.d("Receiver", "I received the message");
+                Log.d("Receiver", "I am fragment now");
+                String currentLocationName = intent.getStringExtra(Constants.KEY_LOCATION_NAME);
+                if (currentLocationName != null) {
+                    Location currentLocation = AppManager.getInstance().getLocations().get(currentLocationName);
+                    //todo update
+                }
             }
         };
     }

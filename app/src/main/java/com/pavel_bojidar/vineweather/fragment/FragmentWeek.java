@@ -31,7 +31,7 @@ public class FragmentWeek extends WeatherFragment {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.d("Receiver", "I received the message");
+                Log.d("Receiver", "I am fragment week");
             }
         };
     }

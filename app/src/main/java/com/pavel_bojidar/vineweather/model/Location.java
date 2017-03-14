@@ -8,9 +8,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Location implements Serializable{
+public class Location implements Serializable {
 
-    private String location;
+    private String name;
     private int id;
     private Forecast currentWeather;
     private List<Forecast> forecasts = new ArrayList<>();
@@ -20,7 +20,7 @@ public class Location implements Serializable{
         return forecasts;
     }
 
-    public void setForecasts(ArrayList<Forecast> forecasts){
+    public void setForecasts(ArrayList<Forecast> forecasts) {
         this.forecasts = forecasts;
     }
 
@@ -43,12 +43,12 @@ public class Location implements Serializable{
         return id;
     }
 
-    public String getLocation() {
-        return location;
+    public String getName() {
+        return name;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setId(int id) {

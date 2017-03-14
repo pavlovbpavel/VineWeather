@@ -6,5 +6,5 @@ package com.pavel_bojidar.vineweather;
 
 public class BroadcastActions {
 
-    public static final String ACTION_LOCATION_CHANGED = "BroadcastActions#LocationChanged";
+    public static final String ACTION_LOCATION_UPDATED = "BroadcastActions#LocationUpdated";
 }
