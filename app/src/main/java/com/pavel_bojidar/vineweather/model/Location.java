@@ -100,7 +100,6 @@ public class Location implements Serializable {
             this.windSpeed = jsonObject.getJSONObject(JSON_NODE_WIND).getDouble(JSON_KEY_WIND_SPEED);
             this.windDirection = jsonObject.getJSONObject(JSON_NODE_WIND).getDouble(JSON_KEY_WIND_DEGREES);
             this.clouds = jsonObject.getJSONObject(JSON_NODE_CLOUDS).getDouble(JSON_KEY_CLOUDS);
-            this.date = jsonObject.getString("dt_txt");
 
             JSONArray weatherCondition = jsonObject.getJSONArray(JSON_NODE_WEATHER);
             if (weatherCondition != null && weatherCondition.length() > 0) {

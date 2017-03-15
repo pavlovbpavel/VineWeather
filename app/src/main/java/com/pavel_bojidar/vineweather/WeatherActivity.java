@@ -1,5 +1,7 @@
 package com.pavel_bojidar.vineweather;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
@@ -22,8 +24,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.adapter.FavoritesListAdapter;
 import com.pavel_bojidar.vineweather.adapter.FavoritesListAdapter.OnFavouriteSelected;
@@ -33,10 +37,13 @@ import com.pavel_bojidar.vineweather.fragment.FragmentWeek;
 import com.pavel_bojidar.vineweather.model.Location;
 import com.pavel_bojidar.vineweather.model.Location.Forecast;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
+import com.pavel_bojidar.vineweather.task.GetCurrentWeather;
+import com.pavel_bojidar.vineweather.task.GetForecast;
 import com.pavel_bojidar.vineweather.task.LoadCitiesFromFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -49,58 +56,62 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
     RecyclerView favoriteLocationRecyclerView;
     SharedPreferences preferences; //shared preferences contains currentLocation/recents(json) name and ID
     String currentLocationName;
+    int currentLocationId;
     ProgressBar loadingView;
     EditText searchField;
+    final boolean[] weatherTasksCompleted = {false, false};
+    TextView noLocationSelected;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_drawer);
-        loadCitiesFromAssestsFile();
+        loadCitiesFromAssetsFile();
         preferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+//        preferences.edit().putInt(Constants.KEY_LOCATION_ID, 727011).commit();
+//        preferences.edit().putString(Constants.KEY_LOCATION_NAME, "Sofia").commit();
         currentLocationName = preferences.getString(Constants.KEY_LOCATION_NAME, null);
+        currentLocationId = preferences.getInt(Constants.KEY_LOCATION_ID, -1);
         initViews();
-        currentLocationName = "sofia";
-        if (currentLocationName == null) {
+
+        if (currentLocationId == -1) {
             tabLayout.setVisibility(View.GONE);
             viewPager.setVisibility(View.GONE);
             loadingView.setVisibility(View.GONE);
+            noLocationSelected.setVisibility(View.VISIBLE);
+            setTitle(null);
+            searchField.requestFocus();
+            searchField.setHint("Select a city");
             //todo request location from user
-
         } else {
-            //todo fetch data based on current location name
-            new AsyncTask<String, Void, Location>() {
-
-                @Override
-                protected void onPreExecute() {
-                    super.onPreExecute();
-                    loadingView.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                protected Location doInBackground(String... params) {
-                    //todo load JSON, parse, return
-                    try {
-                        Thread.sleep(5000);
-
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    return simulateData();
-                }
-
-                @Override
-                protected void onPostExecute(Location location) {
-                    super.onPostExecute(location);
-                    onLocationUpdated(location);
-                }
-            }.execute(currentLocationName);
+            startWeatherTasks();
         }
-
     }
 
-    private void loadCitiesFromAssestsFile() {
+    private void startWeatherTasks() {
+        loadingView.setVisibility(View.VISIBLE);
+
+        new GetCurrentWeather(new WeakReference<Activity>(this)) {
+            @Override
+            protected void onPostExecute(Location location) {
+                super.onPostExecute(location);
+                weatherTasksCompleted[0] = true;
+                onLocationUpdated(location);
+            }
+        }.execute(currentLocationId);
+
+        new GetForecast(new WeakReference<Activity>(this)) {
+            @Override
+            protected void onPostExecute(Location location) {
+                super.onPostExecute(location);
+                weatherTasksCompleted[1] = true;
+                onLocationUpdated(location);
+            }
+        }.execute(currentLocationId);
+    }
+
+    private void loadCitiesFromAssetsFile() {
         AssetManager am = getAssets();
         try {
             InputStream is = am.open("city_list.json");
@@ -110,7 +121,10 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         }
     }
 
-    private void onLocationUpdated(Location location) {
+    public void onLocationUpdated(Location location) {
+        if (!weatherTasksCompleted[0] || !weatherTasksCompleted[1]) {
+            return;
+        }
         tabLayout.setVisibility(View.VISIBLE);
         viewPager.setVisibility(View.VISIBLE);
         loadingView.setVisibility(View.GONE);
@@ -128,7 +142,13 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         searchField = (EditText) findViewById(R.id.search_field);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                hideKeyboard();
+            }
+        };
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
@@ -142,6 +162,8 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         tabLayout.addTab(tabLayout.newTab().setText("24H"));
         tabLayout.addTab(tabLayout.newTab().setText("5Days"));
         viewPager = (ViewPager) findViewById(R.id.pager);
+
+        noLocationSelected = (TextView) findViewById(R.id.no_location);
 
         tabLayout.setOnTabSelectedListener(new OnTabSelectedListener() {
             @Override
@@ -166,7 +188,6 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
 
             }
 
-            ////when a new page is selected(position is the index of the page)
             @Override
             public void onPageSelected(int position) {
                 tabLayout.getTabAt(position).select();
@@ -215,7 +236,6 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
     }
 
     private void setFavoritesList() {
-
         //static temporary data for demo
         String[] cityNames = {"Sofia", "Pernik", "Plovdiv", "Varna", "Bourgas", "Ihtiman", "Vidin",
                 "Veliko Tarnovo", "Pazardjik", "London", "Leicester", "Liverpool", "New York", "Tokyo",
@@ -245,8 +265,8 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
     @Override
     public void onFavouriteSelected(String selectedLocation) {
         drawer.closeDrawer(GravityCompat.START);
-        new AsyncTask<String, Void, Location>() {
 
+        new AsyncTask<String, Void, Location>() {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
@@ -292,12 +312,21 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
                     } else {
                         search.setIcon(R.drawable.ic_search_black_24dp);
                         searchField.setVisibility(View.GONE);
+                        hideKeyboard();
                     }
                 }
                 return true;
             }
         });
         return super.onCreateOptionsMenu(menu);
+    }
+
+    public void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
 //    private void filterResults(String search) {

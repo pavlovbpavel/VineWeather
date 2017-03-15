@@ -6,12 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
 import com.pavel_bojidar.vineweather.model.Location;
@@ -38,10 +36,8 @@ public class FragmentNow extends WeatherFragment {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.d("Receiver", "I am fragment now");
-                String currentLocationName = intent.getStringExtra(Constants.KEY_LOCATION_NAME);
-                if (currentLocationName != null) {
-                    Location currentLocation = AppManager.getInstance().getLocations().get(currentLocationName);
+                if (AppManager.getInstance().getCurrentLocation() != null) {
+                    Location currentLocation = AppManager.getInstance().getCurrentLocation();
                     //todo update
                 }
             }
