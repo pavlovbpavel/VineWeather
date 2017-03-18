@@ -20,11 +20,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -34,8 +38,8 @@ import com.pavel_bojidar.vineweather.adapter.FavoritesListAdapter.OnFavouriteSel
 import com.pavel_bojidar.vineweather.fragment.FragmentDay;
 import com.pavel_bojidar.vineweather.fragment.FragmentNow;
 import com.pavel_bojidar.vineweather.fragment.FragmentWeek;
-import com.pavel_bojidar.vineweather.model.Location;
-import com.pavel_bojidar.vineweather.model.Location.Forecast;
+import com.pavel_bojidar.vineweather.model.Location.CityInfo;
+import com.pavel_bojidar.vineweather.popupwindow.CitySearchPopupWindow;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 import com.pavel_bojidar.vineweather.task.GetCurrentWeather;
 import com.pavel_bojidar.vineweather.task.GetForecast;
@@ -45,8 +49,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class WeatherActivity extends AppCompatActivity implements OnFavouriteSelected {
 
@@ -61,6 +65,11 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
     EditText searchField;
     final boolean[] weatherTasksCompleted = {false, false};
     TextView noLocationSelected;
+    CitySearchPopupWindow searchPopupWindow;
+    Toolbar toolbar;
+    ArrayList<CityInfo> recentList = new ArrayList<>();
+    MenuItem search;
+    Timer inputDelay;
 
 
     @Override
@@ -69,8 +78,8 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         setContentView(R.layout.activity_navigation_drawer);
         loadCitiesFromAssetsFile();
         preferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
-//        preferences.edit().putInt(Constants.KEY_LOCATION_ID, 727011).commit();
-//        preferences.edit().putString(Constants.KEY_LOCATION_NAME, "Sofia").commit();
+        preferences.edit().putInt(Constants.KEY_LOCATION_ID, 727011).commit();
+        preferences.edit().putString(Constants.KEY_LOCATION_NAME, "Sofia").commit();
         currentLocationName = preferences.getString(Constants.KEY_LOCATION_NAME, null);
         currentLocationId = preferences.getInt(Constants.KEY_LOCATION_ID, -1);
         initViews();
@@ -86,6 +95,8 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
             //todo request location from user
         } else {
             startWeatherTasks();
+            searchField.setVisibility(View.GONE);
+            setTitle(currentLocationName);
         }
     }
 
@@ -94,19 +105,19 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
 
         new GetCurrentWeather(new WeakReference<Activity>(this)) {
             @Override
-            protected void onPostExecute(Location location) {
-                super.onPostExecute(location);
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
                 weatherTasksCompleted[0] = true;
-                onLocationUpdated(location);
+                onLocationUpdated();
             }
         }.execute(currentLocationId);
 
         new GetForecast(new WeakReference<Activity>(this)) {
             @Override
-            protected void onPostExecute(Location location) {
-                super.onPostExecute(location);
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
                 weatherTasksCompleted[1] = true;
-                onLocationUpdated(location);
+                onLocationUpdated();
             }
         }.execute(currentLocationId);
     }
@@ -121,25 +132,61 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         }
     }
 
-    public void onLocationUpdated(Location location) {
+    public void onLocationUpdated() {
         if (!weatherTasksCompleted[0] || !weatherTasksCompleted[1]) {
             return;
         }
         tabLayout.setVisibility(View.VISIBLE);
         viewPager.setVisibility(View.VISIBLE);
         loadingView.setVisibility(View.GONE);
-        setTitle(location.getName());
+        searchField.setVisibility(View.GONE);
+        setTitle(AppManager.getInstance().getCurrentLocation().getName());
         if (viewPager.getAdapter() == null) {
             setViewPagerAdapter();
         }
-        AppManager.getInstance().onLocationUpdated(this, location);
+        AppManager.getInstance().onLocationUpdated(this);
     }
 
     private void initViews() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         searchField = (EditText) findViewById(R.id.search_field);
+        searchField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(final Editable s) {
+                if (s.length() > 1) {
+                    if (inputDelay != null) {
+                        inputDelay.cancel();
+                    }
+                    inputDelay = new Timer();
+                    inputDelay.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    performSearch(s);
+                                }
+                            });
+                        }
+                    }, 500);
+                } else {
+                    if (searchPopupWindow != null) {
+                        searchPopupWindow.dismiss();
+                    }
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+        });
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
@@ -155,7 +202,6 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         loadingView = (ProgressBar) findViewById(R.id.loading_view);
 
         favoriteLocationRecyclerView = (RecyclerView) findViewById(R.id.favorite_location_list);
-        setFavoritesList();
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.addTab(tabLayout.newTab().setText("Now"));
@@ -201,6 +247,86 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
 
     }
 
+    private void performSearch(Editable s) {
+        ArrayList<CityInfo> match = new ArrayList<>();
+        for (String entry : new ArrayList<>(AppManager.getInstance().getAllCities().keySet())) {
+            if (entry.toLowerCase().contains(s.toString().toLowerCase())) {
+                match.add(new CityInfo(entry, AppManager.getInstance().getAllCities().get(entry)));
+            }
+        }
+
+        if (searchPopupWindow == null) {
+            searchPopupWindow = new CitySearchPopupWindow(WeatherActivity.this, match);
+            searchPopupWindow.setAnchorView(toolbar);
+        }
+        searchPopupWindow.updateSuggestionsList(match);
+        if (!match.isEmpty()) {
+            searchPopupWindow.show();
+        } else {
+            searchPopupWindow.dismiss();
+        }
+        if (searchPopupWindow.isShowing()) {
+            searchPopupWindow.getListView().setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    CityInfo currentItem = (CityInfo) searchPopupWindow.getListView().getItemAtPosition(position);
+                    searchPopupWindow.dismiss();
+                    addToRecentList(currentItem.getName(), currentItem.getId());
+                    currentLocationId = currentItem.getId();
+                    currentLocationName = currentItem.getName();
+                    hideKeyboard();
+                    searchField.setText(null);
+                    searchField.setVisibility(View.GONE);
+                    setTitle(currentLocationName);
+                    search.setIcon(R.drawable.ic_search_black_24dp);
+                    startWeatherTasks();
+                }
+            });
+        }
+    }
+
+    private void addToRecentList(String cityName, int cityId) {
+
+        for (int i = 0; i < recentList.size(); i++) {
+            if (recentList.get(i).getId() == cityId) {
+                return;
+            }
+        }
+        recentList.add(new CityInfo(cityName, cityId));
+
+        favoriteLocationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        if (recentList != null) {
+            favoriteLocationRecyclerView.setAdapter(new FavoritesListAdapter(recentList, this));
+        }
+    }
+
+    @Override
+    public void onFavouriteSelected(CityInfo selectedLocation) {
+        drawer.closeDrawer(GravityCompat.START);
+        currentLocationId = selectedLocation.getId();
+
+        new AsyncTask<CityInfo, Void, Void>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                loadingView.setVisibility(View.VISIBLE);
+                loadingView.bringToFront();
+            }
+
+            @Override
+            protected Void doInBackground(CityInfo... params) {
+                startWeatherTasks();
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void location) {
+                super.onPostExecute(location);
+
+            }
+        }.execute(selectedLocation);
+    }
+
     private void setViewPagerAdapter() {
         viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -224,35 +350,6 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         });
     }
 
-    private Location simulateData() {
-        Location sofia = new Location();
-        sofia.setName("Sofia");
-        ArrayList<Forecast> forecasts = new ArrayList<>();
-        for (int i = 0; i < 25; i++) {
-            forecasts.add(new Forecast(i));
-        }
-        sofia.setForecasts(forecasts);
-        return sofia;
-    }
-
-    private void setFavoritesList() {
-        //static temporary data for demo
-        String[] cityNames = {"Sofia", "Pernik", "Plovdiv", "Varna", "Bourgas", "Ihtiman", "Vidin",
-                "Veliko Tarnovo", "Pazardjik", "London", "Leicester", "Liverpool", "New York", "Tokyo",
-                "Bern", "Rome", "Barcelona", "Paris", "Amsterdam", "Copenhagen", "Ruse"};
-
-        List<Location> favoritesList = new ArrayList<>();
-        for (int i = 0; i < cityNames.length; i++) {
-            favoritesList.add(new Location());
-            favoritesList.get(i).setName(cityNames[i]);
-        }
-        favoriteLocationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        Set<String> favoritesSet = preferences.getStringSet(Constants.KEY_FAVORITE_LOCATIONS, null);
-        if (favoritesSet != null) {
-            favoriteLocationRecyclerView.setAdapter(new FavoritesListAdapter(new ArrayList<>(favoritesSet), this));
-        }
-    }
-
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -263,41 +360,13 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
     }
 
     @Override
-    public void onFavouriteSelected(String selectedLocation) {
-        drawer.closeDrawer(GravityCompat.START);
-
-        new AsyncTask<String, Void, Location>() {
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                loadingView.setVisibility(View.VISIBLE);
-                loadingView.bringToFront();
-            }
-
-            @Override
-            protected Location doInBackground(String... params) {
-                //todo load JSON, parse, return
-                try {
-                    Thread.sleep(5000);
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                return simulateData();
-            }
-
-            @Override
-            protected void onPostExecute(Location location) {
-                super.onPostExecute(location);
-                onLocationUpdated(location);
-            }
-        }.execute(selectedLocation);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        final MenuItem search = menu.add("Search");
-        search.setIcon(R.drawable.ic_search_black_24dp);
+        search = menu.add("Search");
+        if (!searchField.hasFocus()) {
+            search.setIcon(R.drawable.ic_search_black_24dp);
+        } else {
+            search.setIcon(R.drawable.ic_close_black_24dp);
+        }
         search.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         search.setOnMenuItemClickListener(new OnMenuItemClickListener() {
             @Override
@@ -306,12 +375,14 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
                     searchField.setVisibility(View.VISIBLE);
                     search.setIcon(R.drawable.ic_close_black_24dp);
                     searchField.requestFocus();
+                    showKeyboard();
                 } else {
                     if (searchField.getText().length() > 0) {
                         searchField.setText(null);
                     } else {
                         search.setIcon(R.drawable.ic_search_black_24dp);
                         searchField.setVisibility(View.GONE);
+                        setTitle(currentLocationName);
                         hideKeyboard();
                     }
                 }
@@ -329,16 +400,11 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         }
     }
 
-//    private void filterResults(String search) {
-//        ArrayList<String> match = new ArrayList<>();
-//        for(String string : strings){
-//            if(string.contains(search)) {
-//                match.add(string);
-//            }
-//        }
-//        log(String.valueOf(match));
-//
-//
-
-
+    public void showKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+        }
+    }
 }

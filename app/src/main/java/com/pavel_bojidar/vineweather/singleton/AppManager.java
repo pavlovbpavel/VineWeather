@@ -42,11 +42,10 @@ public class AppManager {
         this.currentLocation = currentLocation;
     }
 
-    public void onLocationUpdated(Context context, Location location) {
-        currentLocation = location;
-        currentLocationName = location.getName();
+    public void onLocationUpdated(Context context) {
+        currentLocationName = currentLocation.getName();
         Intent intent = new Intent(BroadcastActions.ACTION_LOCATION_UPDATED);
-        intent.putExtra(Constants.KEY_LOCATION_ID, location.getId());
+        intent.putExtra(Constants.KEY_LOCATION_ID, currentLocation.getId());
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 

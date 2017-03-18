@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.R;
 import com.pavel_bojidar.vineweather.adapter.FavoritesListAdapter.FavoriteLocationViewHolder;
+import com.pavel_bojidar.vineweather.model.Location.CityInfo;
 
 import java.util.ArrayList;
 
@@ -17,11 +18,11 @@ import java.util.ArrayList;
 
 public class FavoritesListAdapter extends RecyclerView.Adapter<FavoriteLocationViewHolder> {
 
-    private ArrayList<String> locations;
+    private ArrayList<CityInfo> locations;
 
     private OnFavouriteSelected listener;
 
-    public FavoritesListAdapter(ArrayList<String> locations, OnFavouriteSelected listener) {
+    public FavoritesListAdapter(ArrayList<CityInfo> locations, OnFavouriteSelected listener) {
         this.locations = locations;
         this.listener = listener;
     }
@@ -33,14 +34,14 @@ public class FavoritesListAdapter extends RecyclerView.Adapter<FavoriteLocationV
 
     @Override
     public void onBindViewHolder(FavoriteLocationViewHolder holder, final int position) {
-        final String location = locations.get(position);
+        final CityInfo location = locations.get(position);
         holder.itemView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 listener.onFavouriteSelected(location);
             }
         });
-        holder.name.setText(location);
+        holder.name.setText(location.getName());
     }
 
     @Override
@@ -59,6 +60,6 @@ public class FavoritesListAdapter extends RecyclerView.Adapter<FavoriteLocationV
     }
 
     public interface OnFavouriteSelected {
-        void onFavouriteSelected(String selectedLocation);
+        void onFavouriteSelected(CityInfo selectedLocation);
     }
 }

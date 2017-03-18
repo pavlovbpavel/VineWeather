@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.AsyncTask;
 
 import com.pavel_bojidar.vineweather.WeatherActivity;
-import com.pavel_bojidar.vineweather.model.Location;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 
 import org.json.JSONArray;
@@ -21,7 +20,7 @@ import java.net.URL;
  * Created by Pavel Pavlov on 3/15/2017.
  */
 
-public class GetForecast extends AsyncTask<Integer, Void, Location> {
+public class GetForecast extends AsyncTask<Integer, Void, Void> {
 
     WeakReference<Activity> activityWeakReference;
 
@@ -30,7 +29,7 @@ public class GetForecast extends AsyncTask<Integer, Void, Location> {
     }
 
     @Override
-    protected Location doInBackground(Integer... params) {
+    protected Void doInBackground(Integer... params) {
         StringBuilder result = new StringBuilder();
 
         try {
@@ -45,24 +44,23 @@ public class GetForecast extends AsyncTask<Integer, Void, Location> {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        Location location = AppManager.getInstance().getCurrentLocation();
         JSONObject jo;
         try {
             jo = new JSONObject(result.toString());
             JSONArray jarr = jo.getJSONArray("list");
-            location.setForecasts(jarr);
+            AppManager.getInstance().getCurrentLocation().setForecasts(jarr);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return location;
+        return null;
     }
 
     @Override
-    protected void onPostExecute(Location location) {
-        super.onPostExecute(location);
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
         Activity activity = activityWeakReference.get();
         if (activity != null && activity instanceof WeatherActivity) {
-            ((WeatherActivity) activity).onLocationUpdated(location);
+            ((WeatherActivity) activity).onLocationUpdated();
         }
     }
 }

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.AsyncTask;
 
 import com.pavel_bojidar.vineweather.WeatherActivity;
-import com.pavel_bojidar.vineweather.model.Location;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 
 import org.json.JSONException;
@@ -19,7 +18,7 @@ import java.util.Scanner;
  * Created by Pavel Pavlov on 3/15/2017.
  */
 
-public class GetCurrentWeather extends AsyncTask<Integer, Void, Location> {
+public class GetCurrentWeather extends AsyncTask<Integer, Void, Void> {
 
     WeakReference<Activity> activityWeakReference;
 
@@ -28,7 +27,7 @@ public class GetCurrentWeather extends AsyncTask<Integer, Void, Location> {
     }
 
     @Override
-    protected Location doInBackground(Integer... params) {
+    protected Void doInBackground(Integer... params) {
         String strJSON = "";
         try {
             URL url = new URL(
@@ -40,22 +39,21 @@ public class GetCurrentWeather extends AsyncTask<Integer, Void, Location> {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        Location location = AppManager.getInstance().getCurrentLocation();
         try {
             JSONObject jo = new JSONObject(strJSON);
-            location.setCurrentWeather(jo);
+            AppManager.getInstance().getCurrentLocation().setCurrentWeather(jo);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return location;
+        return null;
     }
 
     @Override
-    protected void onPostExecute(Location location) {
-        super.onPostExecute(location);
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
         Activity activity = activityWeakReference.get();
         if(activity != null && activity instanceof WeatherActivity){
-            ((WeatherActivity)activity).onLocationUpdated(location);
+            ((WeatherActivity)activity).onLocationUpdated();
         }
     }
 }

@@ -20,10 +20,6 @@ public class Location implements Serializable {
         return forecasts;
     }
 
-    public void setForecasts(ArrayList<Forecast> forecasts) {
-        this.forecasts = forecasts;
-    }
-
     public void setForecasts(JSONArray forecastsArray) {
         forecasts.clear();
         for (int i = 0; i < forecastsArray.length(); i++) {
@@ -61,7 +57,6 @@ public class Location implements Serializable {
 
 
     public static class Forecast {
-        private static final double COEF_FOR_CONVERT_CELSIUS = 273.15;
         private static final String JSON_NODE_MAIN = "main";
         private static final String JSON_NODE_WIND = "wind";
         private static final String JSON_NODE_CLOUDS = "clouds";
@@ -90,8 +85,6 @@ public class Location implements Serializable {
         private String weatherConditionDescription;
         private String weatherConditionIcon;
 
-        private String date;
-
         Forecast(JSONObject jsonObject) throws JSONException {
             this.unixTimestamp = jsonObject.getLong(JSON_KEY_TIMESTAMP);
             this.temperature = jsonObject.getJSONObject(JSON_NODE_MAIN).getDouble(JSON_KEY_TEMPERATURE);
@@ -108,10 +101,6 @@ public class Location implements Serializable {
                 this.weatherConditionDescription = weatherCondition.getJSONObject(0).getString(JSON_KEY_WEATHER_DESCRIPTION);
                 this.weatherConditionIcon = weatherCondition.getJSONObject(0).getString(JSON_KEY_WEATHER_ICON);
             }
-        }
-
-        public Forecast(Integer temp) {
-            temperature = temp;
         }
 
         public long getUnixTimestamp() {
@@ -156,6 +145,25 @@ public class Location implements Serializable {
 
         public String getWeatherConditionIcon() {
             return weatherConditionIcon;
+        }
+
+    }
+
+    public static class CityInfo{
+        String name;
+        int id;
+
+        public CityInfo(String name, int id) {
+            this.name = name;
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getId() {
+            return id;
         }
     }
 }
