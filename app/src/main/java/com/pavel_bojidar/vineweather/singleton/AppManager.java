@@ -6,7 +6,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.pavel_bojidar.vineweather.BroadcastActions;
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.model.Location;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Pavel Pavlov on 3/11/2017.
@@ -15,7 +15,7 @@ import java.util.HashMap;
 public class AppManager {
 
     //contains all cities for search
-    private HashMap<String, Integer> allCities = new HashMap<>();
+    private ConcurrentHashMap<String, Integer> allCities = new ConcurrentHashMap<>();
 
     private Location currentLocation = new Location();
 
@@ -57,7 +57,7 @@ public class AppManager {
         this.currentLocationName = currentLocationName;
     }
 
-    public HashMap<String, Integer> getAllCities() {
+    public ConcurrentHashMap<String, Integer> getAllCities() {
         return allCities;
     }
 }

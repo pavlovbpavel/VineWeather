@@ -22,6 +22,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -90,13 +91,11 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
             loadingView.setVisibility(View.GONE);
             noLocationSelected.setVisibility(View.VISIBLE);
             setTitle(null);
-            searchField.requestFocus();
             searchField.setHint("Select a city");
             //todo request location from user
         } else {
             startWeatherTasks();
-            searchField.setVisibility(View.GONE);
-            setTitle(currentLocationName);
+            searchField.setHint(currentLocationName);
         }
     }
 
@@ -139,7 +138,6 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         tabLayout.setVisibility(View.VISIBLE);
         viewPager.setVisibility(View.VISIBLE);
         loadingView.setVisibility(View.GONE);
-        searchField.setVisibility(View.GONE);
         setTitle(AppManager.getInstance().getCurrentLocation().getName());
         if (viewPager.getAdapter() == null) {
             setViewPagerAdapter();
@@ -162,6 +160,7 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
                 if (s.length() > 1) {
                     if (inputDelay != null) {
                         inputDelay.cancel();
+                        Log.e("timerTask", "cancel");
                     }
                     inputDelay = new Timer();
                     inputDelay.schedule(new TimerTask() {
@@ -248,12 +247,15 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
     }
 
     private void performSearch(Editable s) {
+        Log.e("search", "started new search");
         ArrayList<CityInfo> match = new ArrayList<>();
-        for (String entry : new ArrayList<>(AppManager.getInstance().getAllCities().keySet())) {
+        ArrayList<String> cityNames =  new ArrayList<>(AppManager.getInstance().getAllCities().keySet());
+        for (String entry : cityNames) {
             if (entry.toLowerCase().contains(s.toString().toLowerCase())) {
                 match.add(new CityInfo(entry, AppManager.getInstance().getAllCities().get(entry)));
             }
         }
+        Log.e("search", "finished search");
 
         if (searchPopupWindow == null) {
             searchPopupWindow = new CitySearchPopupWindow(WeatherActivity.this, match);
@@ -276,8 +278,7 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
                     currentLocationName = currentItem.getName();
                     hideKeyboard();
                     searchField.setText(null);
-                    searchField.setVisibility(View.GONE);
-                    setTitle(currentLocationName);
+                    searchField.setHint(currentLocationName);
                     search.setIcon(R.drawable.ic_search_black_24dp);
                     startWeatherTasks();
                 }
@@ -381,8 +382,7 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
                         searchField.setText(null);
                     } else {
                         search.setIcon(R.drawable.ic_search_black_24dp);
-                        searchField.setVisibility(View.GONE);
-                        setTitle(currentLocationName);
+                        searchField.setHint(currentLocationName);
                         hideKeyboard();
                     }
                 }
@@ -404,7 +404,7 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         View view = this.getCurrentFocus();
         if (view != null) {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+            imm.showSoftInput(getWindow().getDecorView(), InputMethodManager.SHOW_IMPLICIT);
         }
     }
 }
