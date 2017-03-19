@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
+import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.Location;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 
@@ -44,19 +45,21 @@ public class FragmentNow extends WeatherFragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if (AppManager.getInstance().getCurrentLocation() != null) {
+            bindData();
+        }
+    }
+
+    @Override
     protected BroadcastReceiver getReceiver() {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Log.e("fragment now", "i received the broadcast");
                 if (AppManager.getInstance().getCurrentLocation() != null) {
-                    Location currentLocation = AppManager.getInstance().getCurrentLocation();
-                    degrees.setText(String.valueOf((int) currentLocation.getCurrentWeather().getTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS) + "c");
-                    condition.setText(currentLocation.getCurrentWeather().getWeatherCondition());
-                    pressure.setText(String.valueOf(currentLocation.getCurrentWeather().getPressure()));
-                    humidity.setText(String.valueOf(currentLocation.getCurrentWeather().getHumidity()));
-                    windSpeed.setText(String.valueOf(currentLocation.getCurrentWeather().getWindSpeed()));
-                    windDirection.setText(String.valueOf(currentLocation.getCurrentWeather().getWindDirection()));
+                    bindData();
                 }
             }
         };
@@ -65,5 +68,15 @@ public class FragmentNow extends WeatherFragment {
     @Override
     protected String getFragment() {
         return "Fragment Now";
+    }
+
+    private void bindData() {
+        Location currentLocation = AppManager.getInstance().getCurrentLocation();
+        degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS)+ "\u00b0");
+        condition.setText(currentLocation.getCurrentWeather().getWeatherCondition());
+        pressure.setText("Pressure: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getPressure()) + "Pa");
+        humidity.setText("Humidity: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getHumidity()) + "%");
+        windSpeed.setText("Wind: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getWindSpeed()) + "km/h");
+        windDirection.setText(String.valueOf(currentLocation.getCurrentWeather().getWindDirection()));
     }
 }

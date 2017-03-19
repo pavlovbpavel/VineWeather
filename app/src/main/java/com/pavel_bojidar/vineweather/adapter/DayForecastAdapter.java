@@ -12,6 +12,7 @@ import com.pavel_bojidar.vineweather.R;
 import com.pavel_bojidar.vineweather.adapter.DayForecastAdapter.DayForecastViewHolder;
 import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.Location.Forecast;
+import com.pavel_bojidar.vineweather.singleton.AppManager;
 
 import java.util.List;
 
@@ -21,7 +22,9 @@ import java.util.List;
 
 public class DayForecastAdapter extends RecyclerView.Adapter<DayForecastViewHolder> {
 
+    Forecast forecast;
     private List<Forecast> dailyForecast;
+    String currentDate = Helper.getUnixDate(AppManager.getInstance().getCurrentLocation().getForecasts().get(0).getUnixTimestamp());
 
     public DayForecastAdapter(List<Forecast> dailyForecast) {
         this.dailyForecast = dailyForecast;
@@ -34,10 +37,9 @@ public class DayForecastAdapter extends RecyclerView.Adapter<DayForecastViewHold
 
     @Override
     public void onBindViewHolder(DayForecastViewHolder holder, int position) {
-
-        Forecast forecast = dailyForecast.get(position);
+        forecast = dailyForecast.get(position);
         holder.date.setText(Helper.getUnixDate(forecast.getUnixTimestamp()));
-        holder.temp.setText(String.valueOf((int) forecast.getTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS) + "c");
+        holder.temp.setText(Helper.decimalFormat(forecast.getTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS) + "\u00b0");
         holder.hour.setText(Helper.getUnixHour(forecast.getUnixTimestamp()));
         holder.condition.setText(forecast.getWeatherCondition());
 
@@ -66,10 +68,10 @@ public class DayForecastAdapter extends RecyclerView.Adapter<DayForecastViewHold
 
         public DayForecastViewHolder(View itemView) {
             super(itemView);
-            date = (TextView) itemView.findViewById(R.id.date);
+            date = (TextView) itemView.findViewById(R.id.date_week);
             hour = (TextView) itemView.findViewById(R.id.forecast_hour);
             temp = (TextView) itemView.findViewById(R.id.temp);
-            condition = (TextView) itemView.findViewById(R.id.condition);
+            condition = (TextView) itemView.findViewById(R.id.condition_week);
             imageView = (ImageView) itemView.findViewById(R.id.image_view);
         }
     }

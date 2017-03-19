@@ -3,9 +3,11 @@ package com.pavel_bojidar.vineweather.singleton;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
+
 import com.pavel_bojidar.vineweather.BroadcastActions;
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.model.Location;
+
 import java.util.concurrent.ConcurrentHashMap;
 
 /**

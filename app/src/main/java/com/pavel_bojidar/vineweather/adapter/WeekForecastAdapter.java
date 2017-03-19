@@ -6,8 +6,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
 import com.pavel_bojidar.vineweather.adapter.WeekForecastAdapter.WeekForecastViewHolder;
+import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.Location.Forecast;
 
 import java.util.List;
@@ -32,7 +34,9 @@ public class WeekForecastAdapter extends RecyclerView.Adapter<WeekForecastViewHo
     @Override
     public void onBindViewHolder(WeekForecastViewHolder holder, int position) {
         Forecast forecast = weeklyForecast.get(position);
-        holder.temperature.setText(String.valueOf(forecast.getTemperature()));
+        holder.temperature.setText(Helper.decimalFormat(forecast.getTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS) + "\u00b0");
+        holder.date.setText(Helper.getWeekDay(Helper.getUnixDate(forecast.getUnixTimestamp())));
+        holder.condition.setText(forecast.getWeatherCondition());
     }
 
     @Override
@@ -42,15 +46,15 @@ public class WeekForecastAdapter extends RecyclerView.Adapter<WeekForecastViewHo
 
     public class WeekForecastViewHolder extends RecyclerView.ViewHolder {
 
-        TextView dayOfWeek, date, temperature;
+        TextView date, temperature, condition;
         ImageView conditionImage;
 
         public WeekForecastViewHolder(View itemView) {
             super(itemView);
-            dayOfWeek = (TextView) itemView.findViewById(R.id.day_of_week);
-            date = (TextView) itemView.findViewById(R.id.date);
-            temperature = (TextView) itemView.findViewById(R.id.temperature);
-            conditionImage = (ImageView) itemView.findViewById(R.id.condition_image);
+            date = (TextView) itemView.findViewById(R.id.date_week);
+            temperature = (TextView) itemView.findViewById(R.id.temperature_week);
+            condition = (TextView) itemView.findViewById(R.id.condition_week);
+//            conditionImage = (ImageView) itemView.findViewById(R.id.condition_image);
         }
     }
 }

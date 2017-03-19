@@ -64,7 +64,8 @@ public class FragmentDay extends WeatherFragment {
                 recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                 int currentLocationId = intent.getIntExtra(Constants.KEY_LOCATION_ID, -1);
                 if (currentLocationId != -1 && recyclerView.getAdapter() != null) {
-                    recyclerView.getAdapter().notifyDataSetChanged();
+                    //recyclerView.getAdapter().notifyDataSetChanged();
+                    recyclerView.setAdapter(new DayForecastAdapter(dailyForecast));
                 }
             }
         };

@@ -77,24 +77,4 @@ public class CitySearchPopupWindow extends ListPopupWindow {
             TextView cityName;
         }
     }
-
-    public class Wrapper {
-
-        String name;
-        int id;
-
-        public Wrapper(String name, int id) {
-            this.name = name;
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public int getId() {
-            return id;
-        }
-    }
-
 }

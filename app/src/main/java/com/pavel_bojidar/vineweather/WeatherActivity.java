@@ -27,12 +27,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pavel_bojidar.vineweather.adapter.FavoritesListAdapter;
 import com.pavel_bojidar.vineweather.adapter.FavoritesListAdapter.OnFavouriteSelected;
@@ -96,6 +99,7 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         } else {
             startWeatherTasks();
             searchField.setHint(currentLocationName);
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         }
     }
 
@@ -142,6 +146,8 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         if (viewPager.getAdapter() == null) {
             setViewPagerAdapter();
         }
+        preferences.edit().putInt(Constants.KEY_LOCATION_ID, AppManager.getInstance().getCurrentLocation().getId()).commit();
+        preferences.edit().putString(Constants.KEY_LOCATION_NAME, AppManager.getInstance().getCurrentLocation().getName()).commit();
         AppManager.getInstance().onLocationUpdated(this);
     }
 
@@ -150,6 +156,14 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         setSupportActionBar(toolbar);
 
         searchField = (EditText) findViewById(R.id.search_field);
+        searchField.setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus) {
+                    search.setIcon(R.drawable.ic_close_black_24dp);
+                }
+            }
+        });
         searchField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -249,7 +263,7 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
     private void performSearch(Editable s) {
         Log.e("search", "started new search");
         ArrayList<CityInfo> match = new ArrayList<>();
-        ArrayList<String> cityNames =  new ArrayList<>(AppManager.getInstance().getAllCities().keySet());
+        ArrayList<String> cityNames = new ArrayList<>(AppManager.getInstance().getAllCities().keySet());
         for (String entry : cityNames) {
             if (entry.toLowerCase().contains(s.toString().toLowerCase())) {
                 match.add(new CityInfo(entry, AppManager.getInstance().getAllCities().get(entry)));
@@ -279,11 +293,13 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
                     hideKeyboard();
                     searchField.setText(null);
                     searchField.setHint(currentLocationName);
+                    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
                     search.setIcon(R.drawable.ic_search_black_24dp);
                     startWeatherTasks();
                 }
             });
         }
+
     }
 
     private void addToRecentList(String cityName, int cityId) {
@@ -312,6 +328,7 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
                 super.onPreExecute();
                 loadingView.setVisibility(View.VISIBLE);
                 loadingView.bringToFront();
+                Toast.makeText(WeatherActivity.this, "selected new city", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -323,7 +340,8 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
             @Override
             protected void onPostExecute(Void location) {
                 super.onPostExecute(location);
-
+                searchField.setHint(currentLocationName);
+                Toast.makeText(WeatherActivity.this, "data is retrieved", Toast.LENGTH_SHORT).show();
             }
         }.execute(selectedLocation);
     }
@@ -372,10 +390,9 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         search.setOnMenuItemClickListener(new OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if (searchField.getVisibility() != View.VISIBLE) {
-                    searchField.setVisibility(View.VISIBLE);
-                    search.setIcon(R.drawable.ic_close_black_24dp);
+                if(!searchField.hasFocus()) {
                     searchField.requestFocus();
+                    search.setIcon(R.drawable.ic_close_black_24dp);
                     showKeyboard();
                 } else {
                     if (searchField.getText().length() > 0) {
@@ -383,6 +400,7 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
                     } else {
                         search.setIcon(R.drawable.ic_search_black_24dp);
                         searchField.setHint(currentLocationName);
+                        searchField.clearFocus();
                         hideKeyboard();
                     }
                 }
@@ -404,7 +422,7 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         View view = this.getCurrentFocus();
         if (view != null) {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(getWindow().getDecorView(), InputMethodManager.SHOW_IMPLICIT);
+            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
         }
     }
 }
