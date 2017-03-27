@@ -10,7 +10,8 @@ import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
 import com.pavel_bojidar.vineweather.adapter.WeekForecastAdapter.WeekForecastViewHolder;
 import com.pavel_bojidar.vineweather.helper.Helper;
-import com.pavel_bojidar.vineweather.model.Location.Forecast;
+import com.pavel_bojidar.vineweather.model.DayForecast;
+import com.pavel_bojidar.vineweather.singleton.AppManager;
 
 import java.util.List;
 
@@ -20,9 +21,9 @@ import java.util.List;
 
 public class WeekForecastAdapter extends RecyclerView.Adapter<WeekForecastViewHolder> {
 
-    private List<Forecast> weeklyForecast;
+    private List<DayForecast> weeklyForecast;
 
-    public WeekForecastAdapter(List<Forecast> weeklyForecast) {
+    public WeekForecastAdapter(List<DayForecast> weeklyForecast) {
         this.weeklyForecast = weeklyForecast;
     }
 
@@ -33,10 +34,29 @@ public class WeekForecastAdapter extends RecyclerView.Adapter<WeekForecastViewHo
 
     @Override
     public void onBindViewHolder(WeekForecastViewHolder holder, int position) {
-        Forecast forecast = weeklyForecast.get(position);
-        holder.temperature.setText(Helper.decimalFormat(forecast.getTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS) + "\u00b0");
-        holder.date.setText(Helper.getWeekDay(Helper.getUnixDate(forecast.getUnixTimestamp())));
-        holder.condition.setText(forecast.getWeatherCondition());
+        DayForecast forecast = weeklyForecast.get(position);
+        String units = AppManager.getInstance().getUnits();
+        if (units.equals(Constants.KEY_CELSIUS)) {
+            holder.temperature.setText(Helper.decimalFormat(forecast.getMidTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS) + Helper.CELSIUS_SYMBOL);
+        } else {
+            holder.temperature.setText(Helper.decimalFormat(Helper.kelvinToFahrenheit(forecast.getMidTemperature())) + Helper.FAHRENHEIT_SYMBOL);
+        }
+        holder.date.setText(Helper.getWeekDay(Helper.getUnixDate(forecast.getForecasts().get(0).getUnixTimestamp())));
+        holder.condition.setText(forecast.getMidCondition());
+        switch (forecast.getMidCondition()) {
+            case "Rain":
+                holder.conditionImage.setBackgroundResource(R.drawable.drizzle);
+                break;
+            case "Clouds":
+                holder.conditionImage.setBackgroundResource(R.drawable.cloudy);
+                break;
+            case "Clear":
+                holder.conditionImage.setBackgroundResource(R.drawable.clear);
+                break;
+            case "Snow":
+                holder.conditionImage.setBackgroundResource(R.drawable.snow);
+                break;
+        }
     }
 
     @Override
@@ -54,7 +74,7 @@ public class WeekForecastAdapter extends RecyclerView.Adapter<WeekForecastViewHo
             date = (TextView) itemView.findViewById(R.id.date_week);
             temperature = (TextView) itemView.findViewById(R.id.temperature_week);
             condition = (TextView) itemView.findViewById(R.id.condition_week);
-//            conditionImage = (ImageView) itemView.findViewById(R.id.condition_image);
+            conditionImage = (ImageView) itemView.findViewById(R.id.condition_image_week);
         }
     }
 }

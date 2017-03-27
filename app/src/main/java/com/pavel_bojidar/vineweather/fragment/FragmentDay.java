@@ -34,12 +34,14 @@ public class FragmentDay extends WeatherFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_day, null);
         recyclerView = (RecyclerView) view.findViewById(R.id.hourly_forecast);
-        ArrayList<Forecast> dailyForecast = new ArrayList<>();
-        for (int i = 0; i < 8; i++) {
-            dailyForecast.add(AppManager.getInstance().getCurrentLocation().getForecasts().get(i));
+        if (AppManager.getInstance().getCurrentLocation().getCurrentWeather() != null) {
+            ArrayList<Forecast> dailyForecast = new ArrayList<>();
+            for (int i = 0; i < 8; i++) {
+                dailyForecast.add(AppManager.getInstance().getCurrentLocation().getForecasts().get(i));
+            }
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView.setAdapter(new DayForecastAdapter(dailyForecast));
         }
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(new DayForecastAdapter(dailyForecast));
         return view;
     }
 
@@ -64,7 +66,6 @@ public class FragmentDay extends WeatherFragment {
                 recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                 int currentLocationId = intent.getIntExtra(Constants.KEY_LOCATION_ID, -1);
                 if (currentLocationId != -1 && recyclerView.getAdapter() != null) {
-                    //recyclerView.getAdapter().notifyDataSetChanged();
                     recyclerView.setAdapter(new DayForecastAdapter(dailyForecast));
                 }
             }

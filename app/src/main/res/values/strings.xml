@@ -11,5 +11,5 @@
     <string name="units">UNITS</string>
     <string name="c">C</string>
     <string name="f">F</string>
-    <string name="favotite_locations">FAVORITE LOCATIONS</string>
+    <string name="favotite_locations">RECENT LOCATIONS</string>
 </resources>

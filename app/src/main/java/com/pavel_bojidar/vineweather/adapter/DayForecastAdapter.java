@@ -24,7 +24,6 @@ public class DayForecastAdapter extends RecyclerView.Adapter<DayForecastViewHold
 
     Forecast forecast;
     private List<Forecast> dailyForecast;
-    String currentDate = Helper.getUnixDate(AppManager.getInstance().getCurrentLocation().getForecasts().get(0).getUnixTimestamp());
 
     public DayForecastAdapter(List<Forecast> dailyForecast) {
         this.dailyForecast = dailyForecast;
@@ -38,10 +37,30 @@ public class DayForecastAdapter extends RecyclerView.Adapter<DayForecastViewHold
     @Override
     public void onBindViewHolder(DayForecastViewHolder holder, int position) {
         forecast = dailyForecast.get(position);
+        String units = AppManager.getInstance().getUnits();
         holder.date.setText(Helper.getUnixDate(forecast.getUnixTimestamp()));
-        holder.temp.setText(Helper.decimalFormat(forecast.getTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS) + "\u00b0");
+        if (units.equals(Constants.KEY_CELSIUS)) {
+            holder.temp.setText(Helper.decimalFormat(forecast.getTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS) + Helper.CELSIUS_SYMBOL);
+        } else {
+            holder.temp.setText(Helper.decimalFormat(Helper.kelvinToFahrenheit(forecast.getTemperature())) + Helper.FAHRENHEIT_SYMBOL);
+        }
         holder.hour.setText(Helper.getUnixHour(forecast.getUnixTimestamp()));
+
         holder.condition.setText(forecast.getWeatherCondition());
+        switch (forecast.getWeatherCondition()) {
+            case "Rain":
+                holder.imageView.setBackgroundResource(R.drawable.drizzle);
+                break;
+            case "Clouds":
+                holder.imageView.setBackgroundResource(R.drawable.cloudy);
+                break;
+            case "Clear":
+                holder.imageView.setBackgroundResource(R.drawable.clear);
+                break;
+            case "Snow":
+                holder.imageView.setBackgroundResource(R.drawable.snow);
+                break;
+        }
 
         holder.itemView.setOnClickListener(new OnClickListener() {
             @Override
@@ -49,7 +68,6 @@ public class DayForecastAdapter extends RecyclerView.Adapter<DayForecastViewHold
                 //todo show detailed forecast
             }
         });
-
     }
 
     @Override
@@ -65,13 +83,12 @@ public class DayForecastAdapter extends RecyclerView.Adapter<DayForecastViewHold
         TextView condition;
         ImageView imageView;
 
-
         public DayForecastViewHolder(View itemView) {
             super(itemView);
-            date = (TextView) itemView.findViewById(R.id.date_week);
+            date = (TextView) itemView.findViewById(R.id.date_daily);
             hour = (TextView) itemView.findViewById(R.id.forecast_hour);
-            temp = (TextView) itemView.findViewById(R.id.temp);
-            condition = (TextView) itemView.findViewById(R.id.condition_week);
+            temp = (TextView) itemView.findViewById(R.id.teemperature_day);
+            condition = (TextView) itemView.findViewById(R.id.condition_day);
             imageView = (ImageView) itemView.findViewById(R.id.image_view);
         }
     }

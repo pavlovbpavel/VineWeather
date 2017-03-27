@@ -15,6 +15,13 @@ public class Location implements Serializable {
     private Forecast currentWeather;
     private List<Forecast> forecasts = new ArrayList<>();
 
+    public Location(String name, int id) {
+        this.name = name;
+        this.id = id;
+    }
+
+    public Location() {
+    }
 
     public List<Forecast> getForecasts() {
         return forecasts;
@@ -57,6 +64,7 @@ public class Location implements Serializable {
 
 
     public static class Forecast {
+
         private static final String JSON_NODE_MAIN = "main";
         private static final String JSON_NODE_WIND = "wind";
         private static final String JSON_NODE_CLOUDS = "clouds";
@@ -86,13 +94,29 @@ public class Location implements Serializable {
         private String weatherConditionIcon;
 
         Forecast(JSONObject jsonObject) throws JSONException {
-            this.unixTimestamp = jsonObject.getLong(JSON_KEY_TIMESTAMP);
-            this.temperature = jsonObject.getJSONObject(JSON_NODE_MAIN).getDouble(JSON_KEY_TEMPERATURE);
-            this.humidity = jsonObject.getJSONObject(JSON_NODE_MAIN).getDouble(JSON_KEY_HUMIDITY);
-            this.pressure = jsonObject.getJSONObject(JSON_NODE_MAIN).getDouble(JSON_KEY_PRESSURE);
-            this.windSpeed = jsonObject.getJSONObject(JSON_NODE_WIND).getDouble(JSON_KEY_WIND_SPEED);
-            this.windDirection = jsonObject.getJSONObject(JSON_NODE_WIND).getDouble(JSON_KEY_WIND_DEGREES);
-            this.clouds = jsonObject.getJSONObject(JSON_NODE_CLOUDS).getDouble(JSON_KEY_CLOUDS);
+            if (jsonObject.has(JSON_KEY_TIMESTAMP)) {
+                this.unixTimestamp = jsonObject.getLong(JSON_KEY_TIMESTAMP);
+            }
+            if (jsonObject.has(JSON_NODE_MAIN)) {
+                if (jsonObject.getJSONObject(JSON_NODE_MAIN).has(JSON_KEY_TEMPERATURE)) {
+                    this.temperature = jsonObject.getJSONObject(JSON_NODE_MAIN).getDouble(JSON_KEY_TEMPERATURE);
+                }
+                if (jsonObject.getJSONObject(JSON_NODE_MAIN).has(JSON_KEY_HUMIDITY)) {
+                    this.humidity = jsonObject.getJSONObject(JSON_NODE_MAIN).getDouble(JSON_KEY_HUMIDITY);
+                }
+                if (jsonObject.getJSONObject(JSON_NODE_MAIN).has(JSON_KEY_PRESSURE)) {
+                    this.pressure = jsonObject.getJSONObject(JSON_NODE_MAIN).getDouble(JSON_KEY_PRESSURE);
+                }
+                if (jsonObject.getJSONObject(JSON_NODE_MAIN).has(JSON_KEY_WIND_SPEED)) {
+                    this.windSpeed = jsonObject.getJSONObject(JSON_NODE_WIND).getDouble(JSON_KEY_WIND_SPEED);
+                }
+                if (jsonObject.getJSONObject(JSON_NODE_MAIN).has(JSON_KEY_WIND_DEGREES)) {
+                    this.windDirection = jsonObject.getJSONObject(JSON_NODE_WIND).getDouble(JSON_KEY_WIND_DEGREES);
+                }
+                if (jsonObject.getJSONObject(JSON_NODE_MAIN).has(JSON_KEY_CLOUDS)) {
+                    this.clouds = jsonObject.getJSONObject(JSON_NODE_CLOUDS).getDouble(JSON_KEY_CLOUDS);
+                }
+            }
 
             JSONArray weatherCondition = jsonObject.getJSONArray(JSON_NODE_WEATHER);
             if (weatherCondition != null && weatherCondition.length() > 0) {
@@ -149,9 +173,10 @@ public class Location implements Serializable {
 
     }
 
-    public static class CityInfo{
-        String name;
-        int id;
+    public static class CityInfo {
+        private String name;
+        private int id;
+        private int position;
 
         public CityInfo(String name, int id) {
             this.name = name;
@@ -164,6 +189,14 @@ public class Location implements Serializable {
 
         public int getId() {
             return id;
+        }
+
+        public int getPosition() {
+            return position;
+        }
+
+        public void setPosition(int position) {
+            this.position = position;
         }
     }
 }

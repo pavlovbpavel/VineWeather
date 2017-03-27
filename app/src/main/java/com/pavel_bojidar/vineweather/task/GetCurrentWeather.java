@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.AsyncTask;
 
 import com.pavel_bojidar.vineweather.WeatherActivity;
+import com.pavel_bojidar.vineweather.model.Location.CityInfo;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 
 import org.json.JSONException;
@@ -18,7 +19,7 @@ import java.util.Scanner;
  * Created by Pavel Pavlov on 3/15/2017.
  */
 
-public class GetCurrentWeather extends AsyncTask<Integer, Void, Void> {
+public class GetCurrentWeather extends AsyncTask<CityInfo, Void, Void> {
 
     WeakReference<Activity> activityWeakReference;
 
@@ -27,11 +28,11 @@ public class GetCurrentWeather extends AsyncTask<Integer, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(Integer... params) {
+    protected Void doInBackground(CityInfo... params) {
         String strJSON = "";
         try {
             URL url = new URL(
-                    "http://api.openweathermap.org/data/2.5/weather?id=" + params[0] + "&APPID=6c733d7c5da372180a412e7ff1aef0d3");
+                    "http://api.openweathermap.org/data/2.5/weather?id=" + params[0].getId() + "&APPID=6c733d7c5da372180a412e7ff1aef0d3");
             Scanner s = new Scanner(url.openStream());
             while (s.hasNext()) {
                 strJSON = s.nextLine();

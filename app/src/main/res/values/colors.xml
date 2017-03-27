@@ -3,4 +3,12 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#d7d7d7</color>
+    <color name="clearDay">#8057deed</color>
+    <color name="clearNight">#80071e41</color>
+    <color name="cloudyDay">#8098a3a4</color>
+    <color name="cloudyNight">#80414549</color>
+    <color name="rainDay">#805c849e</color>
+    <color name="rainNight">#8018335c</color>
+    <color name="snowDay">#8095a4a6</color>
+    <color name="snowNight">#805d6066</color>
 </resources>

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.AsyncTask;
 
 import com.pavel_bojidar.vineweather.WeatherActivity;
+import com.pavel_bojidar.vineweather.model.Location.CityInfo;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 
 import org.json.JSONArray;
@@ -20,7 +21,7 @@ import java.net.URL;
  * Created by Pavel Pavlov on 3/15/2017.
  */
 
-public class GetForecast extends AsyncTask<Integer, Void, Void> {
+public class GetForecast extends AsyncTask<CityInfo, Void, Void> {
 
     WeakReference<Activity> activityWeakReference;
 
@@ -29,12 +30,12 @@ public class GetForecast extends AsyncTask<Integer, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(Integer... params) {
+    protected Void doInBackground(CityInfo... params) {
         StringBuilder result = new StringBuilder();
 
         try {
             URL url = new URL(
-                    "http://api.openweathermap.org/data/2.5/forecast?id=" + params[0] + "&APPID=6c733d7c5da372180a412e7ff1aef0d3");
+                    "http://api.openweathermap.org/data/2.5/forecast?id=" + params[0].getId() + "&APPID=6c733d7c5da372180a412e7ff1aef0d3");
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(url.openStream()));
             String line;
             while ((line = bufferedReader.readLine()) != null) {

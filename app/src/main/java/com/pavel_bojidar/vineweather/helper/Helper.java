@@ -1,15 +1,14 @@
 package com.pavel_bojidar.vineweather.helper;
 
-import com.pavel_bojidar.vineweather.model.Location.Forecast;
-import com.pavel_bojidar.vineweather.singleton.AppManager;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.TimeZone;
 
 /**
@@ -17,6 +16,12 @@ import java.util.TimeZone;
  */
 
 public class Helper {
+
+    public static final String CELSIUS_SYMBOL = "\u00b0";
+    public static final String FAHRENHEIT_SYMBOL = "F\u00b0";
+    public static final String PRESSURE_SYMBOL = "Pa";
+    public static final String HUMIDITY_SYMBOL = "%";
+    public static final String KM_H = "km/h";
 
     public static String getUnixHour(long unixTS) {
         Date date = new Date(unixTS * 1000L);
@@ -35,7 +40,6 @@ public class Helper {
     }
 
     public static String getWeekDay(String dateInput) {
-        //String input_date = "01/08/2012";
         SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy");
         Date dt1 = null;
         try {
@@ -48,8 +52,13 @@ public class Helper {
         return finalDay;
     }
 
-    public static String decimalFormat(double input){
+    public static String decimalFormat(double input) {
         DecimalFormat df = new DecimalFormat("##");
         return df.format(input);
+    }
+
+    public static double kelvinToFahrenheit(double kelvin) {
+        double fahrenheit = ((kelvin - 273) * (9 / 5)) + 32;
+        return fahrenheit;
     }
 }

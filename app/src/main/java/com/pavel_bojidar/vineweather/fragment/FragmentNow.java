@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.Constants;
@@ -25,22 +26,26 @@ import com.pavel_bojidar.vineweather.singleton.AppManager;
 public class FragmentNow extends WeatherFragment {
 
     TextView degrees;
+    TextView description;
     TextView condition;
     TextView pressure;
     TextView humidity;
     TextView windSpeed;
-    TextView windDirection;
+    ImageView windDirection;
+    ImageView conditionImage;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_now, null);
+        conditionImage = (ImageView) view.findViewById(R.id.condition_image_now);
+        description = (TextView) view.findViewById(R.id.fragment_1_description);
         degrees = (TextView) view.findViewById(R.id.fragment_1_degrees);
         condition = (TextView) view.findViewById(R.id.fragment_1_condition);
         pressure = (TextView) view.findViewById(R.id.fragment_1_pressure);
         humidity = (TextView) view.findViewById(R.id.fragment_1_humidity);
         windSpeed = (TextView) view.findViewById(R.id.fragment_1_wind_speed);
-        windDirection = (TextView) view.findViewById(R.id.fragment_1_wind_direction);
+        windDirection = (ImageView) view.findViewById(R.id.fragment_1_wind_direction);
         return view;
     }
 
@@ -72,11 +77,37 @@ public class FragmentNow extends WeatherFragment {
 
     private void bindData() {
         Location currentLocation = AppManager.getInstance().getCurrentLocation();
-        degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS)+ "\u00b0");
+        String units = AppManager.getInstance().getUnits();
+        if (currentLocation.getCurrentWeather() == null) {
+            return;
+        }
+        if (units.equals(Constants.KEY_CELSIUS)) {
+            degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS) + Helper.CELSIUS_SYMBOL);
+        } else {
+            degrees.setText(Helper.decimalFormat(Helper.kelvinToFahrenheit(currentLocation.getCurrentWeather().getTemperature())) + Helper.FAHRENHEIT_SYMBOL);
+        }
         condition.setText(currentLocation.getCurrentWeather().getWeatherCondition());
-        pressure.setText("Pressure: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getPressure()) + "Pa");
-        humidity.setText("Humidity: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getHumidity()) + "%");
-        windSpeed.setText("Wind: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getWindSpeed()) + "km/h");
-        windDirection.setText(String.valueOf(currentLocation.getCurrentWeather().getWindDirection()));
+        pressure.setText("Pressure: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getPressure()) + Helper.PRESSURE_SYMBOL);
+        humidity.setText("Humidity: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getHumidity()) + Helper.HUMIDITY_SYMBOL);
+        windSpeed.setText("Wind: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getWindSpeed()) + Helper.KM_H);
+        windDirection.setRotation((float) currentLocation.getCurrentWeather().getWindDirection());
+        description.setText("Description: " + currentLocation.getCurrentWeather().getWeatherConditionDescription());
+
+        switch (currentLocation.getCurrentWeather().getWeatherCondition()) {
+
+            case "Rain":
+                conditionImage.setBackgroundResource(R.drawable.drizzle);
+                break;
+            case "Clouds":
+                conditionImage.setBackgroundResource(R.drawable.cloudy);
+                break;
+            case "Clear":
+                conditionImage.setBackgroundResource(R.drawable.clear);
+                break;
+            case "Snow":
+                conditionImage.setBackgroundResource(R.drawable.snow);
+                break;
+        }
+
     }
 }

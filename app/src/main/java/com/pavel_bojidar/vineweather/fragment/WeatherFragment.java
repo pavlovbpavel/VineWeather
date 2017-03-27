@@ -27,24 +27,6 @@ public abstract class WeatherFragment extends Fragment {
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(getReceiver(), new IntentFilter(BroadcastActions.ACTION_LOCATION_UPDATED));
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.e("onDestroy", getFragment());
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.e("onCreate", getFragment());
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        Log.e("onAttach", getFragment());
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -59,23 +41,6 @@ public abstract class WeatherFragment extends Fragment {
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(getReceiver());
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Log.e("onActivityCreated", getFragment());
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.e("onPause", getFragment());
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.e("onDetach", getFragment());
-    }
 
     protected abstract BroadcastReceiver getReceiver();
 
