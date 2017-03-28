@@ -58,7 +58,11 @@ public class DayForecastAdapter extends RecyclerView.Adapter<DayForecastViewHold
                 holder.imageView.setBackgroundResource(R.drawable.cloudy);
                 break;
             case "Clear":
-                holder.imageView.setBackgroundResource(R.drawable.clear);
+                if(Helper.isNight(forecast.getUnixTimestamp())){
+                    holder.imageView.setBackgroundResource(R.drawable.night);
+                } else {
+                    holder.imageView.setBackgroundResource(R.drawable.clear);
+                }
                 break;
             case "Snow":
                 holder.imageView.setBackgroundResource(R.drawable.snow);

@@ -84,7 +84,11 @@ public class FragmentNow extends WeatherFragment {
                 conditionImage.setBackgroundResource(R.drawable.cloudy);
                 break;
             case "Clear":
-                conditionImage.setBackgroundResource(R.drawable.clear);
+                if(Helper.isNight(currentLocation.getCurrentWeather().getUnixTimestamp())){
+                    conditionImage.setBackgroundResource(R.drawable.night);
+                } else {
+                    conditionImage.setBackgroundResource(R.drawable.clear);
+                }
                 break;
             case "Snow":
                 conditionImage.setBackgroundResource(R.drawable.snow);

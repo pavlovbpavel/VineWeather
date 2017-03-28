@@ -4,7 +4,9 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 /**
@@ -19,6 +21,17 @@ public class Helper {
         sdf.setTimeZone(TimeZone.getTimeZone("GMT+2"));
         String formattedDate = sdf.format(date);
         return formattedDate;
+    }
+
+    public static boolean isNight(long unixTS) {
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTimeInMillis(unixTS * 1000L);
+        calendar.setTimeZone(TimeZone.getTimeZone("GMT+2"));
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        if(hour > 18 || hour < 5){
+            return true;
+        }
+        return false;
     }
 
     public static String getUnixDate(long unixTS) {
