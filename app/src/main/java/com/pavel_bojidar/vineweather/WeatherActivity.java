@@ -104,18 +104,6 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
 
         initViews();
 
-        if (currentLocationId == -1) {
-            tabLayout.setVisibility(View.GONE);
-            viewPager.setVisibility(View.GONE);
-            loadingView.setVisibility(View.GONE);
-            noLocationSelected.setVisibility(View.VISIBLE);
-            setTitle(null);
-            searchField.setHint("Select a city");
-            //todo request location from user
-        } else {
-            startWeatherTasks();
-            searchField.setHint(currentLocationName);
-        }
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         celsius.setOnClickListener(new OnClickListener() {
@@ -144,6 +132,22 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (currentLocationId == -1) {
+            tabLayout.setVisibility(View.GONE);
+            viewPager.setVisibility(View.GONE);
+            loadingView.setVisibility(View.GONE);
+            noLocationSelected.setVisibility(View.VISIBLE);
+            setTitle(null);
+            searchField.setHint("Select a city");
+            //todo request location from user
+        } else {
+            startWeatherTasks();
+            searchField.setHint(currentLocationName);
+        }
+    }
 
     @Override
     protected void onDestroy() {
@@ -531,17 +535,4 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
             super.onBackPressed();
         }
     }
-//
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        if (isNetworkAvailable()) {
-//            startWeatherTasks();
-//            Log.e("task", "initial Task");
-//            searchField.setHint(currentLocationName);
-//            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-//        } else {
-//            alertDialog.show();
-//        }
-//    }
 }

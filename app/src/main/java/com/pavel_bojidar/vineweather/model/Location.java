@@ -98,23 +98,28 @@ public class Location implements Serializable {
                 this.unixTimestamp = jsonObject.getLong(JSON_KEY_TIMESTAMP);
             }
             if (jsonObject.has(JSON_NODE_MAIN)) {
-                if (jsonObject.getJSONObject(JSON_NODE_MAIN).has(JSON_KEY_TEMPERATURE)) {
-                    this.temperature = jsonObject.getJSONObject(JSON_NODE_MAIN).getDouble(JSON_KEY_TEMPERATURE);
+                JSONObject mainNode = jsonObject.getJSONObject(JSON_NODE_MAIN);
+                if (mainNode.has(JSON_KEY_TEMPERATURE)) {
+                    this.temperature = mainNode.getDouble(JSON_KEY_TEMPERATURE);
                 }
-                if (jsonObject.getJSONObject(JSON_NODE_MAIN).has(JSON_KEY_HUMIDITY)) {
-                    this.humidity = jsonObject.getJSONObject(JSON_NODE_MAIN).getDouble(JSON_KEY_HUMIDITY);
+                if (mainNode.has(JSON_KEY_HUMIDITY)) {
+                    this.humidity = mainNode.getDouble(JSON_KEY_HUMIDITY);
                 }
-                if (jsonObject.getJSONObject(JSON_NODE_MAIN).has(JSON_KEY_PRESSURE)) {
-                    this.pressure = jsonObject.getJSONObject(JSON_NODE_MAIN).getDouble(JSON_KEY_PRESSURE);
+                if (mainNode.has(JSON_KEY_PRESSURE)) {
+                    this.pressure = mainNode.getDouble(JSON_KEY_PRESSURE);
                 }
-                if (jsonObject.getJSONObject(JSON_NODE_MAIN).has(JSON_KEY_WIND_SPEED)) {
-                    this.windSpeed = jsonObject.getJSONObject(JSON_NODE_WIND).getDouble(JSON_KEY_WIND_SPEED);
+                if (mainNode.has(JSON_KEY_CLOUDS)) {
+                    this.clouds = mainNode.getDouble(JSON_KEY_CLOUDS);
                 }
-                if (jsonObject.getJSONObject(JSON_NODE_MAIN).has(JSON_KEY_WIND_DEGREES)) {
-                    this.windDirection = jsonObject.getJSONObject(JSON_NODE_WIND).getDouble(JSON_KEY_WIND_DEGREES);
+            }
+
+            if(jsonObject.has(JSON_NODE_WIND)){
+                JSONObject windNode = jsonObject.getJSONObject(JSON_NODE_WIND);
+                if (windNode.has(JSON_KEY_WIND_SPEED)) {
+                    this.windSpeed = windNode.getDouble(JSON_KEY_WIND_SPEED);
                 }
-                if (jsonObject.getJSONObject(JSON_NODE_MAIN).has(JSON_KEY_CLOUDS)) {
-                    this.clouds = jsonObject.getJSONObject(JSON_NODE_CLOUDS).getDouble(JSON_KEY_CLOUDS);
+                if (windNode.has(JSON_KEY_WIND_DEGREES)) {
+                    this.windDirection = windNode.getDouble(JSON_KEY_WIND_DEGREES);
                 }
             }
 
