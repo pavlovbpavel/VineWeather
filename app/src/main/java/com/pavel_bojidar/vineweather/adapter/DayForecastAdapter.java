@@ -37,6 +37,9 @@ public class DayForecastAdapter extends RecyclerView.Adapter<DayForecastViewHold
     @Override
     public void onBindViewHolder(DayForecastViewHolder holder, int position) {
         forecast = dailyForecast.get(position);
+        if(position%2==0){
+            holder.itemView.setBackgroundResource(R.color.highlightedRow);
+        }
         String units = AppManager.getInstance().getUnits();
         holder.date.setText(Helper.getUnixDate(forecast.getUnixTimestamp()));
         if (units.equals(Constants.KEY_CELSIUS)) {
