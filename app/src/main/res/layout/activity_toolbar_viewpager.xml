@@ -31,6 +31,8 @@
                     android:id="@+id/search_field"
                     android:imeOptions="actionSearch"
                     android:maxLines="1"
+                    android:inputType="text"
+                    android:digits="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 

@@ -443,10 +443,23 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         }
     }
 
+    private void reorderRecentList(CityInfo selectedLocation){
+        recentList.remove(selectedLocation);
+        recentList.add(0, selectedLocation);
+        favoriteLocationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        if (recentList != null) {
+            favoriteLocationRecyclerView.setAdapter(new FavoritesListAdapter(recentList, this));
+        }
+    }
+
     @Override
     public void onFavouriteSelected(CityInfo selectedLocation) {
         drawer.closeDrawer(GravityCompat.START);
         if (selectedLocation.getId() != currentLocationId) {
+            if(recentList.contains(selectedLocation)){
+                reorderRecentList(selectedLocation);
+            }
+            addToRecentList(currentLocationName, currentLocationId);
             currentLocationId = selectedLocation.getId();
             currentLocationName = selectedLocation.getName();
             new AsyncTask<CityInfo, Void, Void>() {
