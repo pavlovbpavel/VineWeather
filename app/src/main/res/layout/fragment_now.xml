@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
+    android:gravity="center"
     android:padding="16dp">
 
     <TextView
@@ -27,6 +28,7 @@
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:text="description"
+        android:layout_marginBottom="8dp"
         android:textAlignment="center"
         android:textColor="@android:color/black"
         android:textSize="18sp"/>
@@ -39,6 +41,7 @@
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:text="condition"
+        android:layout_marginBottom="8dp"
         android:textAlignment="center"
         android:textColor="@android:color/black"
         android:textSize="24sp"/>
@@ -46,6 +49,7 @@
     <TextView
         android:id="@+id/fragment_1_pressure"
         android:layout_width="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_height="wrap_content"
         android:layout_above="@+id/fragment_1_humidity"
         android:layout_centerHorizontal="true"
@@ -63,6 +67,7 @@
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:text="humidity"
+        android:layout_marginBottom="8dp"
         android:textAlignment="center"
         android:textColor="@android:color/black"
         android:textSize="18sp"/>
