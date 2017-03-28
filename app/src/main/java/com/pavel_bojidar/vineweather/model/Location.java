@@ -175,7 +175,6 @@ public class Location implements Serializable {
         public String getWeatherConditionIcon() {
             return weatherConditionIcon;
         }
-
     }
 
     public static class CityInfo {

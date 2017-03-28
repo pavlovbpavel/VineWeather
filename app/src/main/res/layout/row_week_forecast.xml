@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     android:id="@+id/row_week_forecast"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
     >
 
     <LinearLayout
-        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/date_week"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.5"
-            android:textColor="@android:color/black"
-            android:padding="8dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
             android:text="hour"
-            android:textAlignment="viewStart"/>
+            android:textSize="16sp"/>
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
             android:layout_weight="1">
 
             <ImageView
@@ -35,28 +36,46 @@
                 android:padding="8dp"
                 android:scaleType="fitCenter"/>
 
+            <TextView
+                android:id="@+id/condition_week"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:text="condition"
+                android:textAlignment="viewStart"/>
+
         </LinearLayout>
 
-
-        <TextView
-            android:id="@+id/temperature_week"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@android:color/black"
-            android:padding="8dp"
-            android:text="temp"
-            android:textAlignment="viewStart"/>
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/condition_week"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:layout_weight="1"
-            android:padding="8dp"
-            android:text="condition"
-            android:textAlignment="viewStart"/>
+            <TextView
+                android:id="@+id/temperature_week_min"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="min"
+                android:textAlignment="viewStart"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/temperature_week_max"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="max"
+                android:textAlignment="viewStart"
+                android:textSize="14sp"/>
+
+        </LinearLayout>
 
     </LinearLayout>
-</RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/separator"/>
+
+</LinearLayout>

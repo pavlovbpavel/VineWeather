@@ -31,14 +31,14 @@ public class DayForecast {
             count++;
             conditionCount.put(forecast.getWeatherCondition(), count);
         }
-        Map.Entry<String, Integer> mostRepeted = null;
+        Map.Entry<String, Integer> mostRepeated = null;
         for (Map.Entry<String, Integer> e : conditionCount.entrySet()) {
-            if (mostRepeted == null || mostRepeted.getValue() < e.getValue()){
-                mostRepeted = e;
+            if (mostRepeated == null || mostRepeated.getValue() < e.getValue()){
+                mostRepeated = e;
             }
         }
-        if(mostRepeted != null){
-            return mostRepeted.getKey();
+        if(mostRepeated != null){
+            return mostRepeated.getKey();
         }
         return null;
     }
@@ -49,6 +49,26 @@ public class DayForecast {
             tempSum += forecast.getTemperature();
         }
         return tempSum / forecasts.size();
+    }
+
+    public double getMinTemperature() {
+        double tempMin = getMidTemperature();
+        for (int i = 0; i < forecasts.size(); i++) {
+            if(forecasts.get(i).getTemperature() < tempMin){
+                tempMin = forecasts.get(i).getTemperature();
+            }
+        }
+        return tempMin;
+    }
+
+    public double getMaxTemperature() {
+        double tempMax = getMidTemperature();
+        for (int i = 0; i < forecasts.size(); i++) {
+            if(forecasts.get(i).getTemperature() > tempMax){
+                tempMax = forecasts.get(i).getTemperature();
+            }
+        }
+        return tempMax;
     }
 
     public List<Forecast> getForecasts() {

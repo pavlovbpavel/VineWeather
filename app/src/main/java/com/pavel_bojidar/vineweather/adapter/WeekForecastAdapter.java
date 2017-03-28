@@ -35,11 +35,16 @@ public class WeekForecastAdapter extends RecyclerView.Adapter<WeekForecastViewHo
     @Override
     public void onBindViewHolder(WeekForecastViewHolder holder, int position) {
         DayForecast forecast = weeklyForecast.get(position);
+        if(position%2==0){
+            holder.itemView.setBackgroundResource(R.color.highlightedRow);
+        }
         String units = AppManager.getInstance().getUnits();
         if (units.equals(Constants.KEY_CELSIUS)) {
-            holder.temperature.setText(Helper.decimalFormat(forecast.getMidTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS) + Constants.CELSIUS_SYMBOL);
+            holder.tempMin.setText(Constants.TEMP_MIN + Helper.decimalFormat(forecast.getMinTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS) + Constants.CELSIUS_SYMBOL);
+            holder.tempMax.setText(Constants.TEMP_MAX + Helper.decimalFormat(forecast.getMaxTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS) + Constants.CELSIUS_SYMBOL);
         } else {
-            holder.temperature.setText(Helper.decimalFormat(Helper.kelvinToFahrenheit(forecast.getMidTemperature())) + Constants.FAHRENHEIT_SYMBOL);
+            holder.tempMin.setText(Constants.TEMP_MIN + Helper.decimalFormat(Helper.kelvinToFahrenheit(forecast.getMinTemperature())) + Constants.FAHRENHEIT_SYMBOL);
+            holder.tempMax.setText(Constants.TEMP_MAX + Helper.decimalFormat(Helper.kelvinToFahrenheit(forecast.getMaxTemperature())) + Constants.FAHRENHEIT_SYMBOL);
         }
         holder.date.setText(Helper.getWeekDay(Helper.getUnixDate(forecast.getForecasts().get(0).getUnixTimestamp())));
         holder.condition.setText(forecast.getMidCondition());
@@ -71,13 +76,14 @@ public class WeekForecastAdapter extends RecyclerView.Adapter<WeekForecastViewHo
 
     public class WeekForecastViewHolder extends RecyclerView.ViewHolder {
 
-        TextView date, temperature, condition;
+        TextView date, tempMin, tempMax, condition;
         ImageView conditionImage;
 
         public WeekForecastViewHolder(View itemView) {
             super(itemView);
             date = (TextView) itemView.findViewById(R.id.date_week);
-            temperature = (TextView) itemView.findViewById(R.id.temperature_week);
+            tempMin = (TextView) itemView.findViewById(R.id.temperature_week_min);
+            tempMax = (TextView) itemView.findViewById(R.id.temperature_week_max);
             condition = (TextView) itemView.findViewById(R.id.condition_week);
             conditionImage = (ImageView) itemView.findViewById(R.id.condition_image_week);
         }
