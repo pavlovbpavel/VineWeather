@@ -118,7 +118,6 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         }
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
-
         celsius.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -154,7 +153,6 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
 
     private void startWeatherTasks() {
         if (isNetworkAvailable()) {
-            Log.e("task completed", "started tasks");
             loadingView.setVisibility(View.VISIBLE);
             CityInfo currentCityInfo = new CityInfo(currentLocationName, currentLocationId);
             new GetCurrentWeather(new WeakReference<Activity>(this)) {
@@ -162,7 +160,6 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
                 protected void onPostExecute(Void aVoid) {
                     super.onPostExecute(aVoid);
                     weatherTasksCompleted[0] = true;
-                    Log.e("task completed", "task 1");
                     onLocationUpdated();
                 }
             }.execute(currentCityInfo);
@@ -172,7 +169,6 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
                 protected void onPostExecute(Void aVoid) {
                     super.onPostExecute(aVoid);
                     weatherTasksCompleted[1] = true;
-                    Log.e("task completed", "task 2");
                     onLocationUpdated();
                 }
             }.execute(currentCityInfo);
@@ -209,7 +205,7 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
     public void loadCitiesFromAssetsFile() {
         AssetManager am = getAssets();
         try {
-            InputStream is = am.open("city_list.json");
+            InputStream is = am.open("city_list.txt");
             new LoadCitiesFromFile().execute(is);
         } catch (IOException e) {
             e.printStackTrace();
@@ -259,7 +255,6 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
                 if (s.length() > 1) {
                     if (inputDelay != null) {
                         inputDelay.cancel();
-                        Log.e("timerTask", "cancel");
                     }
                     inputDelay = new Timer();
                     inputDelay.schedule(new TimerTask() {
@@ -342,6 +337,29 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
             @Override
             public void onPageScrollStateChanged(int state) {
 
+            }
+        });
+    }
+
+    private void setViewPagerAdapter() {
+        viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
+            @Override
+            public Fragment getItem(int position) {
+                switch (position) {
+                    case 0:
+                        return new FragmentNow();
+                    case 1:
+                        return new FragmentDay();
+                    case 2:
+                        return new FragmentWeek();
+                    default:
+                        return null;
+                }
+            }
+
+            @Override
+            public int getCount() {
+                return 3;
             }
         });
     }
@@ -438,7 +456,6 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
                 @Override
                 protected Void doInBackground(CityInfo... params) {
                     startWeatherTasks();
-                    Log.e("task", "onFavoriteSelected");
                     return null;
                 }
 
@@ -450,29 +467,6 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
                 }
             }.execute(selectedLocation);
         }
-    }
-
-    private void setViewPagerAdapter() {
-        viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
-            @Override
-            public Fragment getItem(int position) {
-                switch (position) {
-                    case 0:
-                        return new FragmentNow();
-                    case 1:
-                        return new FragmentDay();
-                    case 2:
-                        return new FragmentWeek();
-                    default:
-                        return null;
-                }
-            }
-
-            @Override
-            public int getCount() {
-                return 3;
-            }
-        });
     }
 
     @Override
