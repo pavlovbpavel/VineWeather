@@ -60,6 +60,11 @@ public class DayForecastAdapter extends RecyclerView.Adapter<DayForecastViewHold
             case "Snow":
                 holder.imageView.setBackgroundResource(R.drawable.snow);
                 break;
+            case "Fog":
+                holder.imageView.setBackgroundResource(R.drawable.fog);
+                break;
+            case "Mist":
+                holder.imageView.setBackgroundResource(R.drawable.mist);
         }
 
         holder.itemView.setOnClickListener(new OnClickListener() {

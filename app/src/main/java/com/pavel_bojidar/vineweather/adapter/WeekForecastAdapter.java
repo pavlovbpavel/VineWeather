@@ -56,6 +56,11 @@ public class WeekForecastAdapter extends RecyclerView.Adapter<WeekForecastViewHo
             case "Snow":
                 holder.conditionImage.setBackgroundResource(R.drawable.snow);
                 break;
+            case "Fog":
+                holder.conditionImage.setBackgroundResource(R.drawable.fog);
+                break;
+            case "Mist":
+                holder.conditionImage.setBackgroundResource(R.drawable.mist);
         }
     }
 

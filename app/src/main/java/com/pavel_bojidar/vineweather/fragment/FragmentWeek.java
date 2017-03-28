@@ -71,20 +71,11 @@ public class FragmentWeek extends WeatherFragment {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.e("fragment week", "i received the broadcast");
-
-//                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                 int currentLocationId = intent.getIntExtra(Constants.KEY_LOCATION_ID, -1);
                 if (currentLocationId != -1 && recyclerView.getAdapter() != null) {
-//                    recyclerView.setAdapter(new WeekForecastAdapter(fiveDayForecast));
                     recyclerView.getAdapter().notifyDataSetChanged();
                 }
             }
         };
-    }
-
-    @Override
-    protected String getFragment() {
-        return "Fragment Week";
     }
 }

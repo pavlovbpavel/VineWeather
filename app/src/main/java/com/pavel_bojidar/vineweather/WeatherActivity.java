@@ -95,24 +95,12 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_drawer);
         loadCitiesFromAssetsFile();
+
         preferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
-
-        preferences.edit().putInt(Constants.KEY_LOCATION_ID, 727011).commit();
-        preferences.edit().putString(Constants.KEY_LOCATION_NAME, "Sofia").commit();
-
+        preferences.edit().putInt(Constants.KEY_LOCATION_ID, 727011).apply();
+        preferences.edit().putString(Constants.KEY_LOCATION_NAME, "Sofia").apply();
         currentLocationName = preferences.getString(Constants.KEY_LOCATION_NAME, "Sofia");
         currentLocationId = preferences.getInt(Constants.KEY_LOCATION_ID, 727011);
-
-//        Set<String> preferencesList = new TreeSet<>();
-//        preferencesList = preferences.getStringSet(Constants.KEY_RECENT_LOCATIONS, null);
-//        if (preferencesList != null) {
-//            for (Iterator<String> it = preferencesList.iterator(); it.hasNext(); ) {
-//                String currentItem = it.next();
-//                Gson gson = new Gson();
-//                CityInfo city = new CityInfo()
-//                recentList.add(new CityInfo())
-//            }
-//        }
 
         initViews();
 
@@ -126,7 +114,6 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
             //todo request location from user
         } else {
             startWeatherTasks();
-            Log.e("task", "initial Task");
             searchField.setHint(currentLocationName);
         }
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -157,19 +144,6 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         });
 
     }
-//
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        if (isNetworkAvailable()) {
-//            startWeatherTasks();
-//            Log.e("task", "initial Task");
-//            searchField.setHint(currentLocationName);
-//            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-//        } else {
-//            alertDialog.show();
-//        }
-//    }
 
 
     @Override
@@ -370,7 +344,6 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
 
             }
         });
-
     }
 
     private void performSearch(Editable s) {
@@ -428,14 +401,6 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
             }
         }
         recentList.add(0, oldLocation);
-
-//        if (preferences.getStringSet(Constants.KEY_RECENT_LOCATIONS, null) == null) {
-//            preferences.edit().putStringSet(Constants.KEY_RECENT_LOCATIONS, new TreeSet<String>()).apply();
-//            Gson gson = new Gson();
-//            String json = gson.toJson(newLocation);
-//        } else {
-//
-//        }
 
         favoriteLocationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         if (recentList != null) {
@@ -572,4 +537,17 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
             super.onBackPressed();
         }
     }
+//
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        if (isNetworkAvailable()) {
+//            startWeatherTasks();
+//            Log.e("task", "initial Task");
+//            searchField.setHint(currentLocationName);
+//            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+//        } else {
+//            alertDialog.show();
+//        }
+//    }
 }

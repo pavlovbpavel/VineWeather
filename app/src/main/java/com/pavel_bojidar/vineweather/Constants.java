@@ -11,7 +11,7 @@ public class Constants {
     public static final double COEF_FOR_CONVERT_CELSIUS = 273.15;
     public static final String KEY_CELSIUS = "celsius";
     public static final String KEY_FAHRENHEIT = "fahrenheit";
-    public static final String CELSIUS_SYMBOL = "\u00b0";
+    public static final String CELSIUS_SYMBOL = "C\u00b0";
     public static final String FAHRENHEIT_SYMBOL = "F\u00b0";
     public static final String PRESSURE_SYMBOL = "hPa";
     public static final String HUMIDITY_SYMBOL = "%";

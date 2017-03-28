@@ -58,7 +58,6 @@ public class FragmentDay extends WeatherFragment {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.e("fragment day", "i received the broadcast");
                 ArrayList<Forecast> dailyForecast = new ArrayList<>();
                 for (int i = 0; i < 8; i++) {
                     dailyForecast.add(AppManager.getInstance().getCurrentLocation().getForecasts().get(i));
@@ -70,10 +69,5 @@ public class FragmentDay extends WeatherFragment {
                 }
             }
         };
-    }
-
-    @Override
-    protected String getFragment() {
-        return "Fragment Day";
     }
 }

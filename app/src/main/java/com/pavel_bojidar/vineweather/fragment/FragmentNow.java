@@ -57,24 +57,6 @@ public class FragmentNow extends WeatherFragment {
         }
     }
 
-    @Override
-    protected BroadcastReceiver getReceiver() {
-        return new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.e("fragment now", "i received the broadcast");
-                if (AppManager.getInstance().getCurrentLocation() != null) {
-                    bindData();
-                }
-            }
-        };
-    }
-
-    @Override
-    protected String getFragment() {
-        return "Fragment Now";
-    }
-
     private void bindData() {
         Location currentLocation = AppManager.getInstance().getCurrentLocation();
         String units = AppManager.getInstance().getUnits();
@@ -107,7 +89,24 @@ public class FragmentNow extends WeatherFragment {
             case "Snow":
                 conditionImage.setBackgroundResource(R.drawable.snow);
                 break;
+            case "Fog":
+                conditionImage.setBackgroundResource(R.drawable.fog);
+                break;
+            case "Mist":
+                conditionImage.setBackgroundResource(R.drawable.mist);
         }
 
+    }
+
+    @Override
+    protected BroadcastReceiver getReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (AppManager.getInstance().getCurrentLocation() != null) {
+                    bindData();
+                }
+            }
+        };
     }
 }
