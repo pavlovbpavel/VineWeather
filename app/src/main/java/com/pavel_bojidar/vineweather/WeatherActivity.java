@@ -232,7 +232,7 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         }
     }
 
-    private void loadCitiesFromAssetsFile() {
+    public void loadCitiesFromAssetsFile() {
         AssetManager am = getAssets();
         try {
             InputStream is = am.open("city_list.json");
@@ -399,9 +399,11 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     CityInfo currentItem = (CityInfo) searchPopupWindow.getListView().getItemAtPosition(position);
                     searchPopupWindow.dismiss();
-                    addToRecentList(currentItem.getName(), currentItem.getId());
+                    addToRecentList(currentLocationName, currentLocationId);
                     currentLocationId = currentItem.getId();
                     currentLocationName = currentItem.getName();
+                    preferences.edit().putInt(Constants.KEY_LOCATION_ID, currentLocationId).apply();
+                    preferences.edit().putString(Constants.KEY_LOCATION_NAME, currentLocationName).apply();
                     hideKeyboard();
                     searchField.setText(null);
                     searchField.setHint(currentLocationName);
@@ -418,18 +420,14 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
 
     private void addToRecentList(String cityName, int cityId) {
 
-        CityInfo newLocation = new CityInfo(cityName, cityId);
-        newLocation.setPosition(recentList.size());
+        CityInfo oldLocation = new CityInfo(cityName, cityId);
 
         for (int i = 0; i < recentList.size(); i++) {
             if (recentList.get(i).getId() == cityId) {
                 return;
             }
         }
-        recentList.add(newLocation);
-
-        preferences.edit().putInt(Constants.KEY_LOCATION_ID, cityId).apply();
-        preferences.edit().putString(Constants.KEY_LOCATION_NAME, cityName).apply();
+        recentList.add(0, oldLocation);
 
 //        if (preferences.getStringSet(Constants.KEY_RECENT_LOCATIONS, null) == null) {
 //            preferences.edit().putStringSet(Constants.KEY_RECENT_LOCATIONS, new TreeSet<String>()).apply();
@@ -500,15 +498,6 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
     }
 
     @Override
-    public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         search = menu.add("Search");
         if (!searchField.hasFocus()) {
@@ -560,5 +549,14 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 }

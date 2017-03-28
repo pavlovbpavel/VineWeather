@@ -40,9 +40,9 @@ public class DayForecastAdapter extends RecyclerView.Adapter<DayForecastViewHold
         String units = AppManager.getInstance().getUnits();
         holder.date.setText(Helper.getUnixDate(forecast.getUnixTimestamp()));
         if (units.equals(Constants.KEY_CELSIUS)) {
-            holder.temp.setText(Helper.decimalFormat(forecast.getTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS) + Helper.CELSIUS_SYMBOL);
+            holder.temp.setText(Helper.decimalFormat(forecast.getTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS) + Constants.CELSIUS_SYMBOL);
         } else {
-            holder.temp.setText(Helper.decimalFormat(Helper.kelvinToFahrenheit(forecast.getTemperature())) + Helper.FAHRENHEIT_SYMBOL);
+            holder.temp.setText(Helper.decimalFormat(Helper.kelvinToFahrenheit(forecast.getTemperature())) + Constants.FAHRENHEIT_SYMBOL);
         }
         holder.hour.setText(Helper.getUnixHour(forecast.getUnixTimestamp()));
 

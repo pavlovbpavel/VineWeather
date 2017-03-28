@@ -82,14 +82,14 @@ public class FragmentNow extends WeatherFragment {
             return;
         }
         if (units.equals(Constants.KEY_CELSIUS)) {
-            degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS) + Helper.CELSIUS_SYMBOL);
+            degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS) + Constants.CELSIUS_SYMBOL);
         } else {
-            degrees.setText(Helper.decimalFormat(Helper.kelvinToFahrenheit(currentLocation.getCurrentWeather().getTemperature())) + Helper.FAHRENHEIT_SYMBOL);
+            degrees.setText(Helper.decimalFormat(Helper.kelvinToFahrenheit(currentLocation.getCurrentWeather().getTemperature())) + Constants.FAHRENHEIT_SYMBOL);
         }
         condition.setText(currentLocation.getCurrentWeather().getWeatherCondition());
-        pressure.setText("Pressure: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getPressure()) + Helper.PRESSURE_SYMBOL);
-        humidity.setText("Humidity: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getHumidity()) + Helper.HUMIDITY_SYMBOL);
-        windSpeed.setText("Wind: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getWindSpeed()) + Helper.KM_H);
+        pressure.setText("Pressure: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getPressure()) + Constants.PRESSURE_SYMBOL);
+        humidity.setText("Humidity: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getHumidity()) + Constants.HUMIDITY_SYMBOL);
+        windSpeed.setText("Wind: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getWindSpeed()) + Constants.KM_H);
         windDirection.setRotation((float) currentLocation.getCurrentWeather().getWindDirection());
         description.setText("Description: " + currentLocation.getCurrentWeather().getWeatherConditionDescription());
 

@@ -1,9 +1,5 @@
 package com.pavel_bojidar.vineweather.helper;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -16,12 +12,6 @@ import java.util.TimeZone;
  */
 
 public class Helper {
-
-    public static final String CELSIUS_SYMBOL = "\u00b0";
-    public static final String FAHRENHEIT_SYMBOL = "F\u00b0";
-    public static final String PRESSURE_SYMBOL = "Pa";
-    public static final String HUMIDITY_SYMBOL = "%";
-    public static final String KM_H = "km/h";
 
     public static String getUnixHour(long unixTS) {
         Date date = new Date(unixTS * 1000L);

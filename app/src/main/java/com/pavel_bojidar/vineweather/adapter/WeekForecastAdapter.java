@@ -37,9 +37,9 @@ public class WeekForecastAdapter extends RecyclerView.Adapter<WeekForecastViewHo
         DayForecast forecast = weeklyForecast.get(position);
         String units = AppManager.getInstance().getUnits();
         if (units.equals(Constants.KEY_CELSIUS)) {
-            holder.temperature.setText(Helper.decimalFormat(forecast.getMidTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS) + Helper.CELSIUS_SYMBOL);
+            holder.temperature.setText(Helper.decimalFormat(forecast.getMidTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS) + Constants.CELSIUS_SYMBOL);
         } else {
-            holder.temperature.setText(Helper.decimalFormat(Helper.kelvinToFahrenheit(forecast.getMidTemperature())) + Helper.FAHRENHEIT_SYMBOL);
+            holder.temperature.setText(Helper.decimalFormat(Helper.kelvinToFahrenheit(forecast.getMidTemperature())) + Constants.FAHRENHEIT_SYMBOL);
         }
         holder.date.setText(Helper.getWeekDay(Helper.getUnixDate(forecast.getForecasts().get(0).getUnixTimestamp())));
         holder.condition.setText(forecast.getMidCondition());
