@@ -12,10 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
-import com.pavel_bojidar.vineweather.adapter.DayForecastAdapter;
-import com.pavel_bojidar.vineweather.model.Location.Forecast;
+import com.pavel_bojidar.vineweather.adapter.TomorrowForecastAdapter;
+import com.pavel_bojidar.vineweather.model.HourForecast;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ import java.util.ArrayList;
  * Created by Pavel Pavlov on 3/10/2017.
  */
 
-public class FragmentDay extends WeatherFragment {
+public class FragmentTomorrow extends WeatherFragment {
 
     RecyclerView recyclerView;
 
@@ -34,13 +33,10 @@ public class FragmentDay extends WeatherFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_day, null);
         recyclerView = (RecyclerView) view.findViewById(R.id.hourly_forecast);
-        if (AppManager.getInstance().getCurrentLocation().getCurrentWeather() != null) {
-            ArrayList<Forecast> dailyForecast = new ArrayList<>();
-            for (int i = 0; i < 8; i++) {
-                dailyForecast.add(AppManager.getInstance().getCurrentLocation().getForecasts().get(i));
-            }
+        if (AppManager.getInstance().getCurrentLocation().getForecast() != null) {
+            ArrayList<HourForecast> TomorrowForecast = new ArrayList<>(AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getHourForecasts());
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            recyclerView.setAdapter(new DayForecastAdapter(dailyForecast));
+            recyclerView.setAdapter(new TomorrowForecastAdapter(TomorrowForecast));
         }
         return view;
     }
@@ -58,15 +54,16 @@ public class FragmentDay extends WeatherFragment {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                ArrayList<Forecast> dailyForecast = new ArrayList<>();
-                for (int i = 0; i < 8; i++) {
-                    dailyForecast.add(AppManager.getInstance().getCurrentLocation().getForecasts().get(i));
-                }
-                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                int currentLocationId = intent.getIntExtra(Constants.KEY_LOCATION_ID, -1);
-                if (currentLocationId != -1 && recyclerView.getAdapter() != null) {
-                    recyclerView.setAdapter(new DayForecastAdapter(dailyForecast));
-                }
+                Log.e("received broadcast: ", "fragment tomorrow");
+//                ArrayList<Forecast> dailyForecast = new ArrayList<>();
+//                for (int i = 0; i < 8; i++) {
+//                    dailyForecast.add(AppManager.getInstance().getCurrentLocation().getForecasts().get(i));
+//                }
+//                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//                int currentLocationId = intent.getIntExtra(Constants.KEY_LOCATION_ID, -1);
+//                if (currentLocationId != -1 && recyclerView.getAdapter() != null) {
+//                    recyclerView.setAdapter(new DayForecastAdapter(dailyForecast));
+//                }
             }
         };
     }

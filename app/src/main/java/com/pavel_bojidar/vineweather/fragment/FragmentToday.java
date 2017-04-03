@@ -16,14 +16,14 @@ import android.widget.TextView;
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
 import com.pavel_bojidar.vineweather.helper.Helper;
-import com.pavel_bojidar.vineweather.model.Location;
+import com.pavel_bojidar.vineweather.model.maindata.Location;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 
 /**
  * Created by Pavel Pavlov on 3/7/2017.
  */
 
-public class FragmentNow extends WeatherFragment {
+public class FragmentToday extends WeatherFragment {
 
     TextView degrees;
     TextView description;
@@ -59,46 +59,47 @@ public class FragmentNow extends WeatherFragment {
 
     private void bindData() {
         Location currentLocation = AppManager.getInstance().getCurrentLocation();
-        String units = AppManager.getInstance().getUnits();
-        if (currentLocation.getCurrentWeather() == null) {
-            return;
-        }
-        if (units.equals(Constants.KEY_CELSIUS)) {
-            degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS) + Constants.CELSIUS_SYMBOL);
-        } else {
-            degrees.setText(Helper.decimalFormat(Helper.kelvinToFahrenheit(currentLocation.getCurrentWeather().getTemperature())) + Constants.FAHRENHEIT_SYMBOL);
-        }
-        condition.setText(currentLocation.getCurrentWeather().getWeatherCondition());
-        pressure.setText("Pressure: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getPressure()) + Constants.PRESSURE_SYMBOL);
+//        String units = AppManager.getInstance().getUnits();
+//        if (currentLocation.getCurrentWeather() == null) {
+//            return;
+//        }
+//        if (units.equals(Constants.KEY_CELSIUS)) {
+//            degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS) + Constants.CELSIUS_SYMBOL);
+//        } else {
+//            degrees.setText(Helper.decimalFormat(Helper.kelvinToFahrenheit(currentLocation.getCurrentWeather().getTemperature())) + Constants.FAHRENHEIT_SYMBOL);
+//        }
+        degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempC()) + Constants.CELSIUS_SYMBOL);
+        condition.setText(currentLocation.getCurrentWeather().getCondition().getText());
+        pressure.setText("Pressure: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getPressureMb()) + Constants.PRESSURE_SYMBOL);
         humidity.setText("Humidity: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getHumidity()) + Constants.HUMIDITY_SYMBOL);
-        windSpeed.setText("Wind: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getWindSpeed()) + Constants.KM_H);
-        windDirection.setRotation((float) currentLocation.getCurrentWeather().getWindDirection());
-        description.setText("Description: " + currentLocation.getCurrentWeather().getWeatherConditionDescription());
-
-        switch (currentLocation.getCurrentWeather().getWeatherCondition()) {
-
-            case "Rain":
-                conditionImage.setBackgroundResource(R.drawable.drizzle);
-                break;
-            case "Clouds":
-                conditionImage.setBackgroundResource(R.drawable.cloudy);
-                break;
-            case "Clear":
-                if(Helper.isNight(currentLocation.getCurrentWeather().getUnixTimestamp())){
-                    conditionImage.setBackgroundResource(R.drawable.night);
-                } else {
-                    conditionImage.setBackgroundResource(R.drawable.clear);
-                }
-                break;
-            case "Snow":
-                conditionImage.setBackgroundResource(R.drawable.snow);
-                break;
-            case "Fog":
-                conditionImage.setBackgroundResource(R.drawable.fog);
-                break;
-            case "Mist":
-                conditionImage.setBackgroundResource(R.drawable.mist);
-        }
+        windSpeed.setText("Wind: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getWindKph()) + Constants.KM_H);
+        windDirection.setRotation((float) currentLocation.getCurrentWeather().getWindDegree());
+//        description.setText("Description: " + currentLocation.getCurrentWeather().getWeatherConditionDescription());
+//
+//        switch (currentLocation.getCurrentWeather().getWeatherCondition()) {
+//
+//            case "Rain":
+//                conditionImage.setBackgroundResource(R.drawable.drizzle);
+//                break;
+//            case "Clouds":
+//                conditionImage.setBackgroundResource(R.drawable.cloudy);
+//                break;
+//            case "Clear":
+//                if(Helper.isNight(currentLocation.getCurrentWeather().getUnixTimestamp())){
+//                    conditionImage.setBackgroundResource(R.drawable.night);
+//                } else {
+//                    conditionImage.setBackgroundResource(R.drawable.clear);
+//                }
+//                break;
+//            case "Snow":
+//                conditionImage.setBackgroundResource(R.drawable.snow);
+//                break;
+//            case "Fog":
+//                conditionImage.setBackgroundResource(R.drawable.fog);
+//                break;
+//            case "Mist":
+//                conditionImage.setBackgroundResource(R.drawable.mist);
+//        }
 
     }
 
@@ -107,6 +108,7 @@ public class FragmentNow extends WeatherFragment {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                Log.e("received broadcast: ", "fragment today");
                 if (AppManager.getInstance().getCurrentLocation() != null) {
                     bindData();
                 }

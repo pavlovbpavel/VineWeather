@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.AssetManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -45,45 +44,46 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.NetworkReceiver.ConnectivityChanged;
 import com.pavel_bojidar.vineweather.adapter.FavoritesListAdapter;
-import com.pavel_bojidar.vineweather.adapter.FavoritesListAdapter.OnFavouriteSelected;
-import com.pavel_bojidar.vineweather.fragment.FragmentDay;
-import com.pavel_bojidar.vineweather.fragment.FragmentNow;
-import com.pavel_bojidar.vineweather.fragment.FragmentWeek;
-import com.pavel_bojidar.vineweather.model.Location.CityInfo;
+import com.pavel_bojidar.vineweather.adapter.FavoritesListAdapter.RecentSelectedListener;
+import com.pavel_bojidar.vineweather.fragment.FragmentForecast;
+import com.pavel_bojidar.vineweather.fragment.FragmentToday;
+import com.pavel_bojidar.vineweather.fragment.FragmentTomorrow;
 import com.pavel_bojidar.vineweather.popupwindow.CitySearchPopupWindow;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 import com.pavel_bojidar.vineweather.task.GetCurrentWeather;
 import com.pavel_bojidar.vineweather.task.GetForecast;
-import com.pavel_bojidar.vineweather.task.LoadCitiesFromFile;
+import com.pavel_bojidar.vineweather.task.GetLocations;
 
-import java.io.IOException;
-import java.io.InputStream;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.pavel_bojidar.vineweather.Constants.KEY_NAME;
+import static com.pavel_bojidar.vineweather.Constants.KEY_REGION;
 
-public class WeatherActivity extends AppCompatActivity implements OnFavouriteSelected {
+
+public class WeatherActivity extends AppCompatActivity implements RecentSelectedListener {
 
     DrawerLayout drawer;
     TabLayout tabLayout;
     ViewPager viewPager;
-    RecyclerView favoriteLocationRecyclerView;
+    RecyclerView recentLocationRecyclerView;
     SharedPreferences preferences;
     String currentLocationName;
-    int currentLocationId;
     ProgressBar loadingView;
     EditText searchField;
     final boolean[] weatherTasksCompleted = {false, false};
-    TextView noLocationSelected;
     CitySearchPopupWindow searchPopupWindow;
     Toolbar toolbar;
-    ArrayList<CityInfo> recentList = new ArrayList<>();
+    ArrayList<String> recentList = new ArrayList<>();
     MenuItem search;
     Timer inputDelay;
     Button celsius, fahrenheit;
@@ -94,13 +94,10 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation_drawer);
-        loadCitiesFromAssetsFile();
 
         preferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
-        preferences.edit().putInt(Constants.KEY_LOCATION_ID, 727011).apply();
         preferences.edit().putString(Constants.KEY_LOCATION_NAME, "Sofia").apply();
         currentLocationName = preferences.getString(Constants.KEY_LOCATION_NAME, "Sofia");
-        currentLocationId = preferences.getInt(Constants.KEY_LOCATION_ID, 727011);
 
         initViews();
 
@@ -109,24 +106,14 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         celsius.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (AppManager.getInstance().getUnits().equals(Constants.KEY_FAHRENHEIT)) {
-                    AppManager.getInstance().setUnits(Constants.KEY_CELSIUS);
-                    startWeatherTasks();
-                    Log.e("task", "onCelsiusSelected");
-                    drawer.closeDrawer(GravityCompat.START);
-                }
+
             }
         });
 
         fahrenheit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (AppManager.getInstance().getUnits().equals(Constants.KEY_CELSIUS)) {
-                    AppManager.getInstance().setUnits(Constants.KEY_FAHRENHEIT);
-                    startWeatherTasks();
-                    Log.e("task", "onFahrenheitSelected");
-                    drawer.closeDrawer(GravityCompat.START);
-                }
+
             }
         });
 
@@ -135,11 +122,10 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
     @Override
     protected void onStart() {
         super.onStart();
-        if (currentLocationId == -1) {
+        if (currentLocationName == null) {
             tabLayout.setVisibility(View.GONE);
             viewPager.setVisibility(View.GONE);
             loadingView.setVisibility(View.GONE);
-            noLocationSelected.setVisibility(View.VISIBLE);
             setTitle(null);
             searchField.setHint("Select a city");
             //todo request location from user
@@ -158,24 +144,24 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
     private void startWeatherTasks() {
         if (isNetworkAvailable()) {
             loadingView.setVisibility(View.VISIBLE);
-            CityInfo currentCityInfo = new CityInfo(currentLocationName, currentLocationId);
+
             new GetCurrentWeather(new WeakReference<Activity>(this)) {
                 @Override
-                protected void onPostExecute(Void aVoid) {
-                    super.onPostExecute(aVoid);
+                protected void onPostExecute(String result) {
+                    super.onPostExecute(result);
                     weatherTasksCompleted[0] = true;
                     onLocationUpdated();
                 }
-            }.execute(currentCityInfo);
+            }.execute(currentLocationName);
 
             new GetForecast(new WeakReference<Activity>(this)) {
                 @Override
-                protected void onPostExecute(Void aVoid) {
-                    super.onPostExecute(aVoid);
+                protected void onPostExecute(String result) {
+                    super.onPostExecute(result);
                     weatherTasksCompleted[1] = true;
                     onLocationUpdated();
                 }
-            }.execute(currentCityInfo);
+            }.execute(currentLocationName);
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("No internet Connection");
@@ -206,16 +192,6 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         }
     }
 
-    public void loadCitiesFromAssetsFile() {
-        AssetManager am = getAssets();
-        try {
-            InputStream is = am.open("city_list.txt");
-            new LoadCitiesFromFile().execute(is);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void onLocationUpdated() {
         if (!weatherTasksCompleted[0] || !weatherTasksCompleted[1]) {
             return;
@@ -229,17 +205,19 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         if (viewPager.getAdapter() == null) {
             setViewPagerAdapter();
         }
-        preferences.edit().putInt(Constants.KEY_LOCATION_ID, AppManager.getInstance().getCurrentLocation().getId()).apply();
-        preferences.edit().putString(Constants.KEY_LOCATION_NAME, AppManager.getInstance().getCurrentLocation().getName()).apply();
+
+        //todo set updated location as current in shared preferences
 
         Log.e("task completed", "on location updated");
         AppManager.getInstance().onLocationUpdated(this);
     }
 
     private void initViews() {
+        //init toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //init search field and call performSearch logic
         searchField = (EditText) findViewById(R.id.search_field);
         searchField.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
@@ -256,7 +234,8 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
 
             @Override
             public void afterTextChanged(final Editable s) {
-                if (s.length() > 1) {
+                //api returns result after 3 input symbols
+                if (s.length() > 2) {
                     if (inputDelay != null) {
                         inputDelay.cancel();
                     }
@@ -267,6 +246,7 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    Log.e("perform search", "before search");
                                     performSearch(s);
                                 }
                             });
@@ -285,6 +265,7 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
             }
         });
 
+        //init navigation drawer and set toggle
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
@@ -296,20 +277,24 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        //init progress bar
         loadingView = (ProgressBar) findViewById(R.id.loading_view);
 
-        favoriteLocationRecyclerView = (RecyclerView) findViewById(R.id.favorite_location_list);
+        //init recent locations recyclerView
+        recentLocationRecyclerView = (RecyclerView) findViewById(R.id.favorite_location_list);
 
+        //init tabLayout and viewPager
         tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.addTab(tabLayout.newTab().setText("Now"));
-        tabLayout.addTab(tabLayout.newTab().setText("24H"));
-        tabLayout.addTab(tabLayout.newTab().setText("5Days"));
+        tabLayout.addTab(tabLayout.newTab().setText("Today"));
+        tabLayout.addTab(tabLayout.newTab().setText("Tomorrow"));
+        tabLayout.addTab(tabLayout.newTab().setText("10 Days"));
         viewPager = (ViewPager) findViewById(R.id.pager);
+
+        //todo change buttons to set imperial/metric units
         celsius = (Button) findViewById(R.id.celsius);
         fahrenheit = (Button) findViewById(R.id.fahrenheit);
 
-        noLocationSelected = (TextView) findViewById(R.id.no_location);
-
+        //connect tabLayout with viewPager
         tabLayout.setOnTabSelectedListener(new OnTabSelectedListener() {
             @Override
             public void onTabSelected(Tab tab) {
@@ -327,10 +312,10 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
             }
         });
 
+        //connect viewPager with tabLayout
         viewPager.addOnPageChangeListener(new OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
@@ -340,22 +325,22 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
     }
 
+    //set an adapter for the viewPager
     private void setViewPagerAdapter() {
         viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
                 switch (position) {
                     case 0:
-                        return new FragmentNow();
+                        return new FragmentToday();
                     case 1:
-                        return new FragmentDay();
+                        return new FragmentTomorrow();
                     case 2:
-                        return new FragmentWeek();
+                        return new FragmentForecast();
                     default:
                         return null;
                 }
@@ -368,88 +353,102 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
         });
     }
 
+    //implement search logic
     private void performSearch(Editable s) {
+        Log.e("perform search", "started task");
+        new GetLocations() {
+            @Override
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
+                Log.e("perform search", "result returned");
+                try {
+                    //callback is the returned result from the API call
+                    JSONArray callback = new JSONArray(result);
+                    ArrayList<String> cityNames = new ArrayList<>();
 
-        ArrayList<CityInfo> match = new ArrayList<>();
-        ArrayList<String> cityNames = new ArrayList<>(AppManager.getInstance().getAllCities().keySet());
-        for (String entry : cityNames) {
-            if (entry.toLowerCase().contains(s.toString().toLowerCase())) {
-                match.add(new CityInfo(entry, AppManager.getInstance().getAllCities().get(entry)));
-            }
-        }
+                    //put all city names in an ArrayList and feed it to the SearchPopupWindow Adapter
+                    for (int i = 0; i < callback.length(); i++) {
+                        JSONObject currentItem = callback.getJSONObject(i);
+                        //todo format string utf-8
+                        cityNames.add(currentItem.getString(KEY_REGION));
+                    }
 
-        if (searchPopupWindow == null) {
-            searchPopupWindow = new CitySearchPopupWindow(WeatherActivity.this, match);
-            searchPopupWindow.setAnchorView(toolbar);
-        }
-        searchPopupWindow.updateSuggestionsList(match);
-        if (!match.isEmpty()) {
-            searchPopupWindow.show();
-        } else {
-            searchPopupWindow.dismiss();
-        }
-        if (searchPopupWindow.isShowing()) {
-            searchPopupWindow.getListView().setOnItemClickListener(new OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    CityInfo currentItem = (CityInfo) searchPopupWindow.getListView().getItemAtPosition(position);
-                    searchPopupWindow.dismiss();
-                    addToRecentList(currentLocationName, currentLocationId);
-                    currentLocationId = currentItem.getId();
-                    currentLocationName = currentItem.getName();
-                    preferences.edit().putInt(Constants.KEY_LOCATION_ID, currentLocationId).apply();
-                    preferences.edit().putString(Constants.KEY_LOCATION_NAME, currentLocationName).apply();
-                    hideKeyboard();
-                    searchField.setText(null);
-                    searchField.setHint(currentLocationName);
-                    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-                    search.setIcon(R.drawable.ic_search_black_24dp);
-                    viewPager.setCurrentItem(0, true);
-                    startWeatherTasks();
-                    Log.e("task", "on Search");
+                    if (searchPopupWindow == null) {
+                        searchPopupWindow = new CitySearchPopupWindow(WeatherActivity.this, cityNames);
+                        searchPopupWindow.setAnchorView(toolbar);
+                    }
+                    searchPopupWindow.updateSuggestionsList(cityNames);
+                    if (!cityNames.isEmpty()) {
+                        searchPopupWindow.show();
+                    } else {
+                        searchPopupWindow.dismiss();
+                    }
+                    if (searchPopupWindow.isShowing()) {
+                        searchPopupWindow.getListView().setOnItemClickListener(new OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                String chosenCity = (String) searchPopupWindow.getListView().getItemAtPosition(position);
+                                searchPopupWindow.dismiss();
+                                addToRecentList(currentLocationName);
+                                currentLocationName = chosenCity;
+                                //todo put the new current location in sharedpreferences
+                                hideKeyboard();
+                                searchField.setText(null);
+                                searchField.setHint(currentLocationName);
+                                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+                                search.setIcon(R.drawable.ic_search_black_24dp);
+                                viewPager.setCurrentItem(0, true);
+                                startWeatherTasks();
+                                Log.e("task", "on Search");
+                            }
+                        });
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            });
-        }
-
+            }
+        }.execute(s.toString());
     }
 
-    private void addToRecentList(String cityName, int cityId) {
+    //add to recent list
+    private void addToRecentList(String cityName) {
 
-        CityInfo oldLocation = new CityInfo(cityName, cityId);
+        String oldLocation = cityName;
 
         for (int i = 0; i < recentList.size(); i++) {
-            if (recentList.get(i).getId() == cityId) {
+            if (recentList.get(i).equalsIgnoreCase(cityName)) {
                 return;
             }
         }
         recentList.add(0, oldLocation);
 
-        favoriteLocationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recentLocationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         if (recentList != null) {
-            favoriteLocationRecyclerView.setAdapter(new FavoritesListAdapter(recentList, this));
+            recentLocationRecyclerView.setAdapter(new FavoritesListAdapter(recentList, this));
         }
     }
 
-    private void reorderRecentList(CityInfo selectedLocation){
-        recentList.remove(selectedLocation);
-        recentList.add(0, selectedLocation);
-        favoriteLocationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    //if an item is already in the list, but needs to be reordered
+    private void reorderRecentList(String selectedLocationName) {
+        recentList.remove(selectedLocationName);
+        recentList.add(0, selectedLocationName);
+        recentLocationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         if (recentList != null) {
-            favoriteLocationRecyclerView.setAdapter(new FavoritesListAdapter(recentList, this));
+            recentLocationRecyclerView.setAdapter(new FavoritesListAdapter(recentList, this));
         }
     }
 
+    //when an item from recent list is clicked
     @Override
-    public void onFavouriteSelected(CityInfo selectedLocation) {
+    public void onRecentSelected(String selectedLocation) {
         drawer.closeDrawer(GravityCompat.START);
-        if (selectedLocation.getId() != currentLocationId) {
-            if(recentList.contains(selectedLocation)){
+        if (!selectedLocation.equalsIgnoreCase(currentLocationName)) {
+            if (recentList.contains(selectedLocation)) {
                 reorderRecentList(selectedLocation);
             }
-            addToRecentList(currentLocationName, currentLocationId);
-            currentLocationId = selectedLocation.getId();
-            currentLocationName = selectedLocation.getName();
-            new AsyncTask<CityInfo, Void, Void>() {
+            addToRecentList(currentLocationName);
+            currentLocationName = selectedLocation;
+            new AsyncTask<String, Void, Void>() {
                 @Override
                 protected void onPreExecute() {
                     super.onPreExecute();
@@ -458,7 +457,7 @@ public class WeatherActivity extends AppCompatActivity implements OnFavouriteSel
                 }
 
                 @Override
-                protected Void doInBackground(CityInfo... params) {
+                protected Void doInBackground(String... params) {
                     startWeatherTasks();
                     return null;
                 }

@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.pavel_bojidar.vineweather.BroadcastActions;
 import com.pavel_bojidar.vineweather.Constants;
-import com.pavel_bojidar.vineweather.model.Location;
+import com.pavel_bojidar.vineweather.model.maindata.Location;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,15 +17,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class AppManager {
 
-    private ConcurrentHashMap<String, Integer> allCities = new ConcurrentHashMap<>();
+    private static AppManager instance;
 
     private Location currentLocation = new Location();
 
     private String currentLocationName;
-
-    private static AppManager instance;
-
-    private String units = "celsius";
 
     private AppManager() {
     }
@@ -49,7 +45,7 @@ public class AppManager {
         Log.e("broadcast", "app manager - on location updated");
         currentLocationName = currentLocation.getName();
         Intent intent = new Intent(BroadcastActions.ACTION_LOCATION_UPDATED);
-        intent.putExtra(Constants.KEY_LOCATION_ID, currentLocation.getId());
+        intent.putExtra(Constants.KEY_LOCATION_NAME, currentLocation.getName());
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
@@ -59,17 +55,5 @@ public class AppManager {
 
     public void setCurrentLocationName(String currentLocationName) {
         this.currentLocationName = currentLocationName;
-    }
-
-    public ConcurrentHashMap<String, Integer> getAllCities() {
-        return allCities;
-    }
-
-    public String getUnits() {
-        return units;
-    }
-
-    public void setUnits(String units) {
-        this.units = units;
     }
 }
