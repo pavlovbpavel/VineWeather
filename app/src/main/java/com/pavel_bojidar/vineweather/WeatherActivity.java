@@ -142,7 +142,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         super.onResume();
 
         preferences = getSharedPreferences("Recent List", 0);
-        Set<String> set = preferences.getStringSet("searchePlace", null);
+        Set<String> set = preferences.getStringSet("searchPlace", null);
         if (set != null) {
             List<String> sample = new ArrayList<String>(set);
             for (String str : sample) {
@@ -453,7 +453,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         SharedPreferences.Editor edit = preferences.edit();
         Set<String> set = new ArraySet<String>();
         set.addAll(recentList);
-        edit.putStringSet("searchePlace", set);
+        edit.putStringSet("searchPlace", set);
         edit.commit();
     }
 
