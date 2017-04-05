@@ -24,7 +24,7 @@ public class Constants {
     /*
     API CALL KEYS
      */
-    public static final String GOOGLE_PLACES_API_KEY = "AIzaSyCQAze6rJBcuwuVb2WL4B4NbzY3tX4zxxs";
+    public static final String GOOGLE_PLACES_API_KEY = "AIzaSyAodYyB87Xzv4Mn2NU9N5YCzvyyHw4jASc";
     public static final String API_KEY = "7b0b007f5d4f4b91a3d162205172903";
     public static final String NODE_FORECAST = "forecast";
     public static final String NODE_FORECASTDAY = "forecastday";

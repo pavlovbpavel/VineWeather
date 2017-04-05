@@ -39,6 +39,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.WindowManager;
+import android.view.WindowManager.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -69,7 +70,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.pavel_bojidar.vineweather.Constants.KEY_REGION;
+import static com.pavel_bojidar.vineweather.Constants.KEY_NAME;
 
 
 public class WeatherActivity extends AppCompatActivity implements RecentSelectedListener {
@@ -180,33 +181,37 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                 }
             }.execute(currentLocationName);
         } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("No internet Connection");
-            builder.setMessage("Please turn on internet connection to continue");
-            builder.setCancelable(false);
-            builder.setNegativeButton("Quit", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                }
-            });
-            builder.setPositiveButton("Connect to WIFI", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                }
-            });
-            alertDialog = builder.create();
-            alertDialog.show();
-            registerReceiver(new NetworkReceiver(new ConnectivityChanged() {
-                @Override
-                public void onConnected() {
-                    if (alertDialog != null) {
-                        alertDialog.hide();
-                    }
-                    startWeatherTasks();
-                }
-            }), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+            showAlertDialog();
         }
+    }
+
+    private void showAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("No internet Connection");
+        builder.setMessage("Please turn on internet connection to continue");
+        builder.setCancelable(false);
+        builder.setNegativeButton("Quit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        builder.setPositiveButton("Connect to WIFI", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+            }
+        });
+        alertDialog = builder.create();
+        alertDialog.show();
+        registerReceiver(new NetworkReceiver(new ConnectivityChanged() {
+            @Override
+            public void onConnected() {
+                if (alertDialog != null) {
+                    alertDialog.hide();
+                }
+                startWeatherTasks();
+            }
+        }), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
     public void onLocationUpdated() {
@@ -372,59 +377,69 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
     //implement search logic
     private void performSearch(Editable s) {
-        Log.e("perform search", "started task");
-        new GetLocations() {
-            @Override
-            protected void onPostExecute(String result) {
-                super.onPostExecute(result);
-                Log.e("perform search", "result returned");
-                try {
-                    //callback is the returned result from the API call
-                    JSONArray callback = new JSONArray(result);
-                    ArrayList<String> cityNames = new ArrayList<>();
+        if(isNetworkAvailable()) {
+            new GetLocations() {
+                @Override
+                protected void onPostExecute(String result) {
+                    super.onPostExecute(result);
 
-                    //put all city names in an ArrayList and feed it to the SearchPopupWindow Adapter
-                    for (int i = 0; i < callback.length(); i++) {
-                        JSONObject currentItem = callback.getJSONObject(i);
-                        //todo format string utf-8
-                        cityNames.add(currentItem.getString(KEY_REGION));
-                    }
+                    try {
+                        //callback is the returned result from the API call
+                        JSONArray callback = new JSONArray(result);
+                        ArrayList<String> cityNames = new ArrayList<>();
 
-                    if (searchPopupWindow == null) {
-                        searchPopupWindow = new CitySearchPopupWindow(WeatherActivity.this, cityNames);
-                        searchPopupWindow.setAnchorView(toolbar);
+                        //put all city names in an ArrayList and feed it to the SearchPopupWindow Adapter
+                        for (int i = 0; i < callback.length(); i++) {
+                            JSONObject currentItem = callback.getJSONObject(i);
+                            //todo format string utf-8
+                            cityNames.add(currentItem.getString(KEY_NAME));
+                        }
+
+                        if (searchPopupWindow == null) {
+                            searchPopupWindow = new CitySearchPopupWindow(WeatherActivity.this, cityNames);
+                            searchPopupWindow.setAnchorView(toolbar);
+                        }
+                        searchPopupWindow.updateSuggestionsList(cityNames);
+                        if (!cityNames.isEmpty()) {
+                            searchPopupWindow.show();
+                        } else {
+                            searchPopupWindow.dismiss();
+                        }
+                        if (searchPopupWindow.isShowing()) {
+                            searchPopupWindow.getListView().setOnItemClickListener(new OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    String chosenCity = (String) searchPopupWindow.getListView().getItemAtPosition(position);
+                                    String filteredResult = null;
+                                    for (int i = 0; i < chosenCity.length(); i++) {
+                                        if (chosenCity.charAt(i) == ',') {
+                                            filteredResult = chosenCity.substring(0, i);
+                                            break;
+                                        }
+                                    }
+                                    searchPopupWindow.dismiss();
+                                    addToRecentList(currentLocationName);
+                                    currentLocationName = chosenCity;
+                                    //todo put the new current location in sharedpreferences
+                                    hideKeyboard();
+                                    searchField.setText(null);
+                                    searchField.setHint(filteredResult);
+                                    getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_PAN);
+                                    search.setIcon(R.drawable.ic_search_black_24dp);
+                                    viewPager.setCurrentItem(0, true);
+                                    startWeatherTasks();
+                                    Log.e("task", "on Search");
+                                }
+                            });
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                    searchPopupWindow.updateSuggestionsList(cityNames);
-                    if (!cityNames.isEmpty()) {
-                        searchPopupWindow.show();
-                    } else {
-                        searchPopupWindow.dismiss();
-                    }
-                    if (searchPopupWindow.isShowing()) {
-                        searchPopupWindow.getListView().setOnItemClickListener(new OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                String chosenCity = (String) searchPopupWindow.getListView().getItemAtPosition(position);
-                                searchPopupWindow.dismiss();
-                                addToRecentList(currentLocationName);
-                                currentLocationName = chosenCity;
-                                //todo put the new current location in sharedpreferences
-                                hideKeyboard();
-                                searchField.setText(null);
-                                searchField.setHint(currentLocationName);
-                                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-                                search.setIcon(R.drawable.ic_search_black_24dp);
-                                viewPager.setCurrentItem(0, true);
-                                startWeatherTasks();
-                                Log.e("task", "on Search");
-                            }
-                        });
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-            }
-        }.execute(s.toString());
+            }.execute(s.toString());
+        } else {
+            showAlertDialog();
+        }
     }
 
     //add to recent list
@@ -455,6 +470,8 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         set.addAll(recentList);
         edit.putStringSet("searchPlace", set);
         edit.commit();
+        edit.apply();
+
     }
 
     //if an item is already in the list, but needs to be reordered
