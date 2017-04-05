@@ -13,8 +13,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Scanner;
 
 import static com.pavel_bojidar.vineweather.Constants.KEY_CLOUD;
@@ -57,9 +59,15 @@ public class GetCurrentWeather extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {
         String strJSON = "";
+        String validInput = null;
+        try {
+            validInput = URLEncoder.encode(params[0], "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         try {
             URL url = new URL(
-                    "http://api.apixu.com/v1/current.json?key=" + Constants.API_KEY + "&q=" + params[0]);
+                    "http://api.apixu.com/v1/current.json?key=" + Constants.API_KEY + "&q=" + validInput);
             Scanner s = new Scanner(url.openStream());
             while (s.hasNext()) {
                 strJSON = s.nextLine();

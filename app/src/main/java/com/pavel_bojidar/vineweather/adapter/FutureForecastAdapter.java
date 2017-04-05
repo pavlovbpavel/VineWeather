@@ -6,9 +6,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
 import com.pavel_bojidar.vineweather.adapter.FutureForecastAdapter.WeekForecastViewHolder;
+import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.DayForecast;
+import com.pavel_bojidar.vineweather.model.maindata.Forecast;
 
 import java.util.List;
 
@@ -18,10 +21,10 @@ import java.util.List;
 
 public class FutureForecastAdapter extends RecyclerView.Adapter<WeekForecastViewHolder> {
 
-    private List<DayForecast> weeklyForecast;
+    private Forecast forecast;
 
-    public FutureForecastAdapter(List<DayForecast> weeklyForecast) {
-        this.weeklyForecast = weeklyForecast;
+    public FutureForecastAdapter(Forecast forecast) {
+        this.forecast = forecast;
     }
 
     @Override
@@ -31,14 +34,14 @@ public class FutureForecastAdapter extends RecyclerView.Adapter<WeekForecastView
 
     @Override
     public void onBindViewHolder(WeekForecastViewHolder holder, int position) {
-        DayForecast forecast = weeklyForecast.get(position);
+        DayForecast currentDay = forecast.getDayForecasts().get(position);
         if(position%2==0){
             holder.itemView.setBackgroundResource(R.color.highlightedRow);
         }
 //        String units = AppManager.getInstance().getUnits();
 //        if (units.equals(Constants.KEY_CELSIUS)) {
-//            holder.tempMin.setText(Constants.TEMP_MIN + Helper.decimalFormat(dayForecast.getMinTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS) + Constants.CELSIUS_SYMBOL);
-//            holder.tempMax.setText(Constants.TEMP_MAX + Helper.decimalFormat(dayForecast.getMaxTemperature() - Constants.COEF_FOR_CONVERT_CELSIUS) + Constants.CELSIUS_SYMBOL);
+//            holder.tempMin.setText(Constants.TEMP_MIN + Helper.decimalFormat(dayForecast.getMinTemperature()) + Constants.CELSIUS_SYMBOL);
+//            holder.tempMax.setText(Constants.TEMP_MAX + Helper.decimalFormat(dayForecast.getMaxTemperature()) + Constants.CELSIUS_SYMBOL);
 //        } else {
 //            holder.tempMin.setText(Constants.TEMP_MIN + Helper.decimalFormat(Helper.kelvinToFahrenheit(dayForecast.getMinTemperature())) + Constants.FAHRENHEIT_SYMBOL);
 //            holder.tempMax.setText(Constants.TEMP_MAX + Helper.decimalFormat(Helper.kelvinToFahrenheit(dayForecast.getMaxTemperature())) + Constants.FAHRENHEIT_SYMBOL);
@@ -68,7 +71,7 @@ public class FutureForecastAdapter extends RecyclerView.Adapter<WeekForecastView
 
     @Override
     public int getItemCount() {
-        return weeklyForecast.size();
+        return forecast.getDayForecasts().size();
     }
 
     public class WeekForecastViewHolder extends RecyclerView.ViewHolder {

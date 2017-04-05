@@ -19,8 +19,10 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import static com.pavel_bojidar.vineweather.Constants.API_KEY;
@@ -94,9 +96,15 @@ public class GetForecast extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {
         StringBuilder result = new StringBuilder();
+        String validInput = null;
+        try {
+            validInput = URLEncoder.encode(params[0], "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         try {
             URL url = new URL(
-                    "http://api.apixu.com/v1/forecast.json?key=" + API_KEY + "&q=" + params[0] + "&days=10");
+                    "http://api.apixu.com/v1/forecast.json?key=" + API_KEY + "&q=" + validInput + "&days=10");
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(url.openStream()));
             String line;
             while ((line = bufferedReader.readLine()) != null) {
