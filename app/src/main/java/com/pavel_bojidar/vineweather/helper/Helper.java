@@ -64,4 +64,15 @@ public class Helper {
         double fahrenheit = ((kelvin - 273) * (9 / 5)) + 32;
         return fahrenheit;
     }
+
+    public static String filterCityName(String realName){
+        String filteredResult = null;
+        for (int i = 0; i < realName.length(); i++) {
+            if (realName.charAt(i) == ',') {
+                filteredResult = realName.substring(0, i);
+                break;
+            }
+        }
+        return filteredResult;
+    }
 }

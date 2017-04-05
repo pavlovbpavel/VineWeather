@@ -48,11 +48,12 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.pavel_bojidar.vineweather.NetworkReceiver.ConnectivityChanged;
-import com.pavel_bojidar.vineweather.adapter.FavoritesListAdapter;
-import com.pavel_bojidar.vineweather.adapter.FavoritesListAdapter.RecentSelectedListener;
+import com.pavel_bojidar.vineweather.adapter.RecentListAdapter;
+import com.pavel_bojidar.vineweather.adapter.RecentListAdapter.RecentSelectedListener;
 import com.pavel_bojidar.vineweather.fragment.FragmentForecast;
 import com.pavel_bojidar.vineweather.fragment.FragmentToday;
 import com.pavel_bojidar.vineweather.fragment.FragmentTomorrow;
+import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.popupwindow.CitySearchPopupWindow;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 import com.pavel_bojidar.vineweather.task.GetCurrentWeather;
@@ -99,8 +100,8 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         setContentView(R.layout.activity_navigation_drawer);
 
         preferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
-        preferences.edit().putString(Constants.KEY_LOCATION_NAME, "Sofia").apply();
-        currentLocationName = preferences.getString(Constants.KEY_LOCATION_NAME, "Sofia");
+        preferences.edit().putString(Constants.KEY_LOCATION_NAME, "Sofia, Grad Sofiya, Bulgaria").apply();
+        currentLocationName = preferences.getString(Constants.KEY_LOCATION_NAME, "Sofia, Grad Sofiya, Bulgaria");
 
         initViews();
 
@@ -133,7 +134,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             //todo request location from user
         } else {
             startWeatherTasks();
-            searchField.setHint(currentLocationName);
+            searchField.setHint(Helper.filterCityName(currentLocationName));
         }
     }
 
@@ -410,20 +411,13 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                                 @Override
                                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                     String chosenCity = (String) searchPopupWindow.getListView().getItemAtPosition(position);
-                                    String filteredResult = null;
-                                    for (int i = 0; i < chosenCity.length(); i++) {
-                                        if (chosenCity.charAt(i) == ',') {
-                                            filteredResult = chosenCity.substring(0, i);
-                                            break;
-                                        }
-                                    }
                                     searchPopupWindow.dismiss();
                                     addToRecentList(currentLocationName);
                                     currentLocationName = chosenCity;
                                     //todo put the new current location in sharedpreferences
                                     hideKeyboard();
                                     searchField.setText(null);
-                                    searchField.setHint(filteredResult);
+                                    searchField.setHint(Helper.filterCityName(chosenCity));
                                     getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_PAN);
                                     search.setIcon(R.drawable.ic_search_black_24dp);
                                     viewPager.setCurrentItem(0, true);
@@ -445,8 +439,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     //add to recent list
     private void addToRecentList(String cityName) {
 
-        String oldLocation = cityName;
-
         for (int i = 0; i < recentList.size(); i++) {
             if (recentList.get(i).equalsIgnoreCase(cityName)) {
                 return;
@@ -454,14 +446,14 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         }
         if (recentList.size() == 10) {
             recentList.remove(recentList.get(9));
-            recentList.add(0, oldLocation);
+            recentList.add(0, cityName);
         } else {
-            recentList.add(0, oldLocation);
+            recentList.add(0, cityName);
         }
 
         recentLocationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         if (recentList != null) {
-            recentLocationRecyclerView.setAdapter(new FavoritesListAdapter(recentList, this));
+            recentLocationRecyclerView.setAdapter(new RecentListAdapter(recentList, this));
         }
 
         preferences = getSharedPreferences("Recent List", 0);
@@ -477,7 +469,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         recentList.remove(selectedLocationName);
         recentLocationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         if (recentList != null) {
-            recentLocationRecyclerView.setAdapter(new FavoritesListAdapter(recentList, this));
+            recentLocationRecyclerView.setAdapter(new RecentListAdapter(recentList, this));
         }
     }
 
@@ -508,7 +500,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                 @Override
                 protected void onPostExecute(Void location) {
                     super.onPostExecute(location);
-                    searchField.setHint(currentLocationName);
+                    searchField.setHint(Helper.filterCityName(currentLocationName));
                     viewPager.setCurrentItem(0, true);
                 }
             }.execute(selectedLocation);
