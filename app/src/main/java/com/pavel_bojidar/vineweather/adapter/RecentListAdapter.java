@@ -7,7 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.R;
-import com.pavel_bojidar.vineweather.adapter.FavoritesListAdapter.FavoriteLocationViewHolder;
+import com.pavel_bojidar.vineweather.adapter.RecentListAdapter.FavoriteLocationViewHolder;
+import com.pavel_bojidar.vineweather.helper.Helper;
 
 import java.util.ArrayList;
 
@@ -15,13 +16,13 @@ import java.util.ArrayList;
  * Created by Pavel Pavlov on 3/11/2017.
  */
 
-public class FavoritesListAdapter extends RecyclerView.Adapter<FavoriteLocationViewHolder> {
+public class RecentListAdapter extends RecyclerView.Adapter<FavoriteLocationViewHolder> {
 
     private ArrayList<String> locations;
 
     private RecentSelectedListener listener;
 
-    public FavoritesListAdapter(ArrayList<String> locations, RecentSelectedListener listener) {
+    public RecentListAdapter(ArrayList<String> locations, RecentSelectedListener listener) {
         this.locations = locations;
         this.listener = listener;
     }
@@ -40,7 +41,7 @@ public class FavoritesListAdapter extends RecyclerView.Adapter<FavoriteLocationV
                 listener.onRecentSelected(location);
             }
         });
-        holder.name.setText(location);
+        holder.name.setText(Helper.filterCityName(location));
     }
 
     @Override
