@@ -18,6 +18,7 @@ import android.support.design.widget.TabLayout.Tab;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.util.ArraySet;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -63,10 +64,11 @@ import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.pavel_bojidar.vineweather.Constants.KEY_NAME;
 import static com.pavel_bojidar.vineweather.Constants.KEY_REGION;
 
 
@@ -116,7 +118,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
             }
         });
-
     }
 
     @Override
@@ -133,6 +134,22 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             startWeatherTasks();
             searchField.setHint(currentLocationName);
         }
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        preferences = getSharedPreferences("Recent List", 0);
+        Set<String> set = preferences.getStringSet("searchePlace", null);
+        if (set != null) {
+            List<String> sample = new ArrayList<String>(set);
+            for (String str : sample) {
+                addToRecentList(str);
+            }
+        }
+
     }
 
     @Override
@@ -420,18 +437,29 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                 return;
             }
         }
-        recentList.add(0, oldLocation);
+        if (recentList.size() == 10) {
+            recentList.remove(recentList.get(9));
+            recentList.add(0, oldLocation);
+        } else {
+            recentList.add(0, oldLocation);
+        }
 
         recentLocationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         if (recentList != null) {
             recentLocationRecyclerView.setAdapter(new FavoritesListAdapter(recentList, this));
         }
+
+        preferences = getSharedPreferences("Recent List", 0);
+        SharedPreferences.Editor edit = preferences.edit();
+        Set<String> set = new ArraySet<String>();
+        set.addAll(recentList);
+        edit.putStringSet("searchePlace", set);
+        edit.commit();
     }
 
     //if an item is already in the list, but needs to be reordered
     private void reorderRecentList(String selectedLocationName) {
         recentList.remove(selectedLocationName);
-        recentList.add(0, selectedLocationName);
         recentLocationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         if (recentList != null) {
             recentLocationRecyclerView.setAdapter(new FavoritesListAdapter(recentList, this));
