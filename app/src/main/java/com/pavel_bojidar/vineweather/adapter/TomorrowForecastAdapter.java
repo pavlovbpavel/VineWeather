@@ -30,7 +30,7 @@ public class TomorrowForecastAdapter extends RecyclerView.Adapter<DayForecastVie
 
     @Override
     public DayForecastViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new DayForecastViewHolder(parent.inflate(parent.getContext(), R.layout.row_day_forecast, null));
+        return new DayForecastViewHolder(parent.inflate(parent.getContext(), R.layout.row_tomorrow, null));
     }
 
     @Override

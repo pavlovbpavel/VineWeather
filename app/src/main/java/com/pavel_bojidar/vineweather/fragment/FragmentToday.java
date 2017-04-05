@@ -37,7 +37,7 @@ public class FragmentToday extends WeatherFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_now, null);
+        View view = inflater.inflate(R.layout.fragment_today, null);
         conditionImage = (ImageView) view.findViewById(R.id.condition_image_now);
         description = (TextView) view.findViewById(R.id.fragment_1_description);
         degrees = (TextView) view.findViewById(R.id.fragment_1_degrees);

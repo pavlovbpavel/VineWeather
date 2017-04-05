@@ -1,12 +1,15 @@
 package com.pavel_bojidar.vineweather.helper;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
+
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 /**
@@ -23,17 +26,6 @@ public class Helper {
         return formattedDate;
     }
 
-    public static boolean isNight(long unixTS) {
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTimeInMillis(unixTS * 1000L);
-        calendar.setTimeZone(TimeZone.getTimeZone("GMT+2"));
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        if(hour > 18 || hour < 5){
-            return true;
-        }
-        return false;
-    }
-
     public static String getUnixDate(long unixTS) {
         Date date = new Date(unixTS * 1000L);
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -43,7 +35,7 @@ public class Helper {
     }
 
     public static String getWeekDay(String dateInput) {
-        SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy/");
         Date dt1 = null;
         try {
             dt1 = format1.parse(dateInput);
@@ -60,12 +52,7 @@ public class Helper {
         return df.format(input);
     }
 
-    public static double kelvinToFahrenheit(double kelvin) {
-        double fahrenheit = ((kelvin - 273) * (9 / 5)) + 32;
-        return fahrenheit;
-    }
-
-    public static String filterCityName(String realName){
+    public static String filterCityName(String realName) {
         String filteredResult = null;
         for (int i = 0; i < realName.length(); i++) {
             if (realName.charAt(i) == ',') {
@@ -74,5 +61,16 @@ public class Helper {
             }
         }
         return filteredResult;
+    }
+
+    @Nullable
+    public static Drawable chooseIcon(Context context, boolean isDay, String path) {
+        try {
+            return Drawable.createFromStream(context.getAssets().open(isDay ? "day" : "night".concat("/").concat(path)), null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null; //todo return default drawable
     }
 }
