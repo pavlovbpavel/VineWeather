@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by Pavel Pavlov on 4/1/2017.
  */
 
-public class Condition implements Serializable{
+public class Condition implements Serializable {
 
     private String text;
     private String icon;

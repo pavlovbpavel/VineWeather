@@ -31,7 +31,7 @@ public class FragmentTomorrow extends WeatherFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_day, null);
+        View view = inflater.inflate(R.layout.fragment_tomorrow, null);
         recyclerView = (RecyclerView) view.findViewById(R.id.hourly_forecast);
         if (AppManager.getInstance().getCurrentLocation().getForecast() != null) {
             ArrayList<HourForecast> TomorrowForecast = new ArrayList<>(AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getHourForecasts());
