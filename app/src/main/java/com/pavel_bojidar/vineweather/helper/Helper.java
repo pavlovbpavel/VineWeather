@@ -34,8 +34,16 @@ public class Helper {
         return formattedDate;
     }
 
+    public static String getUnixCustomDate(long unixTS) {
+        Date date = new Date(unixTS * 1000L);
+        SimpleDateFormat sdf = new SimpleDateFormat(", MMM dd");
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT+2"));
+        String formattedDate = sdf.format(date);
+        return formattedDate;
+    }
+
     public static String getWeekDay(String dateInput) {
-        SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy/");
+        SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy");
         Date dt1 = null;
         try {
             dt1 = format1.parse(dateInput);

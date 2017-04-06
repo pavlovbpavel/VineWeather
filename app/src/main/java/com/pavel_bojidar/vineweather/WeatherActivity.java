@@ -461,7 +461,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         Set<String> set = new ArraySet<String>();
         set.addAll(recentList);
         edit.putStringSet("searchPlace", set);
-        edit.commit();
         edit.apply();
 
     }

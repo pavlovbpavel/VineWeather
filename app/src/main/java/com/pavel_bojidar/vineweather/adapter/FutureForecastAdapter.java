@@ -40,7 +40,13 @@ public class FutureForecastAdapter extends RecyclerView.Adapter<ForecastViewHold
         if (position % 2 == 0) {
             holder.itemView.setBackgroundResource(R.color.highlightedRow);
         }
-        holder.date.setText(currentDay.getDate());
+        if(position == 0){
+            holder.date.setText("Today");
+        } else if(position == 1){
+            holder.date.setText("Tomorrow".concat(Helper.getUnixCustomDate(currentDay.getDateEpoch())));
+        } else {
+            holder.date.setText(Helper.getWeekDay(Helper.getUnixDate(currentDay.getDateEpoch())).concat(Helper.getUnixCustomDate(currentDay.getDateEpoch())));
+        }
         holder.tempMax.setText(Helper.decimalFormat(currentDay.getDay().getMaxtempC()) + Constants.CELSIUS_SYMBOL);
         holder.tempMin.setText(Helper.decimalFormat(currentDay.getDay().getMintempC()) + Constants.CELSIUS_SYMBOL);
         holder.condition.setText(currentDay.getDay().getCondition().getText());
