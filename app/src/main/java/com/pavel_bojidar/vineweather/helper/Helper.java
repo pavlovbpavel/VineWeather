@@ -65,8 +65,10 @@ public class Helper {
 
     @Nullable
     public static Drawable chooseIcon(Context context, boolean isDay, String path) {
+        int index = path.lastIndexOf("/");
+        String filteredPath = path.substring(index, path.length());
         try {
-            return Drawable.createFromStream(context.getAssets().open(isDay ? "day" : "night".concat("/").concat(path)), null);
+            return Drawable.createFromStream(context.getAssets().open(isDay ? "day".concat(filteredPath) : "night".concat(filteredPath)), null);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -37,14 +37,14 @@ public class FutureForecastAdapter extends RecyclerView.Adapter<ForecastViewHold
     public void onBindViewHolder(ForecastViewHolder holder, int position) {
         DayForecast currentDay = forecast.getDayForecasts().get(position);
         int isDay = currentDay.getHourForecasts().get(position).getIsDay();
-        if(position%2==0){
+        if (position % 2 == 0) {
             holder.itemView.setBackgroundResource(R.color.highlightedRow);
         }
-//        holder.date.setText(Helper.getWeekDay(Helper.getUnixDate(currentDay.getDateEpoch())));
+        holder.date.setText(currentDay.getDate());
         holder.tempMax.setText(Helper.decimalFormat(currentDay.getDay().getMaxtempC()) + Constants.CELSIUS_SYMBOL);
         holder.tempMin.setText(Helper.decimalFormat(currentDay.getDay().getMintempC()) + Constants.CELSIUS_SYMBOL);
         holder.condition.setText(currentDay.getDay().getCondition().getText());
-        holder.conditionImage.setImageDrawable(Helper.chooseIcon(parent.getContext(), isDay == 1, "392.png"));
+        holder.conditionImage.setImageDrawable(Helper.chooseIcon(parent.getContext(), true, currentDay.getDay().getCondition().getIcon()));
 
     }
 
