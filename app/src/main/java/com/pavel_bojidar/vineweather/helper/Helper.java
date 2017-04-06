@@ -26,6 +26,14 @@ public class Helper {
         return formattedDate;
     }
 
+    public static String getUnixAmPmHour(long unixTS) {
+        Date date = new Date(unixTS * 1000L);
+        DateFormat dateFormat = new SimpleDateFormat("h a");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+2"));
+        String formattedDate = dateFormat.format(date);
+        return formattedDate;
+    }
+
     public static String getUnixDate(long unixTS) {
         Date date = new Date(unixTS * 1000L);
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");

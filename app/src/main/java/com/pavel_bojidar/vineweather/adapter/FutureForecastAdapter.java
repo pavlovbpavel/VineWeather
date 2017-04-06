@@ -1,5 +1,9 @@
 package com.pavel_bojidar.vineweather.adapter;
 
+import android.support.transition.AutoTransition;
+import android.support.transition.Transition;
+import android.support.transition.TransitionManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -7,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
@@ -37,17 +40,35 @@ public class FutureForecastAdapter extends RecyclerView.Adapter<ForecastViewHold
     }
 
     @Override
-    public void onBindViewHolder(ForecastViewHolder holder, int position) {
+    public void onBindViewHolder(final ForecastViewHolder holder, int position) {
         DayForecast currentDay = forecast.getDayForecasts().get(position);
+
+        HourlyTempAdapter adapter = new HourlyTempAdapter(currentDay.getHourForecasts());
+        holder.hourlyForecast.setAdapter(adapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(parent.getContext(), LinearLayoutManager.HORIZONTAL, false);
+        holder.hourlyForecast.setLayoutManager(layoutManager);
+
+        if (position % 2 == 0) {
+            holder.itemView.setBackgroundResource(R.color.highlightedRow);
+        }
+
         holder.layout.setOnClickListener(new OnClickListener() {
+
+            boolean visible;
+
             @Override
             public void onClick(View v) {
-//                Toast.makeText(parent.getContext(), "i was clicked", Toast.LENGTH_SHORT).show();
+                Transition transition = new AutoTransition();
+                transition.setDuration(100);
+                TransitionManager.beginDelayedTransition(parent);
+                visible = !visible;
+                holder.masterLayout.setVisibility(visible ? View.VISIBLE : View.GONE);
             }
         });
-        if(position == 0){
+
+        if (position == 0) {
             holder.date.setText("Today");
-        } else if(position == 1){
+        } else if (position == 1) {
             holder.date.setText("Tomorrow".concat(Helper.getUnixCustomDate(currentDay.getDateEpoch())));
         } else {
             holder.date.setText(Helper.getWeekDay(Helper.getUnixDate(currentDay.getDateEpoch())).concat(Helper.getUnixCustomDate(currentDay.getDateEpoch())));
@@ -56,6 +77,10 @@ public class FutureForecastAdapter extends RecyclerView.Adapter<ForecastViewHold
         holder.tempMin.setText(Helper.decimalFormat(currentDay.getDay().getMintempC()) + Constants.CELSIUS_SYMBOL);
         holder.condition.setText(currentDay.getDay().getCondition().getText());
         holder.conditionImage.setImageDrawable(Helper.chooseIcon(parent.getContext(), true, currentDay.getDay().getCondition().getIcon()));
+        holder.wind.setText(String.valueOf(currentDay.getDay().getMaxwindKph()).concat(Constants.KM_H));
+        holder.humidity.setText(String.valueOf(currentDay.getDay().getAvgHumidity()).concat(Constants.HUMIDITY_SYMBOL));
+        holder.sun.setText(currentDay.getAstro().getSunrise().concat(", ").concat(currentDay.getAstro().getSunset()));
+        holder.moon.setText(currentDay.getAstro().getMoonrise().concat(", ").concat(currentDay.getAstro().getMoonset()));
     }
 
     @Override
@@ -65,9 +90,10 @@ public class FutureForecastAdapter extends RecyclerView.Adapter<ForecastViewHold
 
     public class ForecastViewHolder extends RecyclerView.ViewHolder {
 
-        TextView date, tempMin, tempMax, condition;
+        TextView date, tempMin, tempMax, condition, wind, humidity, sun, moon;
         ImageView conditionImage;
-        LinearLayout layout;
+        LinearLayout layout, masterLayout;
+        RecyclerView hourlyForecast;
 
         public ForecastViewHolder(View itemView) {
             super(itemView);
@@ -77,6 +103,12 @@ public class FutureForecastAdapter extends RecyclerView.Adapter<ForecastViewHold
             condition = (TextView) itemView.findViewById(R.id.condition_week);
             conditionImage = (ImageView) itemView.findViewById(R.id.condition_image_week);
             layout = (LinearLayout) itemView.findViewById(R.id.row_week_forecast);
+            masterLayout = (LinearLayout) itemView.findViewById(R.id.forecast_details_master_layout);
+            wind = (TextView) itemView.findViewById(R.id.hidden_content_wind);
+            humidity = (TextView) itemView.findViewById(R.id.hidden_content_humidity);
+            sun = (TextView) itemView.findViewById(R.id.hidden_content_sun);
+            moon = (TextView) itemView.findViewById(R.id.hidden_content_moon);
+            hourlyForecast = (RecyclerView) itemView.findViewById(R.id.forecast_details_recycler_view);
         }
     }
 }

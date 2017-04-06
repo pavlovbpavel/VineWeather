@@ -30,6 +30,7 @@ import static com.pavel_bojidar.vineweather.Constants.KEY_AVGTEMP_C;
 import static com.pavel_bojidar.vineweather.Constants.KEY_AVGTEMP_F;
 import static com.pavel_bojidar.vineweather.Constants.KEY_AVGVIS_KM;
 import static com.pavel_bojidar.vineweather.Constants.KEY_AVGVIS_MILES;
+import static com.pavel_bojidar.vineweather.Constants.KEY_AVG_HUMIDITY;
 import static com.pavel_bojidar.vineweather.Constants.KEY_CLOUD;
 import static com.pavel_bojidar.vineweather.Constants.KEY_CODE;
 import static com.pavel_bojidar.vineweather.Constants.KEY_DATE;
@@ -145,6 +146,7 @@ public class GetForecast extends AsyncTask<String, Void, String> {
                 currentDay.setAvgtempF(dayDataJo.getDouble(KEY_AVGTEMP_F));
                 currentDay.setMaxwindKph(dayDataJo.getDouble(KEY_MAXWIND_KPH));
                 currentDay.setMaxwindMph(dayDataJo.getDouble(KEY_MAXWIND_MPH));
+                currentDay.setAvgHumidity(dayDataJo.getDouble(KEY_AVG_HUMIDITY));
                 currentDay.setTotalprecipMm(dayDataJo.getDouble(KEY_TOTALPRECIP_MM));
                 currentDay.setTotalprecipIn(dayDataJo.getDouble(KEY_TOTALPRECIP_IN));
                 currentDay.setAvgVisibility_km(dayDataJo.getDouble(KEY_AVGVIS_KM));
@@ -167,7 +169,7 @@ public class GetForecast extends AsyncTask<String, Void, String> {
                 JSONArray hourlyForecast = currentDayJo.getJSONArray(NODE_HOUR);
                 ArrayList<HourForecast> hourForecasts = new ArrayList<>();
                 for (int j = 0; j < hourlyForecast.length(); j++) {
-                    JSONObject currentHourJO = hourlyForecast.getJSONObject(i);
+                    JSONObject currentHourJO = hourlyForecast.getJSONObject(j);
                     JSONObject conditionHourJO = currentHourJO.getJSONObject(NODE_CONDITION);
                     HourForecast currentHourForecast = new HourForecast();
                     //main hour data
