@@ -543,7 +543,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                         searchField.setText(null);
                     } else {
                         search.setIcon(R.drawable.ic_search_black_24dp);
-                        searchField.setHint(currentLocationName);
+                        searchField.setHint(Helper.filterCityName(currentLocationName));
                         searchField.clearFocus();
                         hideKeyboard();
                     }

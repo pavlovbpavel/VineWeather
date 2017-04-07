@@ -12,4 +12,8 @@
     <string name="c">C</string>
     <string name="f">F</string>
     <string name="favotite_locations">RECENT LOCATIONS</string>
+    <string name="wind">Wind</string>
+    <string name="humidity">Humidity</string>
+    <string name="sunrise_sunset">Sunrise/sunset</string>
+    <string name="moonrise_moonset">Moonrise/moonset</string>
 </resources>
