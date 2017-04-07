@@ -18,7 +18,6 @@ import android.support.design.widget.TabLayout.Tab;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.util.ArraySet;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -47,6 +46,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.pavel_bojidar.vineweather.NetworkReceiver.ConnectivityChanged;
 import com.pavel_bojidar.vineweather.adapter.RecentListAdapter;
 import com.pavel_bojidar.vineweather.adapter.RecentListAdapter.RecentSelectedListener;
@@ -54,6 +55,7 @@ import com.pavel_bojidar.vineweather.fragment.FragmentForecast;
 import com.pavel_bojidar.vineweather.fragment.FragmentToday;
 import com.pavel_bojidar.vineweather.fragment.FragmentTomorrow;
 import com.pavel_bojidar.vineweather.helper.Helper;
+import com.pavel_bojidar.vineweather.model.SearchCity;
 import com.pavel_bojidar.vineweather.popupwindow.CitySearchPopupWindow;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 import com.pavel_bojidar.vineweather.task.GetCurrentWeather;
@@ -65,9 +67,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -93,6 +98,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     Button celsius, fahrenheit;
     BroadcastReceiver br;
     AlertDialog alertDialog;
+    ArrayList<SearchCity> searchCities = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,15 +149,22 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     protected void onResume() {
         super.onResume();
 
-        preferences = getSharedPreferences("Recent List", 0);
-        Set<String> set = preferences.getStringSet("searchPlace", null);
-        if (set != null) {
-            List<String> sample = new ArrayList<String>(set);
-            for (String str : sample) {
-                addToRecentList(str);
+            preferences = getSharedPreferences("Recent List", Context.MODE_PRIVATE);
+            Gson gson = new Gson();
+            String json = preferences.getString("searchPlace", null);
+            if (json != null) {
+                Type type = new TypeToken<List<SearchCity>>(){}.getType();
+                List<SearchCity> cities= gson.fromJson(json, type);
+                Collections.sort(cities, new Comparator<SearchCity>() {
+                    @Override
+                    public int compare(SearchCity o1, SearchCity o2) {
+                        return o1.getDate().compareTo(o2.getDate());
+                    }
+                });
+                for (int i = 0; i < cities.size(); i++) {
+                    addToRecentList(cities.get(i).getName());
+                }
             }
-        }
-
     }
 
     @Override
@@ -456,13 +469,14 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             recentLocationRecyclerView.setAdapter(new RecentListAdapter(recentList, this));
         }
 
-        preferences = getSharedPreferences("Recent List", 0);
+        preferences = getSharedPreferences("Recent List", Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = preferences.edit();
-        Set<String> set = new ArraySet<String>();
-        set.addAll(recentList);
-        edit.putStringSet("searchPlace", set);
+        SearchCity city = new SearchCity(cityName, new Date());
+        searchCities.add(city);
+        Gson gson = new Gson();
+        String jsonCities = gson.toJson(searchCities);
+        edit.putString("searchPlace", jsonCities);
         edit.apply();
-
     }
 
     //if an item is already in the list, but needs to be reordered
