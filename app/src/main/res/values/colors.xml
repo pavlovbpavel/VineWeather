@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#7ba2c4</color>
+    <color name="colorPrimaryDark">#6197c6</color>
     <color name="colorAccent">#d7d7d7</color>
     <color name="separator">#8098a3a4</color>
     <color name="highlightedRow">#fbfbfb</color>
     <color name="tomorrowBackground">#59adde</color>
+    <color name="todayAppBarColor">#7ba2c4</color>
+    <color name="todayAppBarColorDark">#6385a3</color>
+    <color name="tomorrowAppBarColor">#6a91b3</color>
+    <color name="tomorrowAppBarColorDark">#547796</color>
+    <color name="forecastAppBarColor">#19818c</color>
+    <color name="forecastAppBarColorDark">#136770</color>
 </resources>

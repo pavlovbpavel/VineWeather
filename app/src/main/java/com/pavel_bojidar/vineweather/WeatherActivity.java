@@ -1,5 +1,8 @@
 package com.pavel_bojidar.vineweather;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,11 +10,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TabLayout.OnTabSelectedListener;
 import android.support.design.widget.TabLayout.Tab;
@@ -37,6 +42,7 @@ import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
@@ -82,6 +88,7 @@ import static com.pavel_bojidar.vineweather.Constants.KEY_NAME;
 public class WeatherActivity extends AppCompatActivity implements RecentSelectedListener {
 
     DrawerLayout drawer;
+    AppBarLayout appBar;
     TabLayout tabLayout;
     ViewPager viewPager;
     RecyclerView recentLocationRecyclerView;
@@ -327,6 +334,8 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         tabLayout.addTab(tabLayout.newTab().setText("10 Days"));
         viewPager = (ViewPager) findViewById(R.id.pager);
 
+        appBar = (AppBarLayout) findViewById(R.id.app_bar);
+
         //todo change buttons to set imperial/metric units
         celsius = (Button) findViewById(R.id.celsius);
         fahrenheit = (Button) findViewById(R.id.fahrenheit);
@@ -335,6 +344,23 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         tabLayout.setOnTabSelectedListener(new OnTabSelectedListener() {
             @Override
             public void onTabSelected(Tab tab) {
+                switch (tab.getPosition()){
+                    case 0:
+//                        animateColorChange(appBar, R.color.tomorrowAppBarColor, R.color.todayAppBarColor);
+                        appBar.setBackgroundResource(R.color.todayAppBarColor);
+                        changeStatusBarColor(R.color.todayAppBarColorDark);
+                        break;
+                    case 1:
+//                        animateColorChange(appBar, R.color.todayAppBarColor, R.color.tomorrowAppBarColor);
+                        appBar.setBackgroundResource(R.color.tomorrowAppBarColor);
+                        changeStatusBarColor(R.color.tomorrowAppBarColorDark);
+                        break;
+                    case 2:
+//                        animateColorChange(appBar, R.color.tomorrowAppBarColor, R.color.forecastAppBarColor);
+                        appBar.setBackgroundResource(R.color.forecastAppBarColor);
+                        changeStatusBarColor(R.color.forecastAppBarColorDark);
+                        break;
+                }
                 viewPager.setCurrentItem(tab.getPosition());
             }
 
@@ -584,5 +610,30 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         } else {
             super.onBackPressed();
         }
+    }
+
+    private void changeStatusBarColor(int resID){
+        if (android.os.Build.VERSION.SDK_INT >= 21) {
+            Window window = this.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(this.getResources().getColor(resID));
+        }
+    }
+
+    private void animateColorChange(final View view, int from, int to){
+        int colorFrom = getResources().getColor(from);
+        int colorTo = getResources().getColor(to);
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+        colorAnimation.setDuration(300); // milliseconds
+        colorAnimation.addUpdateListener(new AnimatorUpdateListener() {
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                view.setBackgroundColor((int) animator.getAnimatedValue());
+            }
+
+        });
+        colorAnimation.start();
     }
 }
