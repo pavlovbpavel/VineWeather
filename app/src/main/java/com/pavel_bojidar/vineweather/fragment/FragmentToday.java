@@ -34,10 +34,14 @@ public class FragmentToday extends WeatherFragment {
     ImageView windDirection;
     ImageView conditionImage;
 
+    TextView date;
+    TextView feelsLike;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_today, null);
+        View view = inflater.inflate(R.layout.fragment_todayy, null);
+
         conditionImage = (ImageView) view.findViewById(R.id.condition_image_now);
         description = (TextView) view.findViewById(R.id.fragment_1_description);
         degrees = (TextView) view.findViewById(R.id.fragment_1_degrees);
@@ -46,6 +50,10 @@ public class FragmentToday extends WeatherFragment {
         humidity = (TextView) view.findViewById(R.id.fragment_1_humidity);
         windSpeed = (TextView) view.findViewById(R.id.fragment_1_wind_speed);
         windDirection = (ImageView) view.findViewById(R.id.fragment_1_wind_direction);
+
+        feelsLike = (TextView) view.findViewById(R.id.fragment_1_feels_like);
+        date = (TextView) view.findViewById(R.id.fragment_1_date);
+
         return view;
     }
 
@@ -62,10 +70,13 @@ public class FragmentToday extends WeatherFragment {
 
         degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempC()) + Constants.CELSIUS_SYMBOL);
         condition.setText(currentLocation.getCurrentWeather().getCondition().getText());
-        pressure.setText("Pressure: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getPressureMb()) + Constants.PRESSURE_SYMBOL);
-        humidity.setText("Humidity: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getHumidity()) + Constants.HUMIDITY_SYMBOL);
-        windSpeed.setText("Wind: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getWindKph()) + Constants.KM_H);
-        windDirection.setRotation((float) currentLocation.getCurrentWeather().getWindDegree());
+        feelsLike.setText("Feels like " + currentLocation.getCurrentWeather().getFeelslikeC());
+        date.setText(currentLocation.getLocaltime()+"");
+
+      // pressure.setText("Pressure: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getPressureMb()) + Constants.PRESSURE_SYMBOL);
+      // humidity.setText("Humidity: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getHumidity()) + Constants.HUMIDITY_SYMBOL);
+      // windSpeed.setText("Wind: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getWindKph()) + Constants.KM_H);
+      // windDirection.setRotation((float) currentLocation.getCurrentWeather().getWindDegree());
     }
 
     @Override
