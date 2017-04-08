@@ -5,4 +5,5 @@
     <color name="colorAccent">#d7d7d7</color>
     <color name="separator">#8098a3a4</color>
     <color name="highlightedRow">#fbfbfb</color>
+    <color name="tomorrowBackground">#59adde</color>
 </resources>

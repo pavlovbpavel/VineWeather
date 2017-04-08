@@ -54,10 +54,10 @@ public class FragmentTomorrowDetails extends WeatherFragment{
         Day tomorrow = currentLocation.getForecast().getDayForecasts().get(1).getDay();
         Astro tomorrowAstro = currentLocation.getForecast().getDayForecasts().get(1).getAstro();
 
-        humidity.setText(String.valueOf(tomorrow.getAvgHumidity()).concat(HUMIDITY_SYMBOL));
+        humidity.setText(String.valueOf(Helper.decimalFormat(tomorrow.getAvgHumidity()).concat(HUMIDITY_SYMBOL)));
         max.setText(String.valueOf(Helper.decimalFormat(tomorrow.getMaxtempC()).concat(CELSIUS_SYMBOL).concat(", ")));
         min.setText(String.valueOf(Helper.decimalFormat(tomorrow.getMintempC()).concat(CELSIUS_SYMBOL)));
-        visibility.setText(String.valueOf(Helper.decimalFormat(tomorrow.getAvgVisibility_km()).concat(" " + Constants.KM_H)));
+        visibility.setText(String.valueOf(Helper.decimalFormat(tomorrow.getAvgVisibility_km()).concat(" " + Constants.KM)));
         astro.setText(tomorrowAstro.getSunrise().concat(", ").concat(tomorrowAstro.getSunset()));
     }
 
