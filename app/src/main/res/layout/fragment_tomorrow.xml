@@ -13,19 +13,78 @@
             android:id="@+id/main_layout_tomorrow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/holo_blue_dark"
-            android:orientation="vertical">
+            android:background="@color/tomorrowBackground"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tomorrow_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:text="date"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:id="@+id/tomorrow_max_min"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Max/min"
+                    android:layout_marginBottom="4dp"
+                    android:textColor="@android:color/background_light"/>
+
+                <TextView
+                    android:id="@+id/tomorrow_condition"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Condition"
+                    android:textSize="24sp"
+                    android:textColor="@android:color/background_light"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/tomorrow_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
 
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/separator"/>
 
         <LinearLayout
             android:id="@+id/layout2"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:background="@android:color/holo_green_light"
             android:orientation="vertical">
 
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/separator"/>
 
     </LinearLayout>
 

@@ -7,6 +7,8 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -45,6 +47,11 @@ public class FragmentTomorrow extends WeatherFragment {
         AppBarLayout appbar = (AppBarLayout) getActivity().findViewById(R.id.app_bar);
         int appbarHeight = appbar.getHeight();
         params.height = screenHeight - getStatusBarHeight() - appbarHeight;
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentTomorrowDetails fragment = new FragmentTomorrowDetails();
+        fragmentTransaction.add(R.id.layout2, fragment);
+        fragmentTransaction.commit();
     }
 
     public int getStatusBarHeight() {
