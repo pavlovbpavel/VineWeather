@@ -149,22 +149,23 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     protected void onResume() {
         super.onResume();
 
-            preferences = getSharedPreferences("Recent List", Context.MODE_PRIVATE);
-            Gson gson = new Gson();
-            String json = preferences.getString("searchPlace", null);
-            if (json != null) {
-                Type type = new TypeToken<List<SearchCity>>(){}.getType();
-                List<SearchCity> cities= gson.fromJson(json, type);
-                Collections.sort(cities, new Comparator<SearchCity>() {
-                    @Override
-                    public int compare(SearchCity o1, SearchCity o2) {
-                        return o1.getDate().compareTo(o2.getDate());
-                    }
-                });
-                for (int i = 0; i < cities.size(); i++) {
-                    addToRecentList(cities.get(i).getName());
+        preferences = getSharedPreferences("Recent List", Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = preferences.getString("searchPlace", null);
+        if (json != null) {
+            Type type = new TypeToken<List<SearchCity>>() {
+            }.getType();
+            List<SearchCity> cities = gson.fromJson(json, type);
+            Collections.sort(cities, new Comparator<SearchCity>() {
+                @Override
+                public int compare(SearchCity o1, SearchCity o2) {
+                    return o1.getDate().compareTo(o2.getDate());
                 }
+            });
+            for (int i = 0; i < cities.size(); i++) {
+                addToRecentList(cities.get(i).getName());
             }
+        }
     }
 
     @Override
@@ -391,7 +392,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
     //implement search logic
     private void performSearch(Editable s) {
-        if(isNetworkAvailable()) {
+        if (isNetworkAvailable()) {
             new GetLocations() {
                 @Override
                 protected void onPostExecute(String result) {

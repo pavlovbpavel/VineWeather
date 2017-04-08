@@ -3,21 +3,20 @@ package com.pavel_bojidar.vineweather.fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 
 import com.pavel_bojidar.vineweather.R;
-import com.pavel_bojidar.vineweather.adapter.TomorrowForecastAdapter;
-import com.pavel_bojidar.vineweather.model.HourForecast;
-import com.pavel_bojidar.vineweather.singleton.AppManager;
-
-import java.util.ArrayList;
 
 
 /**
@@ -26,27 +25,35 @@ import java.util.ArrayList;
 
 public class FragmentTomorrow extends WeatherFragment {
 
-    RecyclerView recyclerView;
+    LinearLayout mainLayout;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tomorrow, null);
-        recyclerView = (RecyclerView) view.findViewById(R.id.hourly_forecast);
-        if (AppManager.getInstance().getCurrentLocation().getForecast() != null) {
-            ArrayList<HourForecast> TomorrowForecast = new ArrayList<>(AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getHourForecasts());
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            recyclerView.setAdapter(new TomorrowForecastAdapter(TomorrowForecast));
-        }
         return view;
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (recyclerView.getAdapter() != null) {
-            recyclerView.getAdapter().notifyDataSetChanged();
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Point size = new Point();
+        getActivity().getWindowManager().getDefaultDisplay().getSize(size);
+        int screenHeight = size.y;
+        mainLayout = (LinearLayout) getActivity().findViewById(R.id.main_layout_tomorrow);
+        LayoutParams params = (LayoutParams) mainLayout.getLayoutParams();
+        AppBarLayout appbar = (AppBarLayout) getActivity().findViewById(R.id.app_bar);
+        int appbarHeight = appbar.getHeight();
+        params.height = screenHeight - getStatusBarHeight() - appbarHeight;
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
         }
+        return result;
     }
 
     @Override
@@ -55,15 +62,7 @@ public class FragmentTomorrow extends WeatherFragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Log.e("received broadcast: ", "fragment tomorrow");
-//                ArrayList<Forecast> dailyForecast = new ArrayList<>();
-//                for (int i = 0; i < 8; i++) {
-//                    dailyForecast.add(AppManager.getInstance().getCurrentLocation().getForecasts().get(i));
-//                }
-//                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//                int currentLocationId = intent.getIntExtra(Constants.KEY_LOCATION_ID, -1);
-//                if (currentLocationId != -1 && recyclerView.getAdapter() != null) {
-//                    recyclerView.setAdapter(new DayForecastAdapter(dailyForecast));
-//                }
+
             }
         };
     }
