@@ -1,6 +1,7 @@
 package com.pavel_bojidar.vineweather.adapter;
 
 import android.support.transition.AutoTransition;
+import android.support.transition.Fade;
 import android.support.transition.Transition;
 import android.support.transition.TransitionManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -59,8 +60,8 @@ public class FutureForecastAdapter extends RecyclerView.Adapter<ForecastViewHold
             @Override
             public void onClick(View v) {
                 Transition transition = new AutoTransition();
-                transition.setDuration(100);
-                TransitionManager.beginDelayedTransition(parent);
+                transition.setDuration(200);
+                TransitionManager.beginDelayedTransition(parent, transition);
                 visible = !visible;
                 holder.masterLayout.setVisibility(visible ? View.VISIBLE : View.GONE);
             }
@@ -78,7 +79,7 @@ public class FutureForecastAdapter extends RecyclerView.Adapter<ForecastViewHold
         holder.condition.setText(currentDay.getDay().getCondition().getText());
         holder.conditionImage.setImageDrawable(Helper.chooseIcon(parent.getContext(), true, currentDay.getDay().getCondition().getIcon()));
         holder.wind.setText(String.valueOf(Helper.decimalFormat(currentDay.getDay().getMaxwindKph())).concat(" " + Constants.KM_H));
-        holder.humidity.setText(String.valueOf(currentDay.getDay().getAvgHumidity()).concat(Constants.HUMIDITY_SYMBOL));
+        holder.humidity.setText(String.valueOf(Helper.decimalFormat(currentDay.getDay().getAvgHumidity()).concat(Constants.HUMIDITY_SYMBOL)));
         holder.sun.setText(currentDay.getAstro().getSunrise().concat(", ").concat(currentDay.getAstro().getSunset()));
         holder.moon.setText(currentDay.getAstro().getMoonrise().concat(", ").concat(currentDay.getAstro().getMoonset()));
     }
