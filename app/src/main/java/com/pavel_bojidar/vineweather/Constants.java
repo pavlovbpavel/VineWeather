@@ -56,6 +56,7 @@ public class Constants {
     public static final String KEY_WIND_DEGREE = "wind_degree";
     public static final String KEY_WIND_DIR = "wind_dir";
     public static final String KEY_PRESSURE_MB = "pressure_mb";
+    public static final String KEY_PRESSURE_MBar = " mBar";
     public static final String KEY_PRESSURE_IN = "pressure_in";
     public static final String KEY_PRECIP_MM = "precip_mm";
     public static final String KEY_PRECIP_IN = "precip_in";

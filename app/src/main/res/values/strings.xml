@@ -16,4 +16,8 @@
     <string name="humidity">Humidity</string>
     <string name="sunrise_sunset">Sunrise/sunset</string>
     <string name="moonrise_moonset">Moonrise/moonset</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="km_h">km/h</string>
 </resources>

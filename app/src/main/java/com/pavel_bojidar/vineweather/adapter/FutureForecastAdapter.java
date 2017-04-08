@@ -1,7 +1,6 @@
 package com.pavel_bojidar.vineweather.adapter;
 
 import android.support.transition.AutoTransition;
-import android.support.transition.Fade;
 import android.support.transition.Transition;
 import android.support.transition.TransitionManager;
 import android.support.v7.widget.LinearLayoutManager;

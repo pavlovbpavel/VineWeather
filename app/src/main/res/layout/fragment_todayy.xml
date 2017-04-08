@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="100"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/today_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="3"
+                    android:background="@drawable/partly_cloudy_jaba"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="30dp"
+                            android:layout_weight="3"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/fragment_1_image"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="3"
+                                android:adjustViewBounds="true"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/partly_cloudy" />
+
+                            <TextView
+                                android:id="@+id/fragment_1_condition"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="0.5"
+                                android:textStyle="bold"
+                                android:text="condition"
+                                android:textAlignment="center"
+                                android:textSize="16sp"
+                                android:textColor="@color/colorAccent"/>
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="40dp"
+                            android:layout_marginTop="20dp"
+                            android:layout_weight="3"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/fragment_1_date"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="date"
+                                android:textAlignment="viewStart"
+                                android:textSize="18sp" />
+
+                            <TextView
+                                android:id="@+id/fragment_1_degrees"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_above="@+id/fragment_1_condition"
+                                android:layout_centerHorizontal="true"
+                                android:layout_weight="5"
+                                android:gravity="center"
+                                android:text="32C"
+                                android:textAlignment="viewStart"
+                                android:textSize="60sp" />
+
+                            <TextView
+                                android:id="@+id/fragment_1_feels_like"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_above="@+id/fragment_1_pressure"
+                                android:layout_centerHorizontal="true"
+                                android:layout_weight="1"
+                                android:text="description"
+                                android:textStyle="bold"
+                                android:textAlignment="viewStart"
+                                android:textColor="@color/colorAccent"
+                                android:textSize="16sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/layout_current_detail"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_wind_detail"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
+

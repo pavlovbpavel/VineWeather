@@ -4,13 +4,18 @@ package com.pavel_bojidar.vineweather.fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.Constants;
@@ -25,6 +30,7 @@ import com.pavel_bojidar.vineweather.singleton.AppManager;
 
 public class FragmentToday extends WeatherFragment {
 
+    LinearLayout parent;
     TextView degrees;
     TextView description;
     TextView condition;
@@ -58,6 +64,35 @@ public class FragmentToday extends WeatherFragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Point size = new Point();
+        getActivity().getWindowManager().getDefaultDisplay().getSize(size);
+        int screenHeight = size.y;
+        parent = (LinearLayout) getActivity().findViewById(R.id.today_parent);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) parent.getLayoutParams();
+        AppBarLayout appbar = (AppBarLayout) getActivity().findViewById(R.id.app_bar);
+        int appbarHeight = appbar.getHeight();
+        params.height = screenHeight - getStatusBarHeight() - appbarHeight;
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        CurrentDetailFragment fragment = new CurrentDetailFragment();
+
+        fragmentTransaction.add(R.id.layout_current_detail, fragment);
+        fragmentTransaction.commit();
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+
+    @Override
     public void onStart() {
         super.onStart();
         if (AppManager.getInstance().getCurrentLocation() != null) {
@@ -68,15 +103,12 @@ public class FragmentToday extends WeatherFragment {
     private void bindData() {
         Location currentLocation = AppManager.getInstance().getCurrentLocation();
 
-        degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempC()) + Constants.CELSIUS_SYMBOL);
+        degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempC())  + Constants.CELSIUS_SYMBOL);
         condition.setText(currentLocation.getCurrentWeather().getCondition().getText());
         feelsLike.setText("Feels like " + currentLocation.getCurrentWeather().getFeelslikeC());
-        date.setText(currentLocation.getLocaltime()+"");
+        date.setText(Helper.getUnixCustomDate(currentLocation.getLocaltime_epoch()).substring(1) + ", " +
+        Helper.getUnixHour(currentLocation.getLocaltime_epoch()));
 
-      // pressure.setText("Pressure: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getPressureMb()) + Constants.PRESSURE_SYMBOL);
-      // humidity.setText("Humidity: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getHumidity()) + Constants.HUMIDITY_SYMBOL);
-      // windSpeed.setText("Wind: " + Helper.decimalFormat(currentLocation.getCurrentWeather().getWindKph()) + Constants.KM_H);
-      // windDirection.setRotation((float) currentLocation.getCurrentWeather().getWindDegree());
     }
 
     @Override
