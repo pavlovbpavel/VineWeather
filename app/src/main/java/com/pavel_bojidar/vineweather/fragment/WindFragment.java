@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.R;
-import com.pavel_bojidar.vineweather.adapter.HourlyTempAdapter;
 import com.pavel_bojidar.vineweather.adapter.HourlyWindAdapter;
 import com.pavel_bojidar.vineweather.model.maindata.Forecast;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
@@ -29,9 +28,14 @@ public class WindFragment extends WeatherFragment {
     Forecast forecast;
     static WindFragment instance;
     int index;
+    int mainFragment;
+
+    public WindFragment (int mainFragment) {
+        this.mainFragment = mainFragment;
+    }
 
     public static WindFragment newInstance(int index) {
-        WindFragment fragment = new WindFragment();
+        WindFragment fragment = new WindFragment(index);
         Bundle args = new Bundle();
         args.putInt("index", index);
         fragment.setArguments(args);
@@ -39,15 +43,22 @@ public class WindFragment extends WeatherFragment {
         return fragment;
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = null;
         index = instance.getArguments().getInt("index");
-        if (index == 1) {
+        if (mainFragment == 1) {
             view = inflater.inflate(R.layout.fragment_wind_tomorrow, container, false);
             rvWind = (RecyclerView) view.findViewById(R.id.tomorrow_hourly_wind);
             condition = (TextView) view.findViewById(R.id.tomorrow_wind_condition);
             speed = (TextView) view.findViewById(R.id.tomorrow_wind_speed);
+        }
+        if (mainFragment == 0) {
+            view = inflater.inflate(R.layout.fragment_today_wind, container, false);
+            rvWind = (RecyclerView) view.findViewById(R.id.rv_wind_today);
+            condition = (TextView) view.findViewById(R.id.today_wind_condition);
+            speed = (TextView) view.findViewById(R.id.today_wind_speed);
         }
         return view;
     }
@@ -72,9 +83,12 @@ public class WindFragment extends WeatherFragment {
 
     private void bindData() {
         forecast = AppManager.getInstance().getCurrentLocation().getForecast();
-        if (index == 1) {
-            rvWind.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        rvWind.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        if (mainFragment == 1) {
             rvWind.setAdapter(new HourlyWindAdapter(forecast.getDayForecasts().get(1).getHourForecasts()));
+        }
+        if (mainFragment == 0) {
+            rvWind.setAdapter(new HourlyWindAdapter(forecast.getDayForecasts().get(0).getHourForecasts()));
         }
     }
 }

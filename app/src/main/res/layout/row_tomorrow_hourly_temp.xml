@@ -25,20 +25,20 @@
         android:paddingEnd="4dp"
         android:paddingStart="4dp"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="@color/separatorTomorrow"/>
-
     <TextView
         android:id="@+id/row_forecast_details_hour"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textSize="16sp"
-        android:textColor="@android:color/black"
         android:paddingEnd="4dp"
         android:paddingStart="4dp"
-        android:text="11 PM"/>
+        android:text="11 PM"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/separatorTomorrow"/>
 
 </LinearLayout>
