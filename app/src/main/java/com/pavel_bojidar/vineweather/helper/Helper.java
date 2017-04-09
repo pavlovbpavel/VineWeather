@@ -21,7 +21,7 @@ public class Helper {
     public static String getUnixHour(long unixTS) {
         Date date = new Date(unixTS * 1000L);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT+2"));
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT+3"));
         String formattedDate = sdf.format(date);
         return formattedDate;
     }
@@ -29,7 +29,7 @@ public class Helper {
     public static String getUnixAmPmHour(long unixTS) {
         Date date = new Date(unixTS * 1000L);
         DateFormat dateFormat = new SimpleDateFormat("h a");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+2"));
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+3"));
         String formattedDate = dateFormat.format(date);
         return formattedDate;
     }
@@ -37,7 +37,7 @@ public class Helper {
     public static String getUnixDate(long unixTS) {
         Date date = new Date(unixTS * 1000L);
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT+2"));
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT+3"));
         String formattedDate = sdf.format(date);
         return formattedDate;
     }
@@ -45,7 +45,7 @@ public class Helper {
     public static String getUnixCustomDate(long unixTS) {
         Date date = new Date(unixTS * 1000L);
         SimpleDateFormat sdf = new SimpleDateFormat(", MMM dd");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT+2"));
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT+3"));
         String formattedDate = sdf.format(date);
         return formattedDate;
     }
@@ -80,7 +80,7 @@ public class Helper {
     }
 
     @Nullable
-    public static Drawable chooseIcon(Context context, boolean isDay, String path) {
+    public static Drawable chooseWeatherConditionIcon(Context context, boolean isDay, String path) {
         int index = path.lastIndexOf("/");
         String filteredPath = path.substring(index, path.length());
         try {

@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
+import com.pavel_bojidar.vineweather.adapter.HourlyWindAdapter.WindViewHolder;
 import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.HourForecast;
 
@@ -17,33 +18,25 @@ import java.util.List;
  * Created by ASUS on 8.4.2017 г..
  */
 
-public class HourlyWindAdapter extends RecyclerView.Adapter<HourlyWindAdapter.WindViewHoler> {
+public class HourlyWindAdapter extends RecyclerView.Adapter<WindViewHolder> {
 
     private List<HourForecast> hourForecast;
-    private ViewGroup parent;
 
     public HourlyWindAdapter(List<HourForecast> hourForecast) {
         this.hourForecast = hourForecast;
     }
 
     @Override
-    public WindViewHoler onCreateViewHolder(ViewGroup parent, int viewType) {
-        this.parent = parent;
-        return new WindViewHoler(parent.inflate(parent.getContext(), R.layout.row_wind, null));
+    public WindViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new WindViewHolder(parent.inflate(parent.getContext(), R.layout.row_wind, null));
     }
 
     @Override
-    public void onBindViewHolder(WindViewHoler holder, int position) {
-
+    public void onBindViewHolder(WindViewHolder holder, int position) {
         HourForecast currentHour = hourForecast.get(position);
-        if (position % 2 == 0) {
-            holder.itemView.setBackgroundResource(R.color.highlightedRow);
-        }
-
-        holder.windProc.setText(Helper.decimalFormat(currentHour.getWindKph()) + Constants.KM_H);
+        holder.windProc.setText(Helper.decimalFormat(currentHour.getWindKph()));
         holder.windHour.setText(Helper.getUnixAmPmHour(currentHour.getTimeEpoch()));
-        holder.windIcon.setImageDrawable(Helper.chooseIcon(parent.getContext(), currentHour.getIsDay() == 1, currentHour.getCondition().getIcon()));
-
+        holder.windIcon.setRotation(currentHour.getWindDegree());
     }
 
     @Override
@@ -51,13 +44,13 @@ public class HourlyWindAdapter extends RecyclerView.Adapter<HourlyWindAdapter.Wi
         return hourForecast.size();
     }
 
-    public class WindViewHoler extends RecyclerView.ViewHolder {
+    public class WindViewHolder extends RecyclerView.ViewHolder {
 
         ImageView windIcon;
         TextView windProc;
         TextView windHour;
 
-        public WindViewHoler(View row) {
+        public WindViewHolder(View row) {
             super(row);
             windIcon = (ImageView) row.findViewById(R.id.row_wind_icon);
             windProc = (TextView) row.findViewById(R.id.row_wind_procent);

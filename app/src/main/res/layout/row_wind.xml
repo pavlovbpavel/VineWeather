@@ -7,10 +7,12 @@
 
     <ImageView
         android:id="@+id/row_wind_icon"
-        android:layout_width="match_parent"
-        android:layout_height="32dp"
+        android:src="@drawable/ic_navigation_black_24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:scaleType="fitCenter"
+        android:layout_marginBottom="16dp"
         android:paddingEnd="4dp"
         android:paddingStart="4dp"/>
 

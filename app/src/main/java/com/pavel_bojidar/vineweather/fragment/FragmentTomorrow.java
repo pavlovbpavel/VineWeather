@@ -80,8 +80,8 @@ public class FragmentTomorrow extends WeatherFragment {
         params.height = screenHeight - getStatusBarHeight() - appbarHeight;
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        FragmentTomorrowDetails fragment = new FragmentTomorrowDetails();
-        fragmentTransaction.add(R.id.tomorrow_details_container, fragment);
+        fragmentTransaction.add(R.id.tomorrow_details_container, new FragmentTomorrowDetails());
+        fragmentTransaction.add(R.id.tomorrow_wind_container, WindFragment.newInstance(1));
         fragmentTransaction.commit();
     }
 
@@ -111,11 +111,11 @@ public class FragmentTomorrow extends WeatherFragment {
         date.setText(Helper.getWeekDay(Helper.getUnixDate(unixTS)).concat(Helper.getUnixCustomDate(unixTS)));
         condition.setText(tomorrow.getCondition().getText());
         temp.setText(DAY
-                        .concat(String.valueOf(Helper.decimalFormat(tomorrow.getMaxtempC())
+                .concat(String.valueOf(Helper.decimalFormat(tomorrow.getMaxtempC())
                         .concat(CELSIUS_SYMBOL).concat(ARROW_UP).concat(INTERPUNKT).concat(NIGHT)
                         .concat(Helper.decimalFormat(tomorrow.getMintempC()).concat(CELSIUS_SYMBOL).concat(ARROW_DOWN)))));
 //        conditionImage.setImageResource(R.drawable.partly_cloudy);
-        conditionImage.setImageDrawable(Helper.chooseIcon(getContext(), true, tomorrow.getCondition().getIcon()));
+        conditionImage.setImageDrawable(Helper.chooseWeatherConditionIcon(getContext(), true, tomorrow.getCondition().getIcon()));
         hourlyTempForecast.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         hourlyTempForecast.setAdapter(new HourlyTempAdapter(tomorrowHourly, true));
     }
