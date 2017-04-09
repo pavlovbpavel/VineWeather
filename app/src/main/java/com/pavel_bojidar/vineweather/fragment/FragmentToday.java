@@ -44,10 +44,10 @@ public class FragmentToday extends WeatherFragment {
     TextView description;
     TextView condition;
     TextView pressure;
-    TextView humidity;
+    TextView windCondition;
     TextView windSpeed;
     ImageView windDirection;
-    ImageView conditionImage;
+
 
     TextView date;
     TextView feelsLike;
@@ -66,8 +66,9 @@ public class FragmentToday extends WeatherFragment {
         condition = (TextView) view.findViewById(R.id.fragment_1_condition);
         pressure = (TextView) view.findViewById(R.id.fragment_1_pressure);
        // humidity = (TextView) view.findViewById(R.id.fragment_1_humidity);
-      // windSpeed = (TextView) view.findViewById(R.id.fragment_1_wind_speed);
-       // windDirection = (ImageView) view.findViewById(R.id.fragment_1_wind_direction);
+        windSpeed = (TextView) view.findViewById(R.id.today_wind_speed);
+        windDirection = (ImageView) view.findViewById(R.id.today_wind_direction);
+        windCondition = (TextView) view.findViewById(R.id.today_wind_condition);
 
         feelsLike = (TextView) view.findViewById(R.id.fragment_1_feels_like);
         date = (TextView) view.findViewById(R.id.fragment_1_date);

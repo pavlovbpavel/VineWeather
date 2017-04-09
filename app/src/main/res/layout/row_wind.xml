@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
     <ImageView
         android:id="@+id/row_wind_icon"
@@ -14,14 +15,15 @@
         android:scaleType="fitCenter"
         android:layout_marginBottom="16dp"
         android:paddingEnd="4dp"
-        android:paddingStart="4dp"/>
+        android:paddingStart="4dp"
+        android:layout_marginTop="20dp"/>
 
     <TextView
         android:id="@+id/row_wind_procent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:paddingEnd="4dp"
+        android:paddingEnd="6dp"
         android:paddingStart="4dp"
         android:text="Pr"/>
 
@@ -33,6 +35,7 @@
         android:layout_gravity="center"
         android:paddingEnd="4dp"
         android:paddingStart="4dp"
+        android:layout_marginTop="6dp"
         android:text="11 PM"/>
 
 </LinearLayout>

@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.R;
@@ -25,6 +26,7 @@ public class WindFragment extends WeatherFragment {
 
     RecyclerView rvWind;
     TextView condition, speed;
+    ImageView conditionImage;
     Forecast forecast;
     static WindFragment instance;
     int index;
@@ -59,6 +61,8 @@ public class WindFragment extends WeatherFragment {
             rvWind = (RecyclerView) view.findViewById(R.id.rv_wind_today);
             condition = (TextView) view.findViewById(R.id.today_wind_condition);
             speed = (TextView) view.findViewById(R.id.today_wind_speed);
+            conditionImage = (ImageView) view.findViewById(R.id.today_wind_direction);
+
         }
         return view;
     }
@@ -89,6 +93,7 @@ public class WindFragment extends WeatherFragment {
         }
         if (mainFragment == 0) {
             rvWind.setAdapter(new HourlyWindAdapter(forecast.getDayForecasts().get(0).getHourForecasts()));
+            conditionImage.setRotation(AppManager.getInstance().getCurrentLocation().getCurrentWeather().getWindDegree());
         }
     }
 }
