@@ -9,14 +9,31 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.R;
+import com.pavel_bojidar.vineweather.adapter.HourlyTempAdapter;
+import com.pavel_bojidar.vineweather.helper.Helper;
+import com.pavel_bojidar.vineweather.model.HourForecast;
+import com.pavel_bojidar.vineweather.model.maindata.Day;
+import com.pavel_bojidar.vineweather.singleton.AppManager;
+
+import java.util.ArrayList;
+
+import static com.pavel_bojidar.vineweather.Constants.ARROW_DOWN;
+import static com.pavel_bojidar.vineweather.Constants.ARROW_UP;
+import static com.pavel_bojidar.vineweather.Constants.CELSIUS_SYMBOL;
+import static com.pavel_bojidar.vineweather.Constants.DAY;
+import static com.pavel_bojidar.vineweather.Constants.INTERPUNKT;
+import static com.pavel_bojidar.vineweather.Constants.NIGHT;
 
 
 /**
@@ -25,13 +42,29 @@ import com.pavel_bojidar.vineweather.R;
 
 public class FragmentTomorrow extends WeatherFragment {
 
-    LinearLayout mainLayout;
+    RelativeLayout mainLayout;
+    RecyclerView hourlyTempForecast;
+    ArrayList<HourForecast> tomorrowHourly;
+    Day tomorrow;
+    TextView date, condition, temp;
+    ImageView conditionImage;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tomorrow, null);
+        hourlyTempForecast = (RecyclerView) view.findViewById(R.id.tomorrow_hourly_temp);
+        date = (TextView) view.findViewById(R.id.tomorrow_date);
+        condition = (TextView) view.findViewById(R.id.tomorrow_condition);
+        temp = (TextView) view.findViewById(R.id.tomorrow_max_min);
+        conditionImage = (ImageView) view.findViewById(R.id.tomorrow_image);
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        bindData();
     }
 
     @Override
@@ -40,7 +73,7 @@ public class FragmentTomorrow extends WeatherFragment {
         Point size = new Point();
         getActivity().getWindowManager().getDefaultDisplay().getSize(size);
         int screenHeight = size.y;
-        mainLayout = (LinearLayout) getActivity().findViewById(R.id.main_layout_tomorrow);
+        mainLayout = (RelativeLayout) getActivity().findViewById(R.id.main_layout_tomorrow);
         LayoutParams params = (LayoutParams) mainLayout.getLayoutParams();
         AppBarLayout appbar = (AppBarLayout) getActivity().findViewById(R.id.app_bar);
         int appbarHeight = appbar.getHeight();
@@ -48,7 +81,7 @@ public class FragmentTomorrow extends WeatherFragment {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         FragmentTomorrowDetails fragment = new FragmentTomorrowDetails();
-        fragmentTransaction.add(R.id.layout2, fragment);
+        fragmentTransaction.add(R.id.tomorrow_details_container, fragment);
         fragmentTransaction.commit();
     }
 
@@ -66,9 +99,24 @@ public class FragmentTomorrow extends WeatherFragment {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.e("received broadcast: ", "fragment tomorrow");
-
+                bindData();
             }
         };
+    }
+
+    private void bindData() {
+        tomorrowHourly = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getHourForecasts();
+        tomorrow = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getDay();
+        int unixTS = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getDateEpoch();
+        date.setText(Helper.getWeekDay(Helper.getUnixDate(unixTS)).concat(Helper.getUnixCustomDate(unixTS)));
+        condition.setText(tomorrow.getCondition().getText());
+        temp.setText(DAY
+                        .concat(String.valueOf(Helper.decimalFormat(tomorrow.getMaxtempC())
+                        .concat(CELSIUS_SYMBOL).concat(ARROW_UP).concat(INTERPUNKT).concat(NIGHT)
+                        .concat(Helper.decimalFormat(tomorrow.getMintempC()).concat(CELSIUS_SYMBOL).concat(ARROW_DOWN)))));
+//        conditionImage.setImageResource(R.drawable.partly_cloudy);
+        conditionImage.setImageDrawable(Helper.chooseIcon(getContext(), true, tomorrow.getCondition().getIcon()));
+        hourlyTempForecast.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        hourlyTempForecast.setAdapter(new HourlyTempAdapter(tomorrowHourly, true));
     }
 }

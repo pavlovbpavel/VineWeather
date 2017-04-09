@@ -22,14 +22,21 @@ public class HourlyTempAdapter extends RecyclerView.Adapter<HourlyForecastViewHo
 
     ArrayList<HourForecast> forecast;
     ViewGroup parent;
+    boolean isTomorrow;
 
-    public HourlyTempAdapter(ArrayList<HourForecast> forecast) {
+    public HourlyTempAdapter(ArrayList<HourForecast> forecast, boolean isTomorrow) {
         this.forecast = forecast;
+        this.isTomorrow = isTomorrow;
     }
 
     @Override
     public HourlyForecastViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        HourlyForecastViewHolder holder = new HourlyForecastViewHolder(parent.inflate(parent.getContext(), R.layout.row_forecast_details, null));
+        HourlyForecastViewHolder holder;
+        if(isTomorrow) {
+            holder = new HourlyForecastViewHolder(parent.inflate(parent.getContext(), R.layout.row_tomorrow_hourly_temp, null));
+        } else {
+            holder = new HourlyForecastViewHolder(parent.inflate(parent.getContext(), R.layout.row_forecast_details, null));
+        }
         this.parent = parent;
         return holder;
     }

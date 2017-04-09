@@ -43,7 +43,7 @@ public class FutureForecastAdapter extends RecyclerView.Adapter<ForecastViewHold
     public void onBindViewHolder(final ForecastViewHolder holder, int position) {
         DayForecast currentDay = forecast.getDayForecasts().get(position);
 
-        HourlyTempAdapter adapter = new HourlyTempAdapter(currentDay.getHourForecasts());
+        HourlyTempAdapter adapter = new HourlyTempAdapter(currentDay.getHourForecasts(), false);
         holder.hourlyForecast.setAdapter(adapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(parent.getContext(), LinearLayoutManager.HORIZONTAL, false);
         holder.hourlyForecast.setLayoutManager(layoutManager);

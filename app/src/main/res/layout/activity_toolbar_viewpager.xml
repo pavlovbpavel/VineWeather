@@ -32,6 +32,7 @@
                 <EditText
                     android:id="@+id/search_field"
                     android:imeOptions="actionSearch"
+                    android:backgroundTint="@color/transperant"
                     android:maxLines="1"
                     android:inputType="text"
                     android:digits="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"

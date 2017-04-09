@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#6197c6</color>
     <color name="colorAccent">#d7d7d7</color>
     <color name="separator">#8098a3a4</color>
+    <color name="separatorTomorrow">#80bcc9ca</color>
     <color name="highlightedRow">#fbfbfb</color>
     <color name="tomorrowBackground">#59adde</color>
     <color name="todayAppBarColor">#7ba2c4</color>
@@ -12,4 +13,5 @@
     <color name="tomorrowAppBarColorDark">#547796</color>
     <color name="forecastAppBarColor">#19818c</color>
     <color name="forecastAppBarColorDark">#136770</color>
+    <color name="transperant">#00136770</color>
 </resources>
