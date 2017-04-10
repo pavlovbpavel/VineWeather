@@ -17,7 +17,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="2dp"
         android:textSize="16sp"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:paddingEnd="4dp"
         android:paddingStart="4dp"
         android:text="8C"/>

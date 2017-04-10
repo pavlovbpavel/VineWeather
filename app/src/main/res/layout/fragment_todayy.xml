@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -116,17 +116,15 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="40dp"
                 android:layout_weight="20"
-                android:background="#66a5a5"
-                android:orientation="horizontal"
-                android:paddingStart="10dp">
+                android:orientation="horizontal">
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/layout_rv_hours_forecast"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/color1">
-
+                    android:layout_marginStart="16dp">
                 </android.support.v7.widget.RecyclerView>
+
             </LinearLayout>
 
             <LinearLayout

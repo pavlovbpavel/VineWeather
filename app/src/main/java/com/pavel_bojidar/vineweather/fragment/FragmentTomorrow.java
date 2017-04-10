@@ -117,6 +117,6 @@ public class FragmentTomorrow extends WeatherFragment {
 //        conditionImage.setImageResource(R.drawable.partly_cloudy);
         conditionImage.setImageDrawable(Helper.chooseWeatherConditionIcon(getContext(), true, tomorrow.getCondition().getIcon()));
         hourlyTempForecast.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        hourlyTempForecast.setAdapter(new HourlyTempAdapter(tomorrowHourly, true));
+        hourlyTempForecast.setAdapter(new HourlyTempAdapter(tomorrowHourly, 1));
     }
 }

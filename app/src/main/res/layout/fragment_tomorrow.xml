@@ -76,7 +76,7 @@
             </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
-                android:layout_marginBottom="16dp"
+                android:layout_margin="8dp"
                 android:layout_alignParentBottom="true"
                 android:id="@+id/tomorrow_hourly_temp"
                 android:layout_width="match_parent"
@@ -105,7 +105,7 @@
         <LinearLayout
             android:id="@+id/tomorrow_wind_container"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="260dp"
             android:orientation="vertical">
         </LinearLayout>
 

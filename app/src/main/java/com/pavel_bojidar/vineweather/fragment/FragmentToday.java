@@ -118,7 +118,7 @@ public class FragmentToday extends WeatherFragment {
         forecast = AppManager.getInstance().getCurrentLocation().getForecast();
         DayForecast currentDay = forecast.getDayForecasts().get(0);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        recyclerView.setAdapter(new HourlyTempAdapter(currentDay.getHourForecasts(), true));
+        recyclerView.setAdapter(new HourlyTempAdapter(currentDay.getHourForecasts(), 0));
 
         if (recyclerView.getAdapter() != null) {
             recyclerView.getAdapter().notifyDataSetChanged();

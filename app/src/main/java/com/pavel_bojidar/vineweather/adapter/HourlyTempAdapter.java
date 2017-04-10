@@ -22,24 +22,30 @@ public class HourlyTempAdapter extends RecyclerView.Adapter<HourlyForecastViewHo
 
     ArrayList<HourForecast> forecast;
     ViewGroup parent;
-    boolean isTomorrow;
+    int fragmentNumber;
 
-    public HourlyTempAdapter(ArrayList<HourForecast> forecast, boolean isTomorrow) {
+    public HourlyTempAdapter(ArrayList<HourForecast> forecast, int fragmentNumber) {
         this.forecast = forecast;
-        this.isTomorrow = isTomorrow;
+        this.fragmentNumber = fragmentNumber;
     }
 
     @Override
     public HourlyForecastViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        HourlyForecastViewHolder holder;
-        if(isTomorrow) {
-            holder = new HourlyForecastViewHolder(parent.inflate(parent.getContext(), R.layout.row_tomorrow_hourly_temp, null));
-        } else {
-            holder = new HourlyForecastViewHolder(parent.inflate(parent.getContext(), R.layout.row_forecast_details, null));
+        HourlyForecastViewHolder holder = null;
+        switch (fragmentNumber) {
+            case 0:
+                holder = new HourlyForecastViewHolder(parent.inflate(parent.getContext(), R.layout.row_today_hourly_temp, null));
+                break;
+            case 1:
+                holder = new HourlyForecastViewHolder(parent.inflate(parent.getContext(), R.layout.row_tomorrow_hourly_temp, null));
+                break;
+            case 2:
+                holder = new HourlyForecastViewHolder(parent.inflate(parent.getContext(), R.layout.row_forecast_hourly_temp, null));
+                break;
         }
         this.parent = parent;
         return holder;
-    }
+}
 
     @Override
     public void onBindViewHolder(HourlyForecastViewHolder holder, int position) {
@@ -54,16 +60,16 @@ public class HourlyTempAdapter extends RecyclerView.Adapter<HourlyForecastViewHo
         return forecast.size();
     }
 
-    public class HourlyForecastViewHolder extends RecyclerView.ViewHolder {
+public class HourlyForecastViewHolder extends RecyclerView.ViewHolder {
 
-        TextView degrees, hour;
-        ImageView icon;
+    TextView degrees, hour;
+    ImageView icon;
 
-        public HourlyForecastViewHolder(View itemView) {
-            super(itemView);
-            degrees = (TextView) itemView.findViewById(R.id.row_forecast_details_degrees);
-            hour = (TextView) itemView.findViewById(R.id.row_forecast_details_hour);
-            icon = (ImageView) itemView.findViewById(R.id.row_forecast_details_icon);
-        }
+    public HourlyForecastViewHolder(View itemView) {
+        super(itemView);
+        degrees = (TextView) itemView.findViewById(R.id.row_forecast_details_degrees);
+        hour = (TextView) itemView.findViewById(R.id.row_forecast_details_hour);
+        icon = (ImageView) itemView.findViewById(R.id.row_forecast_details_icon);
     }
+}
 }
