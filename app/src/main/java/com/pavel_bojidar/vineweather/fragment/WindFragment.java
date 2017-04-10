@@ -36,6 +36,7 @@ public class WindFragment extends WeatherFragment {
         this.mainFragment = mainFragment;
     }
 
+    //todo refactor
     public static WindFragment newInstance(int index) {
         WindFragment fragment = new WindFragment(index);
         Bundle args = new Bundle();
