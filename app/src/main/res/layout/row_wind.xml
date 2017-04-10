@@ -5,34 +5,54 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/row_wind_procent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingEnd="6dp"
-        android:paddingStart="4dp"
-        android:text="Pr"/>
-
     <ImageView
         android:id="@+id/row_wind_icon"
-        android:src="@drawable/ic_navigation_black_24dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:layout_gravity="center"
-        android:scaleType="fitCenter"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="2dp"
         android:paddingEnd="4dp"
         android:paddingStart="4dp"
-        android:layout_marginTop="8dp"/>
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_navigation_black_24dp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:id="@+id/row_wind_percent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/wind_fill"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="Pr"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"/>
+
+        <LinearLayout
+            android:id="@+id/wind_fill"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
+            android:background="@android:color/holo_blue_dark"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/row_wind_hour"
-        android:layout_width="wrap_content"
+        android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:paddingEnd="4dp"
-        android:paddingStart="4dp"
-        android:text="11 PM"/>
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:text="11 PM"
+        android:textSize="12sp"/>
 
 </LinearLayout>

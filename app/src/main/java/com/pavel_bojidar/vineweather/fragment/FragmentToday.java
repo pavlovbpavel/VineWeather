@@ -145,7 +145,7 @@ public class FragmentToday extends WeatherFragment {
                     break;
             }
         }
-        if (currentLocation.getCurrentWeather().getIs_day() == 0){
+        if (currentLocation.getCurrentWeather().getIs_day() == 0) {
             switch (weather) {
                 case Constants.PARTLY_CLOUDY:
                     parent.setBackgroundResource(R.drawable.partly_cloudy_night);
@@ -161,7 +161,7 @@ public class FragmentToday extends WeatherFragment {
 
         weatherIcon.setImageDrawable(Helper.chooseWeatherConditionIcon(parent.getContext(), currentLocation.getCurrentWeather().getIs_day() == 1,
                 currentLocation.getCurrentWeather().getCondition().getIcon()));
-        degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempC())  + Constants.CELSIUS_SYMBOL);
+        degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempC()) + Constants.CELSIUS_SYMBOL);
         condition.setText(currentLocation.getCurrentWeather().getCondition().getText());
         feelsLike.setText("Feels like " + currentLocation.getCurrentWeather().getFeelslikeC());
         date.setText(format);

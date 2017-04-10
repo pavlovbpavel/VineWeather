@@ -19,9 +19,9 @@
             android:padding="8dp">
 
             <LinearLayout
-                android:layout_alignParentTop="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -65,22 +65,22 @@
                     android:orientation="vertical">
 
                     <ImageView
-                        android:layout_gravity="end"
-                        android:layout_marginTop="12dp"
                         android:id="@+id/tomorrow_image"
                         android:layout_width="100dp"
-                        android:layout_height="100dp"/>
+                        android:layout_height="100dp"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="12dp"/>
 
                 </LinearLayout>
 
             </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
-                android:layout_margin="8dp"
-                android:layout_alignParentBottom="true"
                 android:id="@+id/tomorrow_hourly_temp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="8dp">
             </android.support.v7.widget.RecyclerView>
 
         </RelativeLayout>
@@ -105,9 +105,14 @@
         <LinearLayout
             android:id="@+id/tomorrow_wind_container"
             android:layout_width="match_parent"
-            android:layout_height="260dp"
+            android:layout_height="280dp"
             android:orientation="vertical">
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/separator"/>
 
     </LinearLayout>
 

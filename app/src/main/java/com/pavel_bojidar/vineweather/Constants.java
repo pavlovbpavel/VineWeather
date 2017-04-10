@@ -31,7 +31,7 @@ public class Constants {
     /*
     API CALL KEYS
      */
-    public static final String API_KEY = "7b0b007f5d4f4b91a3d162205172903";
+    public static final String API_KEY = "e09df0f100a84868bf1211122171004";
     public static final String NODE_FORECAST = "forecast";
     public static final String NODE_FORECASTDAY = "forecastday";
     public static final String NODE_DAY = "day";
