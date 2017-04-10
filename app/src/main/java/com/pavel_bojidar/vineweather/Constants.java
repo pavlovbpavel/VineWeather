@@ -23,6 +23,11 @@ public class Constants {
     public static final String INTERPUNKT = " \u00b7 ";
     public static final String ARROW_UP = "\u2191";
     public static final String ARROW_DOWN = "\u2193";
+    public static final String PARTLY_CLOUDY = "Partly cloudy";
+    public static final String CLEAR = "Clear";
+    public static final String HEAVY_RAIN = "Patchy light rain with thunder";
+    public static final String SUNNY = "Sunny";
+
     /*
     API CALL KEYS
      */

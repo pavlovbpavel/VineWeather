@@ -40,41 +40,38 @@ import java.util.TimeZone;
 public class FragmentToday extends WeatherFragment {
 
     LinearLayout parent;
+    ImageView weatherIcon;
     TextView degrees;
-    TextView description;
     TextView condition;
     TextView pressure;
     TextView windCondition;
     TextView windSpeed;
     ImageView windDirection;
-
-
     TextView date;
     TextView feelsLike;
 
     RecyclerView recyclerView;
     Forecast forecast;
+    Location currentLocation;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_todayy, null);
 
-       // conditionImage = (ImageView) view.findViewById(R.id.condition_image_now);
-       // description = (TextView) view.findViewById(R.id.fragment_1_description);
+        weatherIcon = (ImageView) view.findViewById(R.id.fragment_1_image);
         degrees = (TextView) view.findViewById(R.id.fragment_1_degrees);
         condition = (TextView) view.findViewById(R.id.fragment_1_condition);
         pressure = (TextView) view.findViewById(R.id.fragment_1_pressure);
-       // humidity = (TextView) view.findViewById(R.id.fragment_1_humidity);
         windSpeed = (TextView) view.findViewById(R.id.today_wind_speed);
         windDirection = (ImageView) view.findViewById(R.id.today_wind_direction);
         windCondition = (TextView) view.findViewById(R.id.today_wind_condition);
-
         feelsLike = (TextView) view.findViewById(R.id.fragment_1_feels_like);
         date = (TextView) view.findViewById(R.id.fragment_1_date);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.layout_rv_hours_forecast);
 
+        currentLocation = AppManager.getInstance().getCurrentLocation();
         return view;
     }
 
@@ -99,6 +96,7 @@ public class FragmentToday extends WeatherFragment {
         fragmentTransaction.add(R.id.layout_wind_detail, WindFragment.newInstance(0));
         fragmentTransaction.commit();
     }
+
     public int getStatusBarHeight() {
         int result = 0;
         int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
@@ -107,7 +105,6 @@ public class FragmentToday extends WeatherFragment {
         }
         return result;
     }
-
 
     @Override
     public void onStart() {
@@ -131,8 +128,39 @@ public class FragmentToday extends WeatherFragment {
         simpleDate.setTimeZone(TimeZone.getTimeZone("GMT+3"));
         String format = simpleDate.format(new Date());
 
-        Location currentLocation = AppManager.getInstance().getCurrentLocation();
+        String weather = currentLocation.getCurrentWeather().getCondition().getText();
+        if (currentLocation.getCurrentWeather().getIs_day() == 1) {
+            switch (weather) {
+                case Constants.SUNNY:
+                    parent.setBackgroundResource(R.drawable.sunny_day);
+                    break;
+                case Constants.PARTLY_CLOUDY:
+                    parent.setBackgroundResource(R.drawable.partly_cloudy_day);
+                    break;
+                case Constants.CLEAR:
+                    parent.setBackgroundResource(R.drawable.clear_day);
+                    break;
+                case Constants.HEAVY_RAIN:
+                    parent.setBackgroundResource(R.drawable.heavy_rain_day);
+                    break;
+            }
+        }
+        if (currentLocation.getCurrentWeather().getIs_day() == 0){
+            switch (weather) {
+                case Constants.PARTLY_CLOUDY:
+                    parent.setBackgroundResource(R.drawable.partly_cloudy_night);
+                    break;
+                case Constants.CLEAR:
+                    parent.setBackgroundResource(R.drawable.clear_night);
+                    break;
+                case Constants.HEAVY_RAIN:
+                    parent.setBackgroundResource(R.drawable.heavy_rain_night);
+                    break;
+            }
+        }
 
+        weatherIcon.setImageDrawable(Helper.chooseWeatherConditionIcon(parent.getContext(), currentLocation.getCurrentWeather().getIs_day() == 1,
+                currentLocation.getCurrentWeather().getCondition().getIcon()));
         degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempC())  + Constants.CELSIUS_SYMBOL);
         condition.setText(currentLocation.getCurrentWeather().getCondition().getText());
         feelsLike.setText("Feels like " + currentLocation.getCurrentWeather().getFeelslikeC());

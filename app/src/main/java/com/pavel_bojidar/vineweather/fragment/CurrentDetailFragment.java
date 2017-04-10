@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
+import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.maindata.Location;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 
@@ -50,10 +51,10 @@ public class CurrentDetailFragment extends WeatherFragment {
     private void bindData() {
         Location currentLocation = AppManager.getInstance().getCurrentLocation();
 
-        humidity.setText(currentLocation.getCurrentWeather().getHumidity() + " " + Constants.HUMIDITY_SYMBOL);
-        wind.setText(currentLocation.getCurrentWeather().getWindKph() + " " + Constants.KM_H);
-        pressure.setText(currentLocation.getCurrentWeather().getPressureMb() + Constants.KEY_PRESSURE_MBar);
-        visibility.setText(currentLocation.getCurrentWeather().getVisability_km() + " " + Constants.KM);
+        humidity.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getHumidity()) + " " + Constants.HUMIDITY_SYMBOL);
+        wind.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getWindKph()) + " " + Constants.KM_H);
+        pressure.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getPressureMb()) + Constants.KEY_PRESSURE_MBar);
+        visibility.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getVisability_km()) + " " + Constants.KM);
 
     }
 
