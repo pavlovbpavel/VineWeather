@@ -95,7 +95,7 @@ public class WindFragment extends WeatherFragment {
         forecast = AppManager.getInstance().getCurrentLocation().getForecast();
         double maxWind = 0;
         double minWind = 50;
-        double average = 0;
+        double average;
         for (int i = 0; i < forecast.getDayForecasts().get(1).getHourForecasts().size(); i++) {
             HourForecast currentHour = forecast.getDayForecasts().get(1).getHourForecasts().get(i);
             if (currentHour.getWindKph() > maxWind) {
@@ -107,13 +107,13 @@ public class WindFragment extends WeatherFragment {
         }
         rvWind.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         if (mainFragment == 1) {
-            rvWind.setAdapter(new HourlyWindAdapter(forecast.getDayForecasts().get(1).getHourForecasts()));
+            rvWind.setAdapter(new HourlyWindAdapter(forecast.getDayForecasts().get(1).getHourForecasts(), getTomorrowMaxWind()));
             speed.setText(Helper.decimalFormat(minWind).concat("-").concat(Helper.decimalFormat(maxWind).concat(" " + KM_H)));
             average = (minWind + maxWind) / 2;
             condition.setText(getCondition(average));
         }
         if (mainFragment == 0) {
-            rvWind.setAdapter(new HourlyWindAdapter(forecast.getDayForecasts().get(0).getHourForecasts()));
+            rvWind.setAdapter(new HourlyWindAdapter(forecast.getDayForecasts().get(0).getHourForecasts(), getTodayMaxWind()));
             conditionImage.setRotation(AppManager.getInstance().getCurrentLocation().getCurrentWeather().getWindDegree());
             condition.setText(getCondition(AppManager.getInstance().getCurrentLocation().getCurrentWeather().getWindKph()));
             windDirection.setText(AppManager.getInstance().getCurrentLocation().getCurrentWeather().getWindDir());
@@ -159,5 +159,31 @@ public class WindFragment extends WeatherFragment {
             return "Storm";
         }
         return "Hurricane";
+    }
+
+    private int getTomorrowMaxWind() {
+        Forecast forecast = AppManager.getInstance().getCurrentLocation().getForecast();
+        double maxWind = 0;
+
+        for (int i = 0; i < forecast.getDayForecasts().get(1).getHourForecasts().size(); i++) {
+            HourForecast currentHour = forecast.getDayForecasts().get(1).getHourForecasts().get(i);
+            if (currentHour.getWindKph() > maxWind) {
+                maxWind = currentHour.getWindKph();
+            }
+        }
+        return (int) maxWind;
+    }
+
+    private int getTodayMaxWind() {
+        Forecast forecast = AppManager.getInstance().getCurrentLocation().getForecast();
+        double maxWind = 0;
+
+        for (int i = 0; i < forecast.getDayForecasts().get(0).getHourForecasts().size(); i++) {
+            HourForecast currentHour = forecast.getDayForecasts().get(0).getHourForecasts().get(i);
+            if (currentHour.getWindKph() > maxWind) {
+                maxWind = currentHour.getWindKph();
+            }
+        }
+        return (int) maxWind;
     }
 }

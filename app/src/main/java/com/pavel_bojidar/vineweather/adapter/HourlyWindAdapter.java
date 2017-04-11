@@ -1,6 +1,5 @@
 package com.pavel_bojidar.vineweather.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +12,6 @@ import com.pavel_bojidar.vineweather.R;
 import com.pavel_bojidar.vineweather.adapter.HourlyWindAdapter.WindViewHolder;
 import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.HourForecast;
-import com.pavel_bojidar.vineweather.model.maindata.Forecast;
-import com.pavel_bojidar.vineweather.singleton.AppManager;
 
 import java.util.List;
 
@@ -27,9 +24,9 @@ public class HourlyWindAdapter extends RecyclerView.Adapter<WindViewHolder> {
     private List<HourForecast> hourForecast;
     private int maxWindSpeed;
 
-    public HourlyWindAdapter(List<HourForecast> hourForecast) {
+    public HourlyWindAdapter(List<HourForecast> hourForecast, int maxWindSpeed) {
         this.hourForecast = hourForecast;
-        maxWindSpeed = getMaxWind();
+        this.maxWindSpeed = maxWindSpeed;
     }
 
     @Override
@@ -67,18 +64,5 @@ public class HourlyWindAdapter extends RecyclerView.Adapter<WindViewHolder> {
             windHour = (TextView) row.findViewById(R.id.row_wind_hour);
             windFill = (LinearLayout) row.findViewById(R.id.wind_fill);
         }
-    }
-
-    private int getMaxWind() {
-        Forecast forecast = AppManager.getInstance().getCurrentLocation().getForecast();
-        double maxWind = 0;
-
-        for (int i = 0; i < forecast.getDayForecasts().get(1).getHourForecasts().size(); i++) {
-            HourForecast currentHour = forecast.getDayForecasts().get(1).getHourForecasts().get(i);
-            if (currentHour.getWindKph() > maxWind) {
-                maxWind = currentHour.getWindKph();
-            }
-        }
-        return (int) maxWind;
     }
 }
