@@ -31,6 +31,7 @@ public class WindFragment extends WeatherFragment {
     RecyclerView rvWind;
     TextView condition, speed;
     ImageView conditionImage;
+    TextView currentWindSpeed, windDirection;
     Forecast forecast;
     static WindFragment instance;
     int index;
@@ -65,9 +66,9 @@ public class WindFragment extends WeatherFragment {
             view = inflater.inflate(R.layout.fragment_today_wind, container, false);
             rvWind = (RecyclerView) view.findViewById(R.id.rv_wind_today);
             condition = (TextView) view.findViewById(R.id.today_wind_condition);
-            speed = (TextView) view.findViewById(R.id.today_wind_speed);
             conditionImage = (ImageView) view.findViewById(R.id.today_wind_direction);
-
+            currentWindSpeed = (TextView) view.findViewById(R.id.today_wind_speed);
+            windDirection = (TextView) view.findViewById(R.id.today_wind_direction_string);
         }
         return view;
     }
@@ -94,6 +95,7 @@ public class WindFragment extends WeatherFragment {
         forecast = AppManager.getInstance().getCurrentLocation().getForecast();
         double maxWind = 0;
         double minWind = 50;
+        double average = 0;
         for (int i = 0; i < forecast.getDayForecasts().get(1).getHourForecasts().size(); i++) {
             HourForecast currentHour = forecast.getDayForecasts().get(1).getHourForecasts().get(i);
             if (currentHour.getWindKph() > maxWind) {
@@ -107,16 +109,19 @@ public class WindFragment extends WeatherFragment {
         if (mainFragment == 1) {
             rvWind.setAdapter(new HourlyWindAdapter(forecast.getDayForecasts().get(1).getHourForecasts()));
             speed.setText(Helper.decimalFormat(minWind).concat("-").concat(Helper.decimalFormat(maxWind).concat(" " + KM_H)));
-            condition.setText(getCondition(minWind, maxWind));
+            average = (minWind + maxWind) / 2;
+            condition.setText(getCondition(average));
         }
         if (mainFragment == 0) {
             rvWind.setAdapter(new HourlyWindAdapter(forecast.getDayForecasts().get(0).getHourForecasts()));
             conditionImage.setRotation(AppManager.getInstance().getCurrentLocation().getCurrentWeather().getWindDegree());
+            condition.setText(getCondition(AppManager.getInstance().getCurrentLocation().getCurrentWeather().getWindKph()));
+            windDirection.setText(AppManager.getInstance().getCurrentLocation().getCurrentWeather().getWindDir());
+            currentWindSpeed.setText(Helper.decimalFormat(AppManager.getInstance().getCurrentLocation().getCurrentWeather().getWindKph()));
         }
     }
 
-    private String getCondition(double min, double max) {
-        int average = (int) ((min + max) / 2);
+    private String getCondition(double average) {
         if (average < 2) {
             return "Calm";
         }

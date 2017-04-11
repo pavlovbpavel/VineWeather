@@ -53,6 +53,7 @@ public class FragmentToday extends WeatherFragment {
     RecyclerView recyclerView;
     Forecast forecast;
     Location currentLocation;
+    DayForecast currentDay;
 
     @Nullable
     @Override
@@ -113,7 +114,7 @@ public class FragmentToday extends WeatherFragment {
             bindData();
         }
         forecast = AppManager.getInstance().getCurrentLocation().getForecast();
-        DayForecast currentDay = forecast.getDayForecasts().get(0);
+        currentDay = forecast.getDayForecasts().get(0);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(new HourlyTempAdapter(currentDay.getHourForecasts(), 0));
 
@@ -165,7 +166,7 @@ public class FragmentToday extends WeatherFragment {
         condition.setText(currentLocation.getCurrentWeather().getCondition().getText());
         feelsLike.setText("Feels like " + currentLocation.getCurrentWeather().getFeelslikeC());
         date.setText(format);
-        //Helper.getUnixCustomDate(unixTS).substring(1)
+
     }
 
     @Override
