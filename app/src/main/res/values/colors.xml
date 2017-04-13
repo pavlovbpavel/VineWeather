@@ -14,4 +14,8 @@
     <color name="forecastAppBarColor">#19818c</color>
     <color name="forecastAppBarColorDark">#136770</color>
     <color name="transperant">#00136770</color>
+    <color name="windLow">#fa599ec6</color>
+    <color name="windAverage">#fa3085b6</color>
+    <color name="windHigh">#fa2d9684</color>
+    <color name="windExtreme">#faa93230</color>
 </resources>

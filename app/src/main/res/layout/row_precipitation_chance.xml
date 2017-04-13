@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:paddingStart="4dp"
+    android:paddingEnd="4dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/row_precip_volume"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="1.3"/>
+
+    <ImageView
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="4dp"
+        android:id="@+id/row_drop_image"
+        android:src="@android:drawable/presence_busy"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:id="@+id/row_precip_hour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="12sp"/>
+
+</LinearLayout>

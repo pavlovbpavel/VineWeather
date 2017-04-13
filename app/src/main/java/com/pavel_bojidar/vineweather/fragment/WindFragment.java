@@ -18,6 +18,7 @@ import com.pavel_bojidar.vineweather.R;
 import com.pavel_bojidar.vineweather.adapter.HourlyWindAdapter;
 import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.HourForecast;
+import com.pavel_bojidar.vineweather.model.maindata.CurrentWeather;
 import com.pavel_bojidar.vineweather.model.maindata.Forecast;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 
@@ -33,36 +34,27 @@ public class WindFragment extends WeatherFragment {
     ImageView conditionImage;
     TextView currentWindSpeed, windDirection;
     Forecast forecast;
-    static WindFragment instance;
-    int index;
-    int mainFragment;
+    boolean isTomorrow;
+    CurrentWeather currentWeather;
 
-    public WindFragment(int mainFragment) {
-        this.mainFragment = mainFragment;
-    }
-
-    //todo refactor
-    public static WindFragment newInstance(int index) {
-        WindFragment fragment = new WindFragment(index);
+    public static WindFragment newInstance(boolean isTomorrow) {
+        WindFragment fragment = new WindFragment();
         Bundle args = new Bundle();
-        args.putInt("index", index);
+        args.putBoolean("isTomorrow", isTomorrow);
         fragment.setArguments(args);
-        instance = fragment;
         return fragment;
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = null;
-        index = instance.getArguments().getInt("index");
-        if (mainFragment == 1) {
+        View view;
+        isTomorrow = getArguments().getBoolean("isTomorrow");
+        if (isTomorrow) {
             view = inflater.inflate(R.layout.fragment_wind_tomorrow, container, false);
             rvWind = (RecyclerView) view.findViewById(R.id.tomorrow_hourly_wind);
             condition = (TextView) view.findViewById(R.id.tomorrow_wind_condition);
             speed = (TextView) view.findViewById(R.id.tomorrow_wind_speed);
-        }
-        if (mainFragment == 0) {
+        } else {
             view = inflater.inflate(R.layout.fragment_today_wind, container, false);
             rvWind = (RecyclerView) view.findViewById(R.id.rv_wind_today);
             condition = (TextView) view.findViewById(R.id.today_wind_condition);
@@ -86,13 +78,16 @@ public class WindFragment extends WeatherFragment {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                bindData();
+                if (AppManager.getInstance().getCurrentLocation() != null) {
+                    bindData();
+                }
             }
         };
     }
 
     private void bindData() {
         forecast = AppManager.getInstance().getCurrentLocation().getForecast();
+        currentWeather = AppManager.getInstance().getCurrentLocation().getCurrentWeather();
         double maxWind = 0;
         double minWind = 50;
         double average;
@@ -106,18 +101,17 @@ public class WindFragment extends WeatherFragment {
             }
         }
         rvWind.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        if (mainFragment == 1) {
-            rvWind.setAdapter(new HourlyWindAdapter(forecast.getDayForecasts().get(1).getHourForecasts(), getTomorrowMaxWind()));
+        if (isTomorrow) {
+            rvWind.setAdapter(new HourlyWindAdapter(forecast.getDayForecasts().get(1).getHourForecasts()));
             speed.setText(Helper.decimalFormat(minWind).concat("-").concat(Helper.decimalFormat(maxWind).concat(" " + KM_H)));
             average = (minWind + maxWind) / 2;
             condition.setText(getCondition(average));
-        }
-        if (mainFragment == 0) {
-            rvWind.setAdapter(new HourlyWindAdapter(forecast.getDayForecasts().get(0).getHourForecasts(), getTodayMaxWind()));
-            conditionImage.setRotation(AppManager.getInstance().getCurrentLocation().getCurrentWeather().getWindDegree());
-            condition.setText(getCondition(AppManager.getInstance().getCurrentLocation().getCurrentWeather().getWindKph()));
-            windDirection.setText(AppManager.getInstance().getCurrentLocation().getCurrentWeather().getWindDir());
-            currentWindSpeed.setText(Helper.decimalFormat(AppManager.getInstance().getCurrentLocation().getCurrentWeather().getWindKph()));
+        } else {
+            rvWind.setAdapter(new HourlyWindAdapter(forecast.getDayForecasts().get(0).getHourForecasts()));
+            conditionImage.setRotation(currentWeather.getWindDegree());
+            condition.setText(getCondition(currentWeather.getWindKph()));
+            windDirection.setText(currentWeather.getWindDir());
+            currentWindSpeed.setText(Helper.decimalFormat(currentWeather.getWindKph()));
         }
     }
 
@@ -159,31 +153,5 @@ public class WindFragment extends WeatherFragment {
             return "Storm";
         }
         return "Hurricane";
-    }
-
-    private int getTomorrowMaxWind() {
-        Forecast forecast = AppManager.getInstance().getCurrentLocation().getForecast();
-        double maxWind = 0;
-
-        for (int i = 0; i < forecast.getDayForecasts().get(1).getHourForecasts().size(); i++) {
-            HourForecast currentHour = forecast.getDayForecasts().get(1).getHourForecasts().get(i);
-            if (currentHour.getWindKph() > maxWind) {
-                maxWind = currentHour.getWindKph();
-            }
-        }
-        return (int) maxWind;
-    }
-
-    private int getTodayMaxWind() {
-        Forecast forecast = AppManager.getInstance().getCurrentLocation().getForecast();
-        double maxWind = 0;
-
-        for (int i = 0; i < forecast.getDayForecasts().get(0).getHourForecasts().size(); i++) {
-            HourForecast currentHour = forecast.getDayForecasts().get(0).getHourForecasts().get(i);
-            if (currentHour.getWindKph() > maxWind) {
-                maxWind = currentHour.getWindKph();
-            }
-        }
-        return (int) maxWind;
     }
 }

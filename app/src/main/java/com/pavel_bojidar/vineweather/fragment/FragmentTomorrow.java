@@ -44,10 +44,10 @@ public class FragmentTomorrow extends WeatherFragment {
 
     RelativeLayout mainLayout;
     RecyclerView hourlyTempForecast;
-    ArrayList<HourForecast> tomorrowHourly;
     Day tomorrow;
     TextView date, condition, temp;
     ImageView conditionImage;
+    ArrayList<HourForecast> tomorrowHourly;
 
     @Nullable
     @Override
@@ -81,7 +81,12 @@ public class FragmentTomorrow extends WeatherFragment {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.tomorrow_details_container, new FragmentTomorrowDetails());
-        fragmentTransaction.add(R.id.tomorrow_wind_container, WindFragment.newInstance(1));
+        fragmentTransaction.add(R.id.tomorrow_wind_container, WindFragment.newInstance(true));
+
+        tomorrowHourly = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getHourForecasts();
+        tomorrow = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getDay();
+
+        fragmentTransaction.add(R.id.tomorrow_precipitation_container, PrecipitationFragment.newInstance(tomorrowHourly, tomorrow));
         fragmentTransaction.commit();
     }
 
@@ -105,8 +110,6 @@ public class FragmentTomorrow extends WeatherFragment {
     }
 
     private void bindData() {
-        tomorrowHourly = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getHourForecasts();
-        tomorrow = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getDay();
         int unixTS = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getDateEpoch();
         date.setText(Helper.getWeekDay(Helper.getUnixDate(unixTS)).concat(Helper.getUnixCustomDate(unixTS)));
         condition.setText(tomorrow.getCondition().getText());
@@ -114,7 +117,6 @@ public class FragmentTomorrow extends WeatherFragment {
                 .concat(String.valueOf(Helper.decimalFormat(tomorrow.getMaxtempC())
                         .concat(CELSIUS_SYMBOL).concat(ARROW_UP).concat(INTERPUNKT).concat(NIGHT)
                         .concat(Helper.decimalFormat(tomorrow.getMintempC()).concat(CELSIUS_SYMBOL).concat(ARROW_DOWN)))));
-//        conditionImage.setImageResource(R.drawable.partly_cloudy);
         conditionImage.setImageDrawable(Helper.chooseWeatherConditionIcon(getContext(), true, tomorrow.getCondition().getIcon()));
         hourlyTempForecast.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         hourlyTempForecast.setAdapter(new HourlyTempAdapter(tomorrowHourly, 1));

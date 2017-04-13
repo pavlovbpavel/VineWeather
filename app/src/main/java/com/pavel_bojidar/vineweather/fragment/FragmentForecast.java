@@ -25,8 +25,8 @@ import com.pavel_bojidar.vineweather.singleton.AppManager;
 
 public class FragmentForecast extends WeatherFragment {
 
-    RecyclerView recyclerView;
-    Forecast forecast;
+    private RecyclerView recyclerView;
+    private Forecast forecast;
 
     @Nullable
     @Override
@@ -53,7 +53,6 @@ public class FragmentForecast extends WeatherFragment {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.e("received broadcast: ", "fragment forecast");
                 int currentLocationId = intent.getIntExtra(Constants.KEY_LOCATION_ID, -1);
                 if (currentLocationId != -1 && recyclerView.getAdapter() != null) {
                     recyclerView.getAdapter().notifyDataSetChanged();

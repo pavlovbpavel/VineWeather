@@ -24,9 +24,9 @@ public class HourlyWindAdapter extends RecyclerView.Adapter<WindViewHolder> {
     private List<HourForecast> hourForecast;
     private int maxWindSpeed;
 
-    public HourlyWindAdapter(List<HourForecast> hourForecast, int maxWindSpeed) {
+    public HourlyWindAdapter(List<HourForecast> hourForecast) {
         this.hourForecast = hourForecast;
-        this.maxWindSpeed = maxWindSpeed;
+        this.maxWindSpeed = getMaxWindSpeed();
     }
 
     @Override
@@ -44,6 +44,19 @@ public class HourlyWindAdapter extends RecyclerView.Adapter<WindViewHolder> {
 
         lp.height = (int) (holder.itemView.getContext().getResources().getDimensionPixelSize(R.dimen.wind_height) * (float) (currentHour.getWindKph() / maxWindSpeed));
         holder.windFill.setLayoutParams(lp);
+        int windSpeed = (int)currentHour.getWindKph();
+        if (windSpeed <= 5){
+            holder.windFill.setBackgroundResource(R.color.windLow);
+        }
+        if (windSpeed > 5 && windSpeed <= 20){
+            holder.windFill.setBackgroundResource(R.color.windAverage);
+        }
+        if (windSpeed > 20 && windSpeed <= 50){
+            holder.windFill.setBackgroundResource(R.color.windHigh);
+        }
+        if (windSpeed > 50 && windSpeed <= 250){
+            holder.windFill.setBackgroundResource(R.color.windExtreme);
+        }
     }
 
     @Override
@@ -64,5 +77,16 @@ public class HourlyWindAdapter extends RecyclerView.Adapter<WindViewHolder> {
             windHour = (TextView) row.findViewById(R.id.row_wind_hour);
             windFill = (LinearLayout) row.findViewById(R.id.wind_fill);
         }
+    }
+
+    private int getMaxWindSpeed() {
+        double maxWind = 0;
+        for (int i = 0; i < hourForecast.size(); i++) {
+            HourForecast currentHour = hourForecast.get(i);
+            if (currentHour.getWindKph() > maxWind) {
+                maxWind = currentHour.getWindKph();
+            }
+        }
+        return (int) maxWind;
     }
 }

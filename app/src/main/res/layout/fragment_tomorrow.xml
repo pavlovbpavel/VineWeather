@@ -105,7 +105,7 @@
         <LinearLayout
             android:id="@+id/tomorrow_wind_container"
             android:layout_width="match_parent"
-            android:layout_height="280dp"
+            android:layout_height="260dp"
             android:orientation="vertical">
         </LinearLayout>
 
@@ -113,6 +113,13 @@
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:background="@color/separator"/>
+
+        <LinearLayout
+            android:id="@+id/tomorrow_precipitation_container"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:orientation="vertical">
+        </LinearLayout>
 
     </LinearLayout>
 

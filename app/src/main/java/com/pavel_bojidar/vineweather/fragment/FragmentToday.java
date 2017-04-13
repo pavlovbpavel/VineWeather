@@ -39,36 +39,28 @@ import java.util.TimeZone;
 
 public class FragmentToday extends WeatherFragment {
 
-    LinearLayout parent;
-    ImageView weatherIcon;
-    TextView degrees;
-    TextView condition;
-    TextView pressure;
-    TextView windCondition;
-    TextView windSpeed;
-    ImageView windDirection;
-    TextView date;
-    TextView feelsLike;
-
-    RecyclerView recyclerView;
     Forecast forecast;
-    Location currentLocation;
+    LinearLayout parent;
     DayForecast currentDay;
+    Location currentLocation;
+    RecyclerView recyclerView;
+    ImageView weatherIcon, windDirection;
+    TextView degrees, condition, pressure, windCondition, windSpeed, date, feelsLike;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_todayy, null);
 
-        weatherIcon = (ImageView) view.findViewById(R.id.fragment_1_image);
-        degrees = (TextView) view.findViewById(R.id.fragment_1_degrees);
-        condition = (TextView) view.findViewById(R.id.fragment_1_condition);
-        pressure = (TextView) view.findViewById(R.id.fragment_1_pressure);
-        windSpeed = (TextView) view.findViewById(R.id.today_wind_speed);
-        windDirection = (ImageView) view.findViewById(R.id.today_wind_direction);
-        windCondition = (TextView) view.findViewById(R.id.today_wind_condition);
-        feelsLike = (TextView) view.findViewById(R.id.fragment_1_feels_like);
         date = (TextView) view.findViewById(R.id.fragment_1_date);
+        windSpeed = (TextView) view.findViewById(R.id.today_wind_speed);
+        degrees = (TextView) view.findViewById(R.id.fragment_1_degrees);
+        pressure = (TextView) view.findViewById(R.id.fragment_1_pressure);
+        weatherIcon = (ImageView) view.findViewById(R.id.fragment_1_image);
+        condition = (TextView) view.findViewById(R.id.fragment_1_condition);
+        feelsLike = (TextView) view.findViewById(R.id.fragment_1_feels_like);
+        windCondition = (TextView) view.findViewById(R.id.today_wind_condition);
+        windDirection = (ImageView) view.findViewById(R.id.today_wind_direction);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.layout_rv_hours_forecast);
 
@@ -88,13 +80,16 @@ public class FragmentToday extends WeatherFragment {
         int appbarHeight = appbar.getHeight();
         params.height = screenHeight - getStatusBarHeight() - appbarHeight;
 
+        forecast = AppManager.getInstance().getCurrentLocation().getForecast();
+        currentDay = forecast.getDayForecasts().get(0);
         FragmentManager fragmentManager = getFragmentManager();
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         CurrentDetailFragment fragmentCurrentDetails = new CurrentDetailFragment();
 
         fragmentTransaction.add(R.id.layout_current_detail, fragmentCurrentDetails);
-        fragmentTransaction.add(R.id.layout_wind_detail, WindFragment.newInstance(0));
+        fragmentTransaction.add(R.id.layout_wind_detail, WindFragment.newInstance(false));
+        fragmentTransaction.add(R.id.layout_precip_detail, PrecipitationFragment.newInstance(currentDay.getHourForecasts(), currentDay.getDay()));
         fragmentTransaction.commit();
     }
 
@@ -113,8 +108,6 @@ public class FragmentToday extends WeatherFragment {
         if (AppManager.getInstance().getCurrentLocation() != null) {
             bindData();
         }
-        forecast = AppManager.getInstance().getCurrentLocation().getForecast();
-        currentDay = forecast.getDayForecasts().get(0);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(new HourlyTempAdapter(currentDay.getHourForecasts(), 0));
 
@@ -162,9 +155,9 @@ public class FragmentToday extends WeatherFragment {
 
         weatherIcon.setImageDrawable(Helper.chooseWeatherConditionIcon(parent.getContext(), currentLocation.getCurrentWeather().getIs_day() == 1,
                 currentLocation.getCurrentWeather().getCondition().getIcon()));
-        degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempC()) + Constants.CELSIUS_SYMBOL);
+        degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempC()).concat(Constants.CELSIUS_SYMBOL));
         condition.setText(currentLocation.getCurrentWeather().getCondition().getText());
-        feelsLike.setText("Feels like " + currentLocation.getCurrentWeather().getFeelslikeC());
+        feelsLike.setText("Feels like ".concat(Helper.decimalFormat(currentLocation.getCurrentWeather().getFeelslikeC())));
         date.setText(format);
 
     }
@@ -174,12 +167,10 @@ public class FragmentToday extends WeatherFragment {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.e("received broadcast: ", "fragment today");
                 if (AppManager.getInstance().getCurrentLocation() != null) {
                     bindData();
                 }
             }
-
         };
     }
 }
