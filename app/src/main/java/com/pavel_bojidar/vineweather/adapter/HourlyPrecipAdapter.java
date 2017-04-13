@@ -11,7 +11,7 @@ import com.pavel_bojidar.vineweather.adapter.HourlyPrecipAdapter.HourlyPrecipVie
 import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.HourForecast;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Pavel Pavlov on 4/13/2017.
@@ -19,9 +19,9 @@ import java.util.ArrayList;
 
 public class HourlyPrecipAdapter extends RecyclerView.Adapter<HourlyPrecipViewHolder> {
 
-    private ArrayList<HourForecast> hourlyPrecip;
+    private List<HourForecast> hourlyPrecip;
 
-    public HourlyPrecipAdapter(ArrayList<HourForecast> hourlyPrecip) {
+    public HourlyPrecipAdapter(List<HourForecast> hourlyPrecip) {
         this.hourlyPrecip = hourlyPrecip;
     }
 

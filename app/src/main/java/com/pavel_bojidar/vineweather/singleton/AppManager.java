@@ -21,8 +21,6 @@ public class AppManager {
 
     private Location currentLocation = new Location();
 
-    private String currentLocationName;
-
     private AppManager() {
     }
 
@@ -43,17 +41,8 @@ public class AppManager {
 
     public void onLocationUpdated(Context context) {
         Log.e("broadcast", "app manager - on location updated");
-        currentLocationName = currentLocation.getName();
         Intent intent = new Intent(BroadcastActions.ACTION_LOCATION_UPDATED);
         intent.putExtra(Constants.KEY_LOCATION_NAME, currentLocation.getName());
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-    }
-
-    public String getCurrentLocationName() {
-        return currentLocationName;
-    }
-
-    public void setCurrentLocationName(String currentLocationName) {
-        this.currentLocationName = currentLocationName;
     }
 }

@@ -14,9 +14,7 @@ import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.R;
 import com.pavel_bojidar.vineweather.adapter.HourlyPrecipAdapter;
-import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.HourForecast;
-import com.pavel_bojidar.vineweather.model.maindata.Day;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 
 import java.util.ArrayList;
@@ -27,16 +25,15 @@ import java.util.ArrayList;
 
 public class PrecipitationFragment extends WeatherFragment {
 
-    RecyclerView rvPrecipitation;
-    TextView volume, dailyVolume;
-    ArrayList<HourForecast> hourlyPrecipForecast;
-    Day currentDay;
+    public static final String IS_TOMORROW = "isTomorrow";
+    private RecyclerView rvPrecipitation;
+    private TextView volume, dailyVolume;
+    private ArrayList<HourForecast> hourlyPrecipForecast;
 
-    public static PrecipitationFragment newInstance(ArrayList<HourForecast> hourlyPrecipForecast, Day day) {
+    public static PrecipitationFragment newInstance(boolean isTomorrow) {
         PrecipitationFragment fragment = new PrecipitationFragment();
         Bundle args = new Bundle();
-        args.putSerializable("precipitation", hourlyPrecipForecast);
-        args.putSerializable("currentDay", day);
+        args.putBoolean(IS_TOMORROW, isTomorrow);
         fragment.setArguments(args);
         return fragment;
     }
@@ -70,11 +67,11 @@ public class PrecipitationFragment extends WeatherFragment {
     }
 
     private void bindData() {
-        hourlyPrecipForecast = (ArrayList<HourForecast>) getArguments().getSerializable("precipitation");
-        currentDay = (Day) getArguments().getSerializable("currentDay");
+        boolean isTomorrow = getArguments().getBoolean(IS_TOMORROW);
+        hourlyPrecipForecast = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(isTomorrow ? 1 : 0).getHourForecasts();
         rvPrecipitation.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         rvPrecipitation.setAdapter(new HourlyPrecipAdapter(hourlyPrecipForecast));
-        dailyVolume.setText("  ".concat(String.valueOf(currentDay.getTotalprecipMm() == 0 ? Helper.decimalFormat(currentDay.getTotalprecipMm()) : currentDay.getTotalprecipMm()).concat(" mm")));
+//        dailyVolume.setText("  ".concat(String.valueOf(currentDay.getTotalprecipMm() == 0 ? Helper.decimalFormat(currentDay.getTotalprecipMm()) : currentDay.getTotalprecipMm()).concat(" mm")));
         volume.setText("Volume\n(mm)");
     }
 }

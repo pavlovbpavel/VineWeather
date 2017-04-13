@@ -86,7 +86,7 @@ public class FragmentTomorrow extends WeatherFragment {
         tomorrowHourly = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getHourForecasts();
         tomorrow = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getDay();
 
-        fragmentTransaction.add(R.id.tomorrow_precipitation_container, PrecipitationFragment.newInstance(tomorrowHourly, tomorrow));
+        fragmentTransaction.add(R.id.tomorrow_precipitation_container, PrecipitationFragment.newInstance(true));
         fragmentTransaction.commit();
     }
 

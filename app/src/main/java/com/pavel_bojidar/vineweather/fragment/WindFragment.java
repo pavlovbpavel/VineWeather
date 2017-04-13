@@ -89,7 +89,7 @@ public class WindFragment extends WeatherFragment {
         forecast = AppManager.getInstance().getCurrentLocation().getForecast();
         currentWeather = AppManager.getInstance().getCurrentLocation().getCurrentWeather();
         double maxWind = 0;
-        double minWind = 50;
+        double minWind = Integer.MAX_VALUE;
         double average;
         for (int i = 0; i < forecast.getDayForecasts().get(1).getHourForecasts().size(); i++) {
             HourForecast currentHour = forecast.getDayForecasts().get(1).getHourForecasts().get(i);

@@ -89,7 +89,7 @@ public class FragmentToday extends WeatherFragment {
 
         fragmentTransaction.add(R.id.layout_current_detail, fragmentCurrentDetails);
         fragmentTransaction.add(R.id.layout_wind_detail, WindFragment.newInstance(false));
-        fragmentTransaction.add(R.id.layout_precip_detail, PrecipitationFragment.newInstance(currentDay.getHourForecasts(), currentDay.getDay()));
+        fragmentTransaction.add(R.id.layout_precip_detail, PrecipitationFragment.newInstance(false));
         fragmentTransaction.commit();
     }
 
@@ -117,7 +117,6 @@ public class FragmentToday extends WeatherFragment {
     }
 
     private void bindData() {
-
         SimpleDateFormat simpleDate = new SimpleDateFormat("MMMM dd, hh:mm");
         simpleDate.setTimeZone(TimeZone.getTimeZone("GMT+3"));
         String format = simpleDate.format(new Date());
