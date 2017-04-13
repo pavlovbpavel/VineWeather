@@ -16,6 +16,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TabLayout.OnTabSelectedListener;
 import android.support.design.widget.TabLayout.Tab;
@@ -46,7 +47,7 @@ import android.view.WindowManager.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -63,6 +64,7 @@ import com.pavel_bojidar.vineweather.fragment.FragmentToday;
 import com.pavel_bojidar.vineweather.fragment.FragmentTomorrow;
 import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.SearchCity;
+import com.pavel_bojidar.vineweather.model.maindata.CurrentWeather;
 import com.pavel_bojidar.vineweather.popupwindow.CitySearchPopupWindow;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 import com.pavel_bojidar.vineweather.task.GetCurrentWeather;
@@ -106,10 +108,10 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     ImageView navDrawerImage;
     TextView navDrawerDegree, navDrawerCondition;
     Switch navDrawerSwitch;
-    Button celsius, fahrenheit;
     BroadcastReceiver br;
     AlertDialog alertDialog;
     ArrayList<SearchCity> searchCities = new ArrayList<>();
+    public static boolean isCelsius;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,8 +125,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         initViews();
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-
-
     }
 
     @Override
@@ -237,6 +237,13 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         tabLayout.setVisibility(View.VISIBLE);
         viewPager.setVisibility(View.VISIBLE);
         loadingView.setVisibility(View.GONE);
+
+        CurrentWeather currentWeather = AppManager.getInstance().getCurrentLocation().getCurrentWeather();
+        navDrawerImage.setImageDrawable(Helper.chooseWeatherConditionIcon(this ,currentWeather.getIs_day() == 1,
+                currentWeather.getCondition().getIcon()));
+        navDrawerCondition.setText(currentWeather.getCondition().getText());
+        navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempC()).concat(Constants.CELSIUS_SYMBOL));
+
         setTitle(AppManager.getInstance().getCurrentLocation().getName());
         if (viewPager.getAdapter() == null) {
             setViewPagerAdapter();
@@ -248,16 +255,17 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         AppManager.getInstance().onLocationUpdated(this);
     }
 
-
     private void initViews() {
         //init toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         //init view from header navigation drawer
-        navDrawerImage = (ImageView) findViewById(R.id.nav_drawer_image);
-        navDrawerDegree = (TextView) findViewById(R.id.nav_drawer_degree);
-        navDrawerCondition = (TextView) findViewById(R.id.nav_drawer_condition);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View hView =  navigationView.getHeaderView(0);
 
+        navDrawerImage = (ImageView) hView.findViewById(R.id.nav_drawer_image);
+        navDrawerDegree = (TextView) hView.findViewById(R.id.nav_drawer_degree);
+        navDrawerCondition = (TextView) hView.findViewById(R.id.nav_drawer_condition);
 
         setSupportActionBar(toolbar);
 
@@ -338,6 +346,12 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
         //todo change switch to set imperial/metric units
         navDrawerSwitch = (Switch) findViewById(R.id.nav_drawer_switch);
+        navDrawerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isCelsius = isChecked;
+            }
+        });
 
         //connect tabLayout with viewPager
         tabLayout.setOnTabSelectedListener(new OnTabSelectedListener() {
