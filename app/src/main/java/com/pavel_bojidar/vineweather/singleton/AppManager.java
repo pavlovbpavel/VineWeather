@@ -9,8 +9,6 @@ import com.pavel_bojidar.vineweather.BroadcastActions;
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.model.maindata.Location;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * Created by Pavel Pavlov on 3/11/2017.
  */

@@ -10,7 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -40,7 +39,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.Window;
 import android.view.WindowManager;
@@ -50,7 +48,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Switch;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -102,6 +103,9 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     ArrayList<String> recentList = new ArrayList<>();
     MenuItem search;
     Timer inputDelay;
+    ImageView navDrawerImage;
+    TextView navDrawerDegree, navDrawerCondition;
+    Switch navDrawerSwitch;
     Button celsius, fahrenheit;
     BroadcastReceiver br;
     AlertDialog alertDialog;
@@ -120,19 +124,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
-        celsius.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
-
-        fahrenheit.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
     }
 
     @Override
@@ -256,9 +248,17 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         AppManager.getInstance().onLocationUpdated(this);
     }
 
+
     private void initViews() {
         //init toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        //init view from header navigation drawer
+        navDrawerImage = (ImageView) findViewById(R.id.nav_drawer_image);
+        navDrawerDegree = (TextView) findViewById(R.id.nav_drawer_degree);
+        navDrawerCondition = (TextView) findViewById(R.id.nav_drawer_condition);
+
+
         setSupportActionBar(toolbar);
 
         //init search field and call performSearch logic
@@ -336,9 +336,8 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
         appBar = (AppBarLayout) findViewById(R.id.app_bar);
 
-        //todo change buttons to set imperial/metric units
-        celsius = (Button) findViewById(R.id.celsius);
-        fahrenheit = (Button) findViewById(R.id.fahrenheit);
+        //todo change switch to set imperial/metric units
+        navDrawerSwitch = (Switch) findViewById(R.id.nav_drawer_switch);
 
         //connect tabLayout with viewPager
         tabLayout.setOnTabSelectedListener(new OnTabSelectedListener() {
@@ -366,7 +365,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
             @Override
             public void onTabUnselected(Tab tab) {
-
             }
 
             @Override
@@ -391,6 +389,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             }
         });
     }
+
 
     //set an adapter for the viewPager
     private void setViewPagerAdapter() {
@@ -428,7 +427,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                         //callback is the returned result from the API call
                         JSONArray callback = new JSONArray(result);
                         ArrayList<String> cityNames = new ArrayList<>();
-
                         //put all city names in an ArrayList and feed it to the SearchPopupWindow Adapter
                         for (int i = 0; i < callback.length(); i++) {
                             JSONObject currentItem = callback.getJSONObject(i);
