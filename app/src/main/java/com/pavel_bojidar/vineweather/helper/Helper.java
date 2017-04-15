@@ -100,6 +100,7 @@ public class Helper {
                 case "Patchy light rain with thunder":
                     return context.getResources().getDrawable(R.drawable.storm_weather_day_icon);
                 case "Thundery outbreaks in nearby":
+                case "Thundery outbreaks possible":
                     return context.getResources().getDrawable(R.drawable.thunder_day_icon);
                 case "Blowing snow":
                     return context.getResources().getDrawable(R.drawable.snow_weather_icon);
@@ -177,6 +178,7 @@ public class Helper {
                 case "Cloudy":
                     return context.getResources().getDrawable(R.drawable.cloudy_weather_icon);
                 case "Thundery outbreaks in nearby":
+                case "Thundery outbreaks possible":
                 case "Patchy light snow in area with thunder":
                 case "Moderate or heavy snow in area with thunder":
                 case "Blizzard":
