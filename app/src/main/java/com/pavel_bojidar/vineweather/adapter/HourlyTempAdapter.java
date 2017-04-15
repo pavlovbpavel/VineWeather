@@ -50,7 +50,7 @@ public class HourlyTempAdapter extends RecyclerView.Adapter<HourlyForecastViewHo
         HourForecast currentHour = forecast.get(position);
         holder.degrees.setText(Helper.decimalFormat(currentHour.getTempC()).concat(Constants.CELSIUS_SYMBOL));
         holder.hour.setText(Helper.getUnixAmPmHour(currentHour.getTimeEpoch()));
-        holder.icon.setImageDrawable(Helper.chooseWeatherConditionIcon(holder.itemView.getContext(), currentHour.getIsDay() == 1, currentHour.getCondition().getIcon()));
+        holder.icon.setImageDrawable(Helper.chooseConditionIcon(holder.itemView.getContext(), currentHour.getIsDay() == 1, currentHour.getCondition().getText()));
     }
 
     @Override

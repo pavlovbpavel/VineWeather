@@ -84,7 +84,7 @@ public class FutureForecastAdapter extends RecyclerView.Adapter<ForecastViewHold
         holder.tempMin.setText(Helper.decimalFormat(currentDay.getDay().getMintempC()).concat(Constants.CELSIUS_SYMBOL));
         holder.wind.setText(String.valueOf(Helper.decimalFormat(currentDay.getDay().getMaxwindKph())).concat(" " + Constants.KM_H));
         holder.humidity.setText(String.valueOf(Helper.decimalFormat(currentDay.getDay().getAvgHumidity()).concat(Constants.HUMIDITY_SYMBOL)));
-        holder.conditionImage.setImageDrawable(Helper.chooseWeatherConditionIcon((holder.itemView.getContext()), true, currentDay.getDay().getCondition().getIcon()));
+        holder.conditionImage.setImageDrawable(Helper.chooseConditionIcon((holder.itemView.getContext()), true, currentDay.getDay().getCondition().getText()));
     }
 
     @Override

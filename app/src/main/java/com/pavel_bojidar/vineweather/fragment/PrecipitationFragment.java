@@ -14,7 +14,9 @@ import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.R;
 import com.pavel_bojidar.vineweather.adapter.HourlyPrecipAdapter;
+import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.HourForecast;
+import com.pavel_bojidar.vineweather.model.maindata.Day;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 
 import java.util.ArrayList;
@@ -71,7 +73,8 @@ public class PrecipitationFragment extends WeatherFragment {
         hourlyPrecipForecast = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(isTomorrow ? 1 : 0).getHourForecasts();
         rvPrecipitation.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         rvPrecipitation.setAdapter(new HourlyPrecipAdapter(hourlyPrecipForecast));
-//        dailyVolume.setText("  ".concat(String.valueOf(currentDay.getTotalprecipMm() == 0 ? Helper.decimalFormat(currentDay.getTotalprecipMm()) : currentDay.getTotalprecipMm()).concat(" mm")));
+        Day currentDay = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(isTomorrow ? 1 : 0).getDay();
+        dailyVolume.setText("  ".concat(String.valueOf(currentDay.getTotalprecipMm() == 0 ? Helper.decimalFormat(currentDay.getTotalprecipMm()) : currentDay.getTotalprecipMm()).concat(" mm")));
         volume.setText("Volume\n(mm)");
     }
 }

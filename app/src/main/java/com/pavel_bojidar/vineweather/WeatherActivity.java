@@ -239,8 +239,8 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         loadingView.setVisibility(View.GONE);
 
         CurrentWeather currentWeather = AppManager.getInstance().getCurrentLocation().getCurrentWeather();
-        navDrawerImage.setImageDrawable(Helper.chooseWeatherConditionIcon(this ,currentWeather.getIs_day() == 1,
-                currentWeather.getCondition().getIcon()));
+        navDrawerImage.setImageDrawable(Helper.chooseConditionIcon(this ,currentWeather.getIs_day() == 1,
+                currentWeather.getCondition().getText()));
         navDrawerCondition.setText(currentWeather.getCondition().getText());
         navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempC()).concat(Constants.CELSIUS_SYMBOL));
 

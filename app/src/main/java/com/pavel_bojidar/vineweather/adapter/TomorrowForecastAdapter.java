@@ -40,16 +40,9 @@ public class TomorrowForecastAdapter extends RecyclerView.Adapter<DayForecastVie
             holder.itemView.setBackgroundResource(R.color.highlightedRow);
         }
         holder.date.setText(Helper.getUnixDate(hourForecast.getTimeEpoch()));
-        holder.temp.setText(Helper.decimalFormat(hourForecast.getTempC()) + Constants.CELSIUS_SYMBOL);
+        holder.temp.setText(Helper.decimalFormat(hourForecast.getTempC()).concat(Constants.CELSIUS_SYMBOL));
         holder.hour.setText(Helper.getUnixHour(hourForecast.getTimeEpoch()));
         holder.condition.setText(hourForecast.getCondition().getText());
-
-        holder.itemView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //todo show detailed dayForecast
-            }
-        });
     }
 
     @Override

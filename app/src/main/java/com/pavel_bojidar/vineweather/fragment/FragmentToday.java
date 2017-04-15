@@ -152,8 +152,8 @@ public class FragmentToday extends WeatherFragment {
             }
         }
 
-        weatherIcon.setImageDrawable(Helper.chooseWeatherConditionIcon(parent.getContext(), currentLocation.getCurrentWeather().getIs_day() == 1,
-                currentLocation.getCurrentWeather().getCondition().getIcon()));
+        weatherIcon.setImageDrawable(Helper.chooseConditionIcon(parent.getContext(), currentLocation.getCurrentWeather().getIs_day() == 1,
+                currentLocation.getCurrentWeather().getCondition().getText()));
         degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempC()).concat(Constants.CELSIUS_SYMBOL));
         condition.setText(currentLocation.getCurrentWeather().getCondition().getText());
         feelsLike.setText("Feels like ".concat(Helper.decimalFormat(currentLocation.getCurrentWeather().getFeelslikeC())));

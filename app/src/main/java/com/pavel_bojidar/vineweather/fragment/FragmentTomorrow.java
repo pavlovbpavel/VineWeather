@@ -117,7 +117,7 @@ public class FragmentTomorrow extends WeatherFragment {
                 .concat(String.valueOf(Helper.decimalFormat(tomorrow.getMaxtempC())
                         .concat(CELSIUS_SYMBOL).concat(ARROW_UP).concat(INTERPUNKT).concat(NIGHT)
                         .concat(Helper.decimalFormat(tomorrow.getMintempC()).concat(CELSIUS_SYMBOL).concat(ARROW_DOWN)))));
-        conditionImage.setImageDrawable(Helper.chooseWeatherConditionIcon(getContext(), true, tomorrow.getCondition().getIcon()));
+        conditionImage.setImageDrawable(Helper.chooseConditionIcon(getContext(), true, tomorrow.getCondition().getText()));
         hourlyTempForecast.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         hourlyTempForecast.setAdapter(new HourlyTempAdapter(tomorrowHourly, 1));
     }
