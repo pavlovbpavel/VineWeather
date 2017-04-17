@@ -83,9 +83,6 @@ public class FragmentTomorrow extends WeatherFragment {
         fragmentTransaction.add(R.id.tomorrow_details_container, new FragmentTomorrowDetails());
         fragmentTransaction.add(R.id.tomorrow_wind_container, WindFragment.newInstance(true));
 
-        tomorrowHourly = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getHourForecasts();
-        tomorrow = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getDay();
-
         fragmentTransaction.add(R.id.tomorrow_precipitation_container, PrecipitationFragment.newInstance(true));
         fragmentTransaction.commit();
     }
@@ -110,6 +107,8 @@ public class FragmentTomorrow extends WeatherFragment {
     }
 
     private void bindData() {
+        tomorrowHourly = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getHourForecasts();
+        tomorrow = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getDay();
         int unixTS = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getDateEpoch();
         date.setText(Helper.getWeekDay(Helper.getUnixDate(unixTS)).concat(Helper.getUnixCustomDate(unixTS)));
         condition.setText(tomorrow.getCondition().getText());

@@ -49,6 +49,8 @@ public class FutureForecastAdapter extends RecyclerView.Adapter<ForecastViewHold
 
         if (position % 2 == 0) {
             holder.itemView.setBackgroundResource(R.color.highlightedRow);
+        } else {
+            holder.itemView.setBackgroundResource(R.color.row);
         }
 
         holder.layout.setOnClickListener(new OnClickListener() {

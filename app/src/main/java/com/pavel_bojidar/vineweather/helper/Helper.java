@@ -2,11 +2,9 @@ package com.pavel_bojidar.vineweather.helper;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
 
 import com.pavel_bojidar.vineweather.R;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -81,6 +79,49 @@ public class Helper {
         return filteredResult;
     }
 
+    public static Drawable choosePrecipitationIcon(Context context, double amount){
+        if(amount <= 0.1){
+            return context.getResources().getDrawable(R.drawable.droplet1);
+        }
+        if(amount > 0.1 && amount <= 0.5){
+            return context.getResources().getDrawable(R.drawable.droplet2);
+        }
+        if(amount > 0.5 && amount <= 1){
+            return context.getResources().getDrawable(R.drawable.droplet3);
+        }
+        if(amount > 1 && amount <= 1.5){
+            return context.getResources().getDrawable(R.drawable.droplet4);
+        }
+        if(amount > 1.5 && amount <= 2){
+            return context.getResources().getDrawable(R.drawable.droplet5);
+        }
+        if(amount > 2 && amount <= 3){
+            return context.getResources().getDrawable(R.drawable.droplet6);
+        }
+        if(amount > 3 && amount <= 4){
+            return context.getResources().getDrawable(R.drawable.droplet7);
+        }
+        if(amount > 4 && amount <= 5){
+            return context.getResources().getDrawable(R.drawable.droplet8);
+        }
+        if(amount > 5 && amount <= 6.5){
+            return context.getResources().getDrawable(R.drawable.droplet9);
+        }
+        if(amount > 6.5 && amount <= 7.5){
+            return context.getResources().getDrawable(R.drawable.droplet10);
+        }
+        if(amount > 7.5 && amount <= 8.5){
+            return context.getResources().getDrawable(R.drawable.droplet11);
+        }
+        if(amount > 8.5 && amount <= 10){
+            return context.getResources().getDrawable(R.drawable.droplet12);
+        }
+        if(amount > 10){
+            return context.getResources().getDrawable(R.drawable.droplet13);
+        }
+        return context.getResources().getDrawable(R.drawable.droplet1);
+    }
+
     public static Drawable chooseConditionIcon(Context context, boolean isDay, String condition) {
         if (isDay) {
             switch (condition) {
@@ -106,6 +147,7 @@ public class Helper {
                     return context.getResources().getDrawable(R.drawable.snow_weather_icon);
                 case "Patchy snow nearby":
                 case "Light snow showers":
+                case "Patchy snow possible":
                     return context.getResources().getDrawable(R.drawable.snow_day_icon);
                 case "Light sleet":
                 case "Light sleet showers":
@@ -172,6 +214,7 @@ public class Helper {
                 case "Blowing snow":
                 case "Patchy snow nearby":
                 case "Light snow showers":
+                case "Patchy snow possible":
                     return context.getResources().getDrawable(R.drawable.snow_night_icon);
                 case "Mist":
                 case "Fog":
@@ -220,6 +263,7 @@ public class Helper {
                 case "Moderate or heavy showers of ice pellets":
                 case "Patchy light rain in area with thunder":
                 case "Moderate or heavy rain in area with thunder":
+                case "Moderate or heavy rain with thunder":
                 case "Light showers of ice pellets":
                 case "Patchy light rain with thunder":
                     return context.getResources().getDrawable(R.drawable.storm_weather_night_icon);

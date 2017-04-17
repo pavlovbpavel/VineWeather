@@ -35,6 +35,7 @@ public class HourlyPrecipAdapter extends RecyclerView.Adapter<HourlyPrecipViewHo
         HourForecast currentHour = hourlyPrecip.get(position);
         holder.volume.setText(String.valueOf(currentHour.getPrecipMm() == 0 ? "-" : currentHour.getPrecipMm()));
         holder.hour.setText(Helper.getUnixAmPmHour(currentHour.getTimeEpoch()));
+        holder.drop.setImageDrawable(Helper.choosePrecipitationIcon(holder.itemView.getContext(), currentHour.getPrecipMm()));
     }
 
     @Override
