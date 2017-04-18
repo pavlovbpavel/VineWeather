@@ -29,7 +29,7 @@ public class RecentListAdapter extends RecyclerView.Adapter<FavoriteLocationView
 
     @Override
     public FavoriteLocationViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new FavoriteLocationViewHolder(parent.inflate(parent.getContext(), R.layout.row_favorites, null));
+        return new FavoriteLocationViewHolder(parent.inflate(parent.getContext(), R.layout.row_recents, null));
     }
 
     @Override

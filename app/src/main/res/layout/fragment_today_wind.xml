@@ -37,8 +37,8 @@
 
             <ImageView
                 android:id="@+id/today_wind_direction"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_marginTop="12dp"
                 android:gravity="center"
                 android:src="@drawable/ic_navigation_black_24dp"
