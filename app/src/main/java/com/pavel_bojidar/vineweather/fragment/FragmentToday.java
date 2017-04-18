@@ -12,12 +12,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.Constants;
@@ -29,10 +29,6 @@ import com.pavel_bojidar.vineweather.model.maindata.Forecast;
 import com.pavel_bojidar.vineweather.model.maindata.Location;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
-
 /**
  * Created by Pavel Pavlov on 3/7/2017.
  */
@@ -40,7 +36,7 @@ import java.util.TimeZone;
 public class FragmentToday extends WeatherFragment {
 
     Forecast forecast;
-    LinearLayout parent;
+    RelativeLayout parent;
     DayForecast currentDay;
     Location currentLocation;
     RecyclerView recyclerView;
@@ -51,19 +47,14 @@ public class FragmentToday extends WeatherFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_todayy, null);
-
-        date = (TextView) view.findViewById(R.id.fragment_1_date);
         windSpeed = (TextView) view.findViewById(R.id.today_wind_speed);
         degrees = (TextView) view.findViewById(R.id.fragment_1_degrees);
-        pressure = (TextView) view.findViewById(R.id.fragment_1_pressure);
         weatherIcon = (ImageView) view.findViewById(R.id.fragment_1_image);
         condition = (TextView) view.findViewById(R.id.fragment_1_condition);
         feelsLike = (TextView) view.findViewById(R.id.fragment_1_feels_like);
         windCondition = (TextView) view.findViewById(R.id.today_wind_condition);
         windDirection = (ImageView) view.findViewById(R.id.today_wind_direction);
-
         recyclerView = (RecyclerView) view.findViewById(R.id.layout_rv_hours_forecast);
-
         currentLocation = AppManager.getInstance().getCurrentLocation();
         return view;
     }
@@ -74,7 +65,7 @@ public class FragmentToday extends WeatherFragment {
         Point size = new Point();
         getActivity().getWindowManager().getDefaultDisplay().getSize(size);
         int screenHeight = size.y;
-        parent = (LinearLayout) getActivity().findViewById(R.id.today_parent);
+        parent = (RelativeLayout) getActivity().findViewById(R.id.today_parent);
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) parent.getLayoutParams();
         AppBarLayout appbar = (AppBarLayout) getActivity().findViewById(R.id.app_bar);
         int appbarHeight = appbar.getHeight();
@@ -117,48 +108,11 @@ public class FragmentToday extends WeatherFragment {
     }
 
     private void bindData() {
-        SimpleDateFormat simpleDate = new SimpleDateFormat("MMMM dd, hh:mm");
-        simpleDate.setTimeZone(TimeZone.getTimeZone("GMT+3"));
-        String format = simpleDate.format(new Date());
-
-        String weather = currentLocation.getCurrentWeather().getCondition().getText();
-        if (currentLocation.getCurrentWeather().getIs_day() == 1) {
-            switch (weather) {
-                case Constants.SUNNY:
-                    parent.setBackgroundResource(R.drawable.sunny_day);
-                    break;
-                case Constants.PARTLY_CLOUDY:
-                    parent.setBackgroundResource(R.drawable.partly_cloudy_day);
-                    break;
-                case Constants.CLEAR:
-                    parent.setBackgroundResource(R.drawable.clear_day);
-                    break;
-                case Constants.HEAVY_RAIN:
-                    parent.setBackgroundResource(R.drawable.heavy_rain_day);
-                    break;
-            }
-        }
-        if (currentLocation.getCurrentWeather().getIs_day() == 0) {
-            switch (weather) {
-                case Constants.PARTLY_CLOUDY:
-                    parent.setBackgroundResource(R.drawable.partly_cloudy_night);
-                    break;
-                case Constants.CLEAR:
-                    parent.setBackgroundResource(R.drawable.clear_night);
-                    break;
-                case Constants.HEAVY_RAIN:
-                    parent.setBackgroundResource(R.drawable.heavy_rain_night);
-                    break;
-            }
-        }
-
         weatherIcon.setImageDrawable(Helper.chooseConditionIcon(parent.getContext(), currentLocation.getCurrentWeather().getIs_day() == 1,
                 currentLocation.getCurrentWeather().getCondition().getText()));
         degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempC()).concat(Constants.CELSIUS_SYMBOL));
         condition.setText(currentLocation.getCurrentWeather().getCondition().getText());
-        feelsLike.setText("Feels like ".concat(Helper.decimalFormat(currentLocation.getCurrentWeather().getFeelslikeC())));
-        date.setText(format);
-
+        feelsLike.setText("Feels like ".concat(Helper.decimalFormat(currentLocation.getCurrentWeather().getFeelslikeC())).concat(Constants.CELSIUS_SYMBOL));
     }
 
     @Override

@@ -13,6 +13,7 @@
     <color name="forecastAppBarColorDark">#1A237E</color>
 
     <color name="tomorrowBackground">#9FA8DA</color>
+    <color name="todayBackground">#9fccda</color>
 
     <color name="todayAppBarColor">#7ba2c4</color>
     <color name="todayAppBarColorDark">#6385a3</color>
