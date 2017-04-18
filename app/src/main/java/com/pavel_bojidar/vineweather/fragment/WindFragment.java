@@ -4,6 +4,7 @@ package com.pavel_bojidar.vineweather.fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -112,6 +113,19 @@ public class WindFragment extends WeatherFragment {
             condition.setText(getCondition(currentWeather.getWindKph()));
             windDirection.setText(currentWeather.getWindDir());
             currentWindSpeed.setText(Helper.decimalFormat(currentWeather.getWindKph()));
+            int windSpeed = (int)currentWeather.getWindKph();
+            if (windSpeed <= 5){
+                currentWindSpeed.setTextColor(Color.parseColor("#fa599ec6"));
+            }
+            if (windSpeed > 5 && windSpeed <= 20){
+                currentWindSpeed.setTextColor(Color.parseColor("#fa3085b6"));
+            }
+            if (windSpeed > 20 && windSpeed <= 50){
+                currentWindSpeed.setTextColor(Color.parseColor("#fa2d9684"));
+            }
+            if (windSpeed > 50 && windSpeed <= 250){
+                currentWindSpeed.setTextColor(Color.parseColor("#faa93230"));
+            }
         }
     }
 
