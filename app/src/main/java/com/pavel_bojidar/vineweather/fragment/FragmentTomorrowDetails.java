@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
+import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.Astro;
 import com.pavel_bojidar.vineweather.model.maindata.Day;
@@ -55,8 +56,13 @@ public class FragmentTomorrowDetails extends WeatherFragment{
         Astro tomorrowAstro = currentLocation.getForecast().getDayForecasts().get(1).getAstro();
 
         humidity.setText(String.valueOf(Helper.decimalFormat(tomorrow.getAvgHumidity()).concat(HUMIDITY_SYMBOL)));
-        max.setText(String.valueOf(Helper.decimalFormat(tomorrow.getMaxtempC()).concat(CELSIUS_SYMBOL).concat(", ")));
-        min.setText(String.valueOf(Helper.decimalFormat(tomorrow.getMintempC()).concat(CELSIUS_SYMBOL)));
+        if(WeatherActivity.isFahrenheit){
+            max.setText(String.valueOf(Helper.decimalFormat(tomorrow.getMaxtempF()).concat(CELSIUS_SYMBOL).concat(", ")));
+            min.setText(String.valueOf(Helper.decimalFormat(tomorrow.getMintempF()).concat(CELSIUS_SYMBOL)));
+        } else {
+            max.setText(String.valueOf(Helper.decimalFormat(tomorrow.getMaxtempC()).concat(CELSIUS_SYMBOL).concat(", ")));
+            min.setText(String.valueOf(Helper.decimalFormat(tomorrow.getMintempC()).concat(CELSIUS_SYMBOL)));
+        }
         visibility.setText(String.valueOf(Helper.decimalFormat(tomorrow.getAvgVisibility_km()).concat(" " + Constants.KM)));
         astro.setText(tomorrowAstro.getSunrise().concat(", ").concat(tomorrowAstro.getSunset()));
     }

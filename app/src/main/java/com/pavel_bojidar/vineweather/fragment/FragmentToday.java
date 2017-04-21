@@ -100,12 +100,6 @@ public class FragmentToday extends WeatherFragment {
         if (AppManager.getInstance().getCurrentLocation() != null) {
             bindData();
         }
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        recyclerView.setAdapter(new HourlyTempAdapter(currentDay.getHourForecasts(), 0));
-
-        if (recyclerView.getAdapter() != null) {
-            recyclerView.getAdapter().notifyDataSetChanged();
-        }
     }
 
     private void bindData() {
@@ -120,6 +114,12 @@ public class FragmentToday extends WeatherFragment {
         }
         condition.setText(currentLocation.getCurrentWeather().getCondition().getText());
 
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setAdapter(new HourlyTempAdapter(currentDay.getHourForecasts(), 0));
+
+        if (recyclerView.getAdapter() != null) {
+            recyclerView.getAdapter().notifyDataSetChanged();
+        }
     }
 
     @Override

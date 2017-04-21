@@ -253,17 +253,12 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             setViewPagerAdapter();
         }
 
-        //todo set updated location as current in shared preferences
-
-        Log.e("task completed", "on location updated");
         AppManager.getInstance().onLocationUpdated(this);
     }
 
     private void initViews() {
-        //init toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        //init view from header navigation drawer
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View hView =  navigationView.getHeaderView(0);
 
@@ -273,7 +268,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
         setSupportActionBar(toolbar);
 
-        //init search field and call performSearch logic
         searchField = (EditText) findViewById(R.id.search_field);
         searchField.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
@@ -321,7 +315,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             }
         });
 
-        //init navigation drawer and set toggle
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
@@ -333,13 +326,10 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        //init progress bar
         loadingView = (ProgressBar) findViewById(R.id.loading_view);
 
-        //init recent locations recyclerView
         recentLocationRecyclerView = (RecyclerView) findViewById(R.id.favorite_location_list);
 
-        //init tabLayout and viewPager
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.addTab(tabLayout.newTab().setText("Today"));
         tabLayout.addTab(tabLayout.newTab().setText("Tomorrow"));
@@ -348,17 +338,17 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
         appBar = (AppBarLayout) findViewById(R.id.app_bar);
 
-        //todo change switch to set imperial/metric units
         navDrawerSwitch = (Switch) findViewById(R.id.nav_drawer_switch);
         navDrawerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 isFahrenheit = isChecked;
                 startWeatherTasks();
+                drawer.closeDrawer(GravityCompat.START);
+                viewPager.setCurrentItem(0);
             }
         });
 
-        //connect tabLayout with viewPager
         tabLayout.setOnTabSelectedListener(new OnTabSelectedListener() {
             @Override
             public void onTabSelected(Tab tab) {
@@ -392,7 +382,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             }
         });
 
-        //connect viewPager with tabLayout
         viewPager.addOnPageChangeListener(new OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -410,7 +399,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     }
 
 
-    //set an adapter for the viewPager
     private void setViewPagerAdapter() {
         viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -434,7 +422,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         });
     }
 
-    //implement search logic
     private void performSearch(Editable s) {
         if (isNetworkAvailable()) {
             new GetLocations() {
@@ -449,7 +436,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                         //put all city names in an ArrayList and feed it to the SearchPopupWindow Adapter
                         for (int i = 0; i < callback.length(); i++) {
                             JSONObject currentItem = callback.getJSONObject(i);
-                            //todo format string utf-8
                             cityNames.add(currentItem.getString(KEY_NAME));
                         }
 
@@ -471,7 +457,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                                     searchPopupWindow.dismiss();
                                     addToRecentList(currentLocationName);
                                     currentLocationName = chosenCity;
-                                    //todo put the new current location in sharedpreferences
                                     hideKeyboard();
                                     searchField.setText(null);
                                     searchField.setHint(Helper.filterCityName(chosenCity));
@@ -493,7 +478,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         }
     }
 
-    //add to recent list
     private void addToRecentList(String cityName) {
 
         for (int i = 0; i < recentList.size(); i++) {
@@ -523,7 +507,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         edit.apply();
     }
 
-    //if an item is already in the list, but needs to be reordered
     private void reorderRecentList(String selectedLocationName) {
         recentList.remove(selectedLocationName);
         recentLocationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -532,7 +515,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         }
     }
 
-    //when an item from recent list is clicked
     @Override
     public void onRecentSelected(String selectedLocation) {
         drawer.closeDrawer(GravityCompat.START);
