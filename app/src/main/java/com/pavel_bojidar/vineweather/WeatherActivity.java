@@ -111,7 +111,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     BroadcastReceiver br;
     AlertDialog alertDialog;
     ArrayList<SearchCity> searchCities = new ArrayList<>();
-    public static boolean isCelsius;
+    public static boolean isFahrenheit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -242,7 +242,11 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         navDrawerImage.setImageDrawable(Helper.chooseConditionIcon(this ,currentWeather.getIs_day() == 1,
                 currentWeather.getCondition().getText()));
         navDrawerCondition.setText(currentWeather.getCondition().getText());
-        navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempC()).concat(Constants.CELSIUS_SYMBOL));
+        if (!isFahrenheit){
+            navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempC()).concat(Constants.CELSIUS_SYMBOL));
+        } else {
+            navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempF()).concat(Constants.CELSIUS_SYMBOL));
+        }
 
         setTitle(AppManager.getInstance().getCurrentLocation().getName());
         if (viewPager.getAdapter() == null) {
@@ -349,7 +353,8 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         navDrawerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                isCelsius = isChecked;
+                isFahrenheit = isChecked;
+                startWeatherTasks();
             }
         });
 

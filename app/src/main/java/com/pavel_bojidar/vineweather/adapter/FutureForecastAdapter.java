@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
+import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.adapter.FutureForecastAdapter.ForecastViewHolder;
 import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.DayForecast;
@@ -82,8 +83,13 @@ public class FutureForecastAdapter extends RecyclerView.Adapter<ForecastViewHold
         holder.condition.setText(currentDay.getDay().getCondition().getText());
         holder.sun.setText(currentDay.getAstro().getSunrise().concat(", ").concat(currentDay.getAstro().getSunset()));
         holder.moon.setText(currentDay.getAstro().getMoonrise().concat(", ").concat(currentDay.getAstro().getMoonset()));
-        holder.tempMax.setText(Helper.decimalFormat(currentDay.getDay().getMaxtempC()).concat(Constants.CELSIUS_SYMBOL));
-        holder.tempMin.setText(Helper.decimalFormat(currentDay.getDay().getMintempC()).concat(Constants.CELSIUS_SYMBOL));
+        if (!WeatherActivity.isFahrenheit) {
+            holder.tempMax.setText(Helper.decimalFormat(currentDay.getDay().getMaxtempC()).concat(Constants.CELSIUS_SYMBOL));
+            holder.tempMin.setText(Helper.decimalFormat(currentDay.getDay().getMintempC()).concat(Constants.CELSIUS_SYMBOL));
+        } else {
+            holder.tempMax.setText(Helper.decimalFormat(currentDay.getDay().getMaxtempF()).concat(Constants.CELSIUS_SYMBOL));
+            holder.tempMin.setText(Helper.decimalFormat(currentDay.getDay().getMintempF()).concat(Constants.CELSIUS_SYMBOL));
+        }
         holder.wind.setText(String.valueOf(Helper.decimalFormat(currentDay.getDay().getMaxwindKph())).concat(" " + Constants.KM_H));
         holder.humidity.setText(String.valueOf(Helper.decimalFormat(currentDay.getDay().getAvgHumidity()).concat(Constants.HUMIDITY_SYMBOL)));
         holder.conditionImage.setImageDrawable(Helper.chooseConditionIcon((holder.itemView.getContext()), true, currentDay.getDay().getCondition().getText()));

@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
+import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.adapter.HourlyTempAdapter;
 import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.DayForecast;
@@ -110,9 +111,15 @@ public class FragmentToday extends WeatherFragment {
     private void bindData() {
         weatherIcon.setImageDrawable(Helper.chooseConditionIcon(parent.getContext(), currentLocation.getCurrentWeather().getIs_day() == 1,
                 currentLocation.getCurrentWeather().getCondition().getText()));
-        degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempC()).concat(Constants.CELSIUS_SYMBOL));
+        if (!WeatherActivity.isFahrenheit) {
+            degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempC()).concat(Constants.CELSIUS_SYMBOL));
+            feelsLike.setText("Feels like ".concat(Helper.decimalFormat(currentLocation.getCurrentWeather().getFeelslikeC())).concat(Constants.CELSIUS_SYMBOL));
+        } else {
+            degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempF()).concat(Constants.CELSIUS_SYMBOL));
+            feelsLike.setText("Feels like ".concat(Helper.decimalFormat(currentLocation.getCurrentWeather().getFeelslikeF())).concat(Constants.CELSIUS_SYMBOL));
+        }
         condition.setText(currentLocation.getCurrentWeather().getCondition().getText());
-        feelsLike.setText("Feels like ".concat(Helper.decimalFormat(currentLocation.getCurrentWeather().getFeelslikeC())).concat(Constants.CELSIUS_SYMBOL));
+
     }
 
     @Override

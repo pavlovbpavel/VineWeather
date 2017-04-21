@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
+import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.adapter.HourlyTempAdapter.HourlyForecastViewHolder;
 import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.HourForecast;
@@ -48,7 +49,11 @@ public class HourlyTempAdapter extends RecyclerView.Adapter<HourlyForecastViewHo
     @Override
     public void onBindViewHolder(HourlyForecastViewHolder holder, int position) {
         HourForecast currentHour = forecast.get(position);
-        holder.degrees.setText(Helper.decimalFormat(currentHour.getTempC()).concat(Constants.CELSIUS_SYMBOL));
+        if (!WeatherActivity.isFahrenheit) {
+            holder.degrees.setText(Helper.decimalFormat(currentHour.getTempC()).concat(Constants.CELSIUS_SYMBOL));
+        } else {
+            holder.degrees.setText(Helper.decimalFormat(currentHour.getTempF()).concat(Constants.CELSIUS_SYMBOL));
+        }
         holder.hour.setText(Helper.getUnixAmPmHour(currentHour.getTimeEpoch()));
         holder.icon.setImageDrawable(Helper.chooseConditionIcon(holder.itemView.getContext(), currentHour.getIsDay() == 1, currentHour.getCondition().getText()));
     }
