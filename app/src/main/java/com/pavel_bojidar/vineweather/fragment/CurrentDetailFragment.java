@@ -22,10 +22,8 @@ import com.pavel_bojidar.vineweather.singleton.AppManager;
  */
 public class CurrentDetailFragment extends WeatherFragment {
 
-    TextView humidity;
-    TextView wind;
-    TextView pressure;
-    TextView visibility;
+    TextView humidity, wind, pressure, visibility, sunDetail, moonDetail;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -36,6 +34,8 @@ public class CurrentDetailFragment extends WeatherFragment {
         wind = (TextView) view.findViewById(R.id.today_wind_detail);
         pressure = (TextView) view.findViewById(R.id.today_pressure_detail);
         visibility = (TextView) view.findViewById(R.id.today_visibility_detail);
+        sunDetail = (TextView) view.findViewById(R.id.today_sun_detail);
+        moonDetail = (TextView) view.findViewById(R.id.today_moon_detail);
 
         return view;
     }
@@ -55,7 +55,10 @@ public class CurrentDetailFragment extends WeatherFragment {
         wind.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getWindKph()) + " " + Constants.KM_H);
         pressure.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getPressureMb()) + Constants.KEY_PRESSURE_MBar);
         visibility.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getVisability_km()) + " " + Constants.KM);
-
+        sunDetail.setText(currentLocation.getForecast().getDayForecasts().get(0).getAstro().getSunrise().concat(", ")
+                .concat(currentLocation.getForecast().getDayForecasts().get(0).getAstro().getSunset()));
+        moonDetail.setText(currentLocation.getForecast().getDayForecasts().get(0).getAstro().getMoonrise().concat(", ")
+                .concat(currentLocation.getForecast().getDayForecasts().get(0).getAstro().getMoonset()));
     }
 
     @Override
