@@ -87,10 +87,11 @@ public class WidgetService extends Service {
 
                     JSONObject currentObj = callObject.getJSONObject("current");
                     degree = currentObj.getDouble("temp_c");
+                    isDay = currentObj.getInt(Constants.KEY_IS_DAY);
 
                     JSONObject conditionObj = currentObj.getJSONObject(Constants.NODE_CONDITION);
                     condition = conditionObj.getString(Constants.KEY_TEXT);
-                   // isDay = conditionObj.getInt(Constants.KEY_IS_DAY);
+
 
                     JSONObject forecastObj = callObject.getJSONObject(Constants.NODE_FORECAST);
                     JSONArray forecastDays = forecastObj.getJSONArray(Constants.NODE_FORECASTDAY);

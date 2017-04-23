@@ -39,6 +39,7 @@ public class MaPaWidgetProvider extends AppWidgetProvider {
             views.setTextViewText(R.id.condition_widget, WidgetService.condition);
 
             boolean isDay = WidgetService.isDay == 1;
+
             Drawable drawable = Helper.chooseConditionIcon(context.getApplicationContext(), isDay, WidgetService.condition);
             views.setImageViewResource(R.id.image_view_widget, Helper.imageWidget);
 
