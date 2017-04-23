@@ -36,14 +36,14 @@ import com.pavel_bojidar.vineweather.singleton.AppManager;
 
 public class FragmentToday extends WeatherFragment {
 
-    Forecast forecast;
-    RelativeLayout parent;
-    DayForecast currentDay;
-    Location currentLocation;
-    RecyclerView recyclerView;
-    ImageView weatherIcon, windDirection;
-    TextView degrees, condition, pressure, windCondition, windSpeed, date, feelsLike, lastUpdated;
-    FragmentManager fragmentManager;
+    protected Forecast forecast;
+    private RelativeLayout parent;
+    private DayForecast currentDay;
+    private Location currentLocation;
+    private RecyclerView recyclerView;
+    protected ImageView weatherIcon, windDirection;
+    protected TextView degrees, condition, windCondition, windSpeed, feelsLike, lastUpdated;
+    protected FragmentManager fragmentManager;
 
     @Nullable
     @Override

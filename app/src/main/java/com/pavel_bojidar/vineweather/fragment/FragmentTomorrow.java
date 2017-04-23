@@ -43,13 +43,13 @@ import static com.pavel_bojidar.vineweather.Constants.NIGHT;
 
 public class FragmentTomorrow extends WeatherFragment {
 
-    private RelativeLayout mainLayout;
+    protected RelativeLayout mainLayout;
     private RecyclerView hourlyTempForecast;
-    private Day tomorrow;
+    protected Day tomorrow;
     private TextView date, condition, temp;
     private ImageView conditionImage;
-    private ArrayList<HourForecast> tomorrowHourly;
-    private FragmentManager fragmentManager;
+    protected ArrayList<HourForecast> tomorrowHourly;
+    protected FragmentManager fragmentManager;
 
     @Nullable
     @Override

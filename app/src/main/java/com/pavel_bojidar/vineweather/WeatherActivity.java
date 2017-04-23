@@ -33,6 +33,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -98,6 +100,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static android.support.v4.view.ViewPager.SCROLL_STATE_DRAGGING;
 import static com.pavel_bojidar.vineweather.Constants.KEY_NAME;
 
 
@@ -120,13 +123,14 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     private Timer inputDelay;
     private ImageView navDrawerImage;
     private TextView navDrawerDegree, navDrawerCondition;
-    private Switch navDrawerSwitch;
+    Switch navDrawerSwitch;
     private AlertDialog alertDialog;
     private ArrayList<SearchCity> searchCities = new ArrayList<>();
     public static boolean isFahrenheit;
     private int currentTabColor = R.color.todayAppBarColor;
     private GoogleApiClient mGoogleApiClient;
     private boolean isInitialRun = true;
+    private SwipeRefreshLayout swipeRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,7 +199,12 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     private void startWeatherTasks() {
         if (isNetworkAvailable()) {
             loadingView.setVisibility(View.VISIBLE);
-
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    viewPager.setVisibility(View.GONE);
+                }
+            });
             new GetCurrentWeather(new WeakReference<Activity>(this)) {
                 @Override
                 protected void onPostExecute(String result) {
@@ -253,7 +262,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         }
         weatherTasksCompleted[0] = false;
         weatherTasksCompleted[1] = false;
-        tabLayout.setVisibility(View.VISIBLE);
         viewPager.setVisibility(View.VISIBLE);
         loadingView.setVisibility(View.GONE);
 
@@ -278,6 +286,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             isInitialRun = false;
             removeFromRecentList(currentLocationName);
         }
+        swipeRefresh.setRefreshing(false);
     }
 
     private void initViews() {
@@ -285,6 +294,14 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View hView = navigationView.getHeaderView(0);
+
+        swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        swipeRefresh.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                startWeatherTasks();
+            }
+        });
 
         navDrawerImage = (ImageView) hView.findViewById(R.id.nav_drawer_image);
         navDrawerDegree = (TextView) hView.findViewById(R.id.nav_drawer_degree);
@@ -390,7 +407,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                 isFahrenheit = isChecked;
                 startWeatherTasks();
                 drawer.closeDrawer(GravityCompat.START);
-                viewPager.setCurrentItem(0, true);
             }
         });
 
@@ -439,6 +455,11 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
             @Override
             public void onPageScrollStateChanged(int state) {
+                if (state == SCROLL_STATE_DRAGGING) {
+                    swipeRefresh.setEnabled(false);
+                } else {
+                    swipeRefresh.setEnabled(true);
+                }
             }
         });
     }
@@ -514,7 +535,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                                     searchField.clearFocus();
                                     getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_PAN);
                                     search.setIcon(R.drawable.ic_search_black_24dp);
-                                    viewPager.setCurrentItem(0, true);
                                     startWeatherTasks();
                                 }
                             });
@@ -603,7 +623,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                 protected void onPostExecute(Void location) {
                     super.onPostExecute(location);
                     searchField.setHint(Helper.filterCityName(currentLocationName));
-                    viewPager.setCurrentItem(0, true);
                 }
             }.execute(selectedLocation);
         }
