@@ -1,5 +1,6 @@
 package com.pavel_bojidar.vineweather;
 
+import android.Manifest;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -9,16 +10,22 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TabLayout.OnTabSelectedListener;
 import android.support.design.widget.TabLayout.Tab;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
@@ -53,7 +60,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.pavel_bojidar.vineweather.NetworkReceiver.ConnectivityChanged;
@@ -70,6 +81,7 @@ import com.pavel_bojidar.vineweather.singleton.AppManager;
 import com.pavel_bojidar.vineweather.task.GetCurrentWeather;
 import com.pavel_bojidar.vineweather.task.GetForecast;
 import com.pavel_bojidar.vineweather.task.GetLocations;
+import com.pavel_bojidar.vineweather.widget.MaPaWidgetProvider;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -89,7 +101,7 @@ import static android.support.v4.view.ViewPager.SCROLL_STATE_DRAGGING;
 import static com.pavel_bojidar.vineweather.Constants.KEY_NAME;
 
 
-public class WeatherActivity extends AppCompatActivity implements RecentSelectedListener, ConnectionCallbacks, OnConnectionFailedListener {
+public class WeatherActivity extends AppCompatActivity implements RecentSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private DrawerLayout drawer;
     private AppBarLayout appBar;
@@ -129,6 +141,8 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         buildGoogleApiClient();
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
+        MaPaWidgetProvider.startService(this);
     }
 
     private void buildGoogleApiClient() {
@@ -295,7 +309,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         setSupportActionBar(toolbar);
 
         searchField = (EditText) findViewById(R.id.search_field);
-        searchField.setOnClickListener(new OnClickListener() {
+        searchField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (searchField.hasFocus()) {
@@ -710,9 +724,9 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(this, permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (VERSION.SDK_INT >= VERSION_CODES.M) {
-                requestPermissions(new String[]{permission.ACCESS_FINE_LOCATION}, 123);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
             }
         } else {
             Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
@@ -728,6 +742,16 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == 123) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
                 Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                 if (mLastLocation != null) {
                     currentLocationName = String.valueOf(mLastLocation.getLatitude()).concat(" ").concat(String.valueOf(mLastLocation.getLongitude()));

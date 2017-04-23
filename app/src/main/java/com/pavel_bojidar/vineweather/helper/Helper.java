@@ -18,6 +18,8 @@ import java.util.TimeZone;
 
 public class Helper {
 
+    public static int imageWidget;
+
     public static String getUnixHour(long unixTS) {
         Date date = new Date(unixTS * 1000L);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
@@ -128,28 +130,37 @@ public class Helper {
         if (isDay) {
             switch (condition) {
                 case "Sunny":
+                    imageWidget = R.drawable.clear_day_icon;
                     return context.getResources().getDrawable(R.drawable.clear_day_icon);
                 case "Patchy light drizzle":
+                    imageWidget = R.drawable.mostly_cloudy_icon;
                     return context.getResources().getDrawable(R.drawable.mostly_cloudy_icon);
                 case "Freezing fog":
+                    imageWidget = R.drawable.haze_weather_icon;
                     return context.getResources().getDrawable(R.drawable.haze_weather_icon);
                 case "Overcast":
+                    imageWidget = R.drawable.windy_weather_icon;
                     return context.getResources().getDrawable(R.drawable.windy_weather_icon);
                 case "Partly cloudy":
+                    imageWidget = R.drawable.partly_cloudy_icon;
                     return context.getResources().getDrawable(R.drawable.partly_cloudy_icon);
                 case "Patchy sleet nearby":
+                    imageWidget = R.drawable.rain_snow_day_icon;
                     return context.getResources().getDrawable(R.drawable.rain_snow_day_icon);
                 case "Light showers of ice pellets":
                 case "Patchy light rain with thunder":
+                    imageWidget = R.drawable.storm_weather_day_icon;
                     return context.getResources().getDrawable(R.drawable.storm_weather_day_icon);
                 case "Thundery outbreaks in nearby":
                 case "Thundery outbreaks possible":
+                    imageWidget = R.drawable.thunder_day_icon;
                     return context.getResources().getDrawable(R.drawable.thunder_day_icon);
                 case "Blowing snow":
                     return context.getResources().getDrawable(R.drawable.snow_weather_icon);
                 case "Patchy snow nearby":
                 case "Light snow showers":
                 case "Patchy snow possible":
+                    imageWidget = R.drawable.snow_day_icon;
                     return context.getResources().getDrawable(R.drawable.snow_day_icon);
                 case "Light sleet":
                 case "Light sleet showers":
@@ -158,10 +169,12 @@ public class Helper {
                 case "Mist":
                 case "Fog":
                 case "Cloudy":
+                    imageWidget = R.drawable.cloudy_weather_icon;
                     return context.getResources().getDrawable(R.drawable.cloudy_weather_icon);
                 case "Patchy light snow in area with thunder":
                 case "Moderate or heavy snow in area with thunder":
                 case "Blizzard":
+                    imageWidget = R.drawable.thunder_weather_icon;
                     return context.getResources().getDrawable(R.drawable.thunder_weather_icon);
                 case "Patchy rain nearby":
                 case "Patchy freezing drizzle nearby":
@@ -169,6 +182,7 @@ public class Helper {
                 case "Patchy light rain":
                 case "Patchy rain possible":
                 case "Light rain shower":
+                    imageWidget = R.drawable.rainy_day_icon;
                     return context.getResources().getDrawable(R.drawable.rainy_day_icon);
                 case "Freezing drizzle":
                 case "Heavy freezing drizzle":
@@ -176,6 +190,7 @@ public class Helper {
                 case "Moderate or heavy freezing rain":
                 case "Moderate or heavy sleet":
                 case "Moderate or heavy sleet showers":
+                    imageWidget = R.drawable.rain_snow_icon;
                     return context.getResources().getDrawable(R.drawable.rain_snow_icon);
                 case "Moderate or heavy rain shower":
                 case "Torrential rain shower":
@@ -184,6 +199,7 @@ public class Helper {
                 case "Moderate rain":
                 case "Heavy rain at times":
                 case "Heavy rain":
+                    imageWidget = R.drawable.rainy_weather_icon;
                     return context.getResources().getDrawable(R.drawable.rainy_weather_icon);
                 case "Patchy light snow":
                 case "Light snow":
@@ -192,41 +208,52 @@ public class Helper {
                 case "Patchy heavy snow":
                 case "Heavy snow":
                 case "Moderate or heavy snow showers":
+                    imageWidget = R.drawable.snow_weather_icon;
                     return context.getResources().getDrawable(R.drawable.snow_weather_icon);
                 case "Ice pellets":
                 case "Moderate or heavy showers of ice pellets":
                 case "Patchy light rain in area with thunder":
                 case "Moderate or heavy rain in area with thunder":
+                    imageWidget = R.drawable.storm_weather_icon;
                     return context.getResources().getDrawable(R.drawable.storm_weather_icon);
                 default:
+                    imageWidget = R.drawable.unknown;
                     return context.getResources().getDrawable(R.drawable.unknown);
             }
         } else {
             switch (condition) {
                 case "Clear":
+                    imageWidget = R.drawable.clear_night_icon;
                     return context.getResources().getDrawable(R.drawable.clear_night_icon);
                 case "Patchy light drizzle":
+                    imageWidget = R.drawable.mostly_cloudy_night_icon;
                     return context.getResources().getDrawable(R.drawable.mostly_cloudy_night_icon);
                 case "Freezing fog":
+                    imageWidget = R.drawable.haze_night_icon;
                     return context.getResources().getDrawable(R.drawable.haze_night_icon);
                 case "Overcast":
+                    imageWidget = R.drawable.windy_night_icon;
                     return context.getResources().getDrawable(R.drawable.windy_night_icon);
                 case "Partly cloudy":
+                    imageWidget = R.drawable.partly_cloudy_night_icon;
                     return context.getResources().getDrawable(R.drawable.partly_cloudy_night_icon);
                 case "Blowing snow":
                 case "Patchy snow nearby":
                 case "Light snow showers":
                 case "Patchy snow possible":
+                    imageWidget = R.drawable.snow_night_icon;
                     return context.getResources().getDrawable(R.drawable.snow_night_icon);
                 case "Mist":
                 case "Fog":
                 case "Cloudy":
+                    imageWidget = R.drawable.cloudy_weather_icon;
                     return context.getResources().getDrawable(R.drawable.cloudy_weather_icon);
                 case "Thundery outbreaks in nearby":
                 case "Thundery outbreaks possible":
                 case "Patchy light snow in area with thunder":
                 case "Moderate or heavy snow in area with thunder":
                 case "Blizzard":
+                    imageWidget = R.drawable.thunder_night_icon;
                     return context.getResources().getDrawable(R.drawable.thunder_night_icon);
                 case "Freezing drizzle":
                 case "Heavy freezing drizzle":
@@ -238,6 +265,7 @@ public class Helper {
                 case "Patchy sleet nearby":
                 case "Light sleet showers":
                 case "Patchy sleet possible":
+                    imageWidget = R.drawable.rain_snow_night_icon;
                     return context.getResources().getDrawable(R.drawable.rain_snow_night_icon);
                 case "Moderate or heavy rain shower":
                 case "Torrential rain shower":
@@ -252,6 +280,7 @@ public class Helper {
                 case "Patchy rain possible":
                 case "Patchy light rain":
                 case "Light rain shower":
+                    imageWidget = R.drawable.rainy_night_icon;
                     return context.getResources().getDrawable(R.drawable.rainy_night_icon);
                 case "Patchy light snow":
                 case "Light snow":
@@ -260,6 +289,7 @@ public class Helper {
                 case "Patchy heavy snow":
                 case "Heavy snow":
                 case "Moderate or heavy snow showers":
+                    imageWidget = R.drawable.snow_weather_icon;
                     return context.getResources().getDrawable(R.drawable.snow_weather_icon);
                 case "Ice pellets":
                 case "Moderate or heavy showers of ice pellets":
@@ -268,8 +298,10 @@ public class Helper {
                 case "Moderate or heavy rain with thunder":
                 case "Light showers of ice pellets":
                 case "Patchy light rain with thunder":
+                    imageWidget = R.drawable.storm_weather_night_icon;
                     return context.getResources().getDrawable(R.drawable.storm_weather_night_icon);
                 default:
+                    imageWidget = R.drawable.unknown;
                     return context.getResources().getDrawable(R.drawable.unknown);
             }
         }

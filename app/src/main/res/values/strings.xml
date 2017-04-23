@@ -9,8 +9,8 @@
     <string name="title_activity_login">Sign in</string>
 
     <string name="units">UNITS</string>
-    <string name="c">C</string>
-    <string name="f">F</string>
+    <string name="c">°C</string>
+    <string name="f">°F</string>
     <string name="favotite_locations">RECENT LOCATIONS</string>
     <string name="wind">Wind</string>
     <string name="humidity">Humidity</string>
