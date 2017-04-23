@@ -48,11 +48,7 @@ public class FutureForecastAdapter extends RecyclerView.Adapter<ForecastViewHold
         LinearLayoutManager layoutManager = new LinearLayoutManager(holder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
         holder.hourlyForecast.setLayoutManager(layoutManager);
 
-        if (position % 2 == 0) {
-            holder.itemView.setBackgroundResource(R.color.highlightedRow);
-        } else {
-            holder.itemView.setBackgroundResource(R.color.row);
-        }
+        holder.itemView.setBackgroundResource(R.color.row);
 
         holder.layout.setOnClickListener(new OnClickListener() {
 

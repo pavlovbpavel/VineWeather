@@ -6,7 +6,6 @@
     android:layout_height="match_parent">
 
     <android.support.v7.widget.RecyclerView
-        android:background="#c8c6cbe9"
         android:id="@+id/weekly_forecast"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

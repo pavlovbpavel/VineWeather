@@ -199,12 +199,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     private void startWeatherTasks() {
         if (isNetworkAvailable()) {
             loadingView.setVisibility(View.VISIBLE);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    viewPager.setVisibility(View.GONE);
-                }
-            });
             new GetCurrentWeather(new WeakReference<Activity>(this)) {
                 @Override
                 protected void onPostExecute(String result) {

@@ -6,10 +6,10 @@
     <color name="separator">#8098a3a4</color>
     <color name="separatorTomorrow">#80bcc9ca</color>
 
-    <color name="highlightedRow">#d7c6cbe9</color>
-    <color name="row">#64c6cbe9</color>
+    <color name="highlightedRow">#FAFAFA</color>
+    <color name="row">#FFFFFF</color>
 
-    <color name="forecastAppBarColor">#283593</color>
+    <color name="forecastAppBarColor">#006064</color>
     <color name="forecastAppBarColorDark">#1A237E</color>
 
     <color name="tomorrowBackground">#9FA8DA</color>
