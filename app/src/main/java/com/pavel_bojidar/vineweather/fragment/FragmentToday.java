@@ -59,6 +59,7 @@ public class FragmentToday extends WeatherFragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.layout_rv_hours_forecast);
         lastUpdated = (TextView) view.findViewById(R.id.last_updated_tv);
         currentLocation = AppManager.getInstance().getCurrentLocation();
+
         return view;
     }
 
@@ -77,10 +78,12 @@ public class FragmentToday extends WeatherFragment {
 
         forecast = AppManager.getInstance().getCurrentLocation().getForecast();
         currentDay = forecast.getDayForecasts().get(0);
+        FragmentManager fragmentManager = getFragmentManager();
 
         fragmentManager = getChildFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         CurrentDetailFragment fragmentCurrentDetails = new CurrentDetailFragment();
+
         fragmentTransaction.add(R.id.layout_current_detail, fragmentCurrentDetails);
         fragmentTransaction.add(R.id.layout_wind_detail, WindFragment.newInstance(false));
         fragmentTransaction.add(R.id.layout_precip_detail, PrecipitationFragment.newInstance(false));

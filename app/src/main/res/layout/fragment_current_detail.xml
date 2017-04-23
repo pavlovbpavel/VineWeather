@@ -12,30 +12,25 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:text="Current Details"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"/>
+        android:textColor="@android:color/black"/>
 
     <LinearLayout
         android:layout_marginTop="4dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <TextView
             android:layout_weight="1"
             android:text="Humidity"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"/>
-
+            android:layout_height="wrap_content"/>
         <TextView
             android:id="@+id/today_humidity_percentage"
             android:layout_weight="1"
             android:text="content"
             android:textColor="@android:color/black"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"/>
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
     <LinearLayout
@@ -47,45 +42,34 @@
             android:layout_weight="1"
             android:text="Wind"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"/>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/today_wind_detail"
             android:layout_weight="1"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/today_wind_detail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="content"
-                android:textColor="@android:color/black"
-                android:textSize="15sp"/>
-        </LinearLayout>
-
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="content"
+            android:textColor="@android:color/black"/>
     </LinearLayout>
+
     <LinearLayout
         android:layout_marginTop="4dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <TextView
             android:id="@+id/textView2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Pressure"
-            android:textSize="15sp"/>
-
+            android:text="Pressure"/>
         <TextView
             android:id="@+id/today_pressure_detail"
             android:layout_weight="1"
             android:text="content"
             android:textColor="@android:color/black"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"/>
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
     <LinearLayout
@@ -96,14 +80,12 @@
         <TextView
             android:layout_weight="1"
             android:text="Visibility"
-            android:textSize="15sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"/>
         <TextView
             android:id="@+id/today_visibility_detail"
             android:layout_weight="1"
             android:text="content"
-            android:textSize="15sp"
             android:textColor="@android:color/black"
             android:layout_width="0dp"
             android:layout_height="wrap_content"/>
@@ -117,14 +99,12 @@
         <TextView
             android:layout_weight="1"
             android:text="Sunrise/sunset"
-            android:textSize="15sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"/>
         <TextView
             android:id="@+id/today_sun_detail"
             android:layout_weight="1"
             android:text="content"
-            android:textSize="15sp"
             android:textColor="@android:color/black"
             android:layout_width="0dp"
             android:layout_height="wrap_content"/>
@@ -138,14 +118,12 @@
         <TextView
             android:layout_weight="1"
             android:text="Moonrise/moonset"
-            android:textSize="15sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"/>
         <TextView
             android:id="@+id/today_moon_detail"
             android:layout_weight="1"
             android:text="content"
-            android:textSize="15sp"
             android:textColor="@android:color/black"
             android:layout_width="0dp"
             android:layout_height="wrap_content"/>
