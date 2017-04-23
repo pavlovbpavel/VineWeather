@@ -70,13 +70,15 @@ public class Helper {
 
     public static String filterCityName(String realName) {
         String filteredResult = null;
+        boolean hasComma = false;
         for (int i = 0; i < realName.length(); i++) {
             if (realName.charAt(i) == ',') {
+                hasComma = true;
                 filteredResult = realName.substring(0, i);
                 break;
             }
         }
-        return filteredResult;
+        return hasComma ? filteredResult : realName;
     }
 
     public static Drawable choosePrecipitationIcon(Context context, double amount){

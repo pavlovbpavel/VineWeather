@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.R;
-import com.pavel_bojidar.vineweather.adapter.RecentListAdapter.FavoriteLocationViewHolder;
+import com.pavel_bojidar.vineweather.adapter.RecentListAdapter.RecentLocationsViewHolder;
 import com.pavel_bojidar.vineweather.helper.Helper;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * Created by Pavel Pavlov on 3/11/2017.
  */
 
-public class RecentListAdapter extends RecyclerView.Adapter<FavoriteLocationViewHolder> {
+public class RecentListAdapter extends RecyclerView.Adapter<RecentLocationsViewHolder> {
 
     private ArrayList<String> locations;
 
@@ -28,12 +28,12 @@ public class RecentListAdapter extends RecyclerView.Adapter<FavoriteLocationView
     }
 
     @Override
-    public FavoriteLocationViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new FavoriteLocationViewHolder(parent.inflate(parent.getContext(), R.layout.row_recents, null));
+    public RecentLocationsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new RecentLocationsViewHolder(parent.inflate(parent.getContext(), R.layout.row_recents, null));
     }
 
     @Override
-    public void onBindViewHolder(FavoriteLocationViewHolder holder, final int position) {
+    public void onBindViewHolder(RecentLocationsViewHolder holder, final int position) {
         final String location = locations.get(position);
         holder.itemView.setOnClickListener(new OnClickListener() {
             @Override
@@ -49,11 +49,11 @@ public class RecentListAdapter extends RecyclerView.Adapter<FavoriteLocationView
         return locations.size();
     }
 
-    public class FavoriteLocationViewHolder extends RecyclerView.ViewHolder {
+    class RecentLocationsViewHolder extends RecyclerView.ViewHolder {
 
-        TextView name;
+        private TextView name;
 
-        public FavoriteLocationViewHolder(View itemView) {
+        RecentLocationsViewHolder(View itemView) {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.location_name);
         }

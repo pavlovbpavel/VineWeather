@@ -42,12 +42,13 @@ public class FragmentToday extends WeatherFragment {
     Location currentLocation;
     RecyclerView recyclerView;
     ImageView weatherIcon, windDirection;
-    TextView degrees, condition, pressure, windCondition, windSpeed, date, feelsLike;
+    TextView degrees, condition, pressure, windCondition, windSpeed, date, feelsLike, lastUpdated;
+    FragmentManager fragmentManager;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_todayy, null);
+        View view = inflater.inflate(R.layout.fragment_todayy, null, false);
         windSpeed = (TextView) view.findViewById(R.id.today_wind_speed);
         degrees = (TextView) view.findViewById(R.id.fragment_1_degrees);
         weatherIcon = (ImageView) view.findViewById(R.id.fragment_1_image);
@@ -56,6 +57,7 @@ public class FragmentToday extends WeatherFragment {
         windCondition = (TextView) view.findViewById(R.id.today_wind_condition);
         windDirection = (ImageView) view.findViewById(R.id.today_wind_direction);
         recyclerView = (RecyclerView) view.findViewById(R.id.layout_rv_hours_forecast);
+        lastUpdated = (TextView) view.findViewById(R.id.last_updated_tv);
         currentLocation = AppManager.getInstance().getCurrentLocation();
         return view;
     }
@@ -63,6 +65,7 @@ public class FragmentToday extends WeatherFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         Point size = new Point();
         getActivity().getWindowManager().getDefaultDisplay().getSize(size);
         int screenHeight = size.y;
@@ -74,11 +77,10 @@ public class FragmentToday extends WeatherFragment {
 
         forecast = AppManager.getInstance().getCurrentLocation().getForecast();
         currentDay = forecast.getDayForecasts().get(0);
-        FragmentManager fragmentManager = getFragmentManager();
 
+        fragmentManager = getChildFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         CurrentDetailFragment fragmentCurrentDetails = new CurrentDetailFragment();
-
         fragmentTransaction.add(R.id.layout_current_detail, fragmentCurrentDetails);
         fragmentTransaction.add(R.id.layout_wind_detail, WindFragment.newInstance(false));
         fragmentTransaction.add(R.id.layout_precip_detail, PrecipitationFragment.newInstance(false));
@@ -103,6 +105,7 @@ public class FragmentToday extends WeatherFragment {
     }
 
     private void bindData() {
+        lastUpdated.setText("Last updated: ".concat(AppManager.getInstance().getCurrentLocation().getCurrentWeather().getLastUpdated()));
         weatherIcon.setImageDrawable(Helper.chooseConditionIcon(parent.getContext(), currentLocation.getCurrentWeather().getIs_day() == 1,
                 currentLocation.getCurrentWeather().getCondition().getText()));
         if (!WeatherActivity.isFahrenheit) {

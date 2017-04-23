@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.AsyncTask;
 
 import com.pavel_bojidar.vineweather.WeatherActivity;
+import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.Astro;
 import com.pavel_bojidar.vineweather.model.Condition;
 import com.pavel_bojidar.vineweather.model.DayForecast;
@@ -52,6 +53,7 @@ import static com.pavel_bojidar.vineweather.Constants.KEY_MINTEMP_C;
 import static com.pavel_bojidar.vineweather.Constants.KEY_MINTEMP_F;
 import static com.pavel_bojidar.vineweather.Constants.KEY_MOONRISE;
 import static com.pavel_bojidar.vineweather.Constants.KEY_MOONSET;
+import static com.pavel_bojidar.vineweather.Constants.KEY_NAME;
 import static com.pavel_bojidar.vineweather.Constants.KEY_PRECIP_IN;
 import static com.pavel_bojidar.vineweather.Constants.KEY_PRECIP_MM;
 import static com.pavel_bojidar.vineweather.Constants.KEY_PRESSURE_IN;
@@ -81,6 +83,7 @@ import static com.pavel_bojidar.vineweather.Constants.NODE_DAY;
 import static com.pavel_bojidar.vineweather.Constants.NODE_FORECAST;
 import static com.pavel_bojidar.vineweather.Constants.NODE_FORECASTDAY;
 import static com.pavel_bojidar.vineweather.Constants.NODE_HOUR;
+import static com.pavel_bojidar.vineweather.Constants.NODE_LOCATION;
 
 /**
  * Created by Pavel Pavlov on 3/15/2017.
@@ -120,12 +123,13 @@ public class GetForecast extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-
+        String locationCallbackName = null;
         Forecast forecast = new Forecast();
         ArrayList<DayForecast> dayForecasts = new ArrayList<>();
         try {
             JSONObject jo = new JSONObject(result);
             JSONArray daysJsonArray = jo.getJSONObject(NODE_FORECAST).getJSONArray(NODE_FORECASTDAY);
+            locationCallbackName = jo.getJSONObject(NODE_LOCATION).getString(KEY_NAME);
             for (int i = 0; i < daysJsonArray.length(); i++) {
                 JSONObject currentDayJo = daysJsonArray.getJSONObject(i);
                 DayForecast currentDayForecast = new DayForecast();
@@ -217,6 +221,7 @@ public class GetForecast extends AsyncTask<String, Void, String> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        AppManager.getInstance().getCurrentLocation().setName(locationCallbackName);
         AppManager.getInstance().getCurrentLocation().setForecast(forecast);
         Activity activity = activityWeakReference.get();
         if (activity != null && activity instanceof WeatherActivity) {

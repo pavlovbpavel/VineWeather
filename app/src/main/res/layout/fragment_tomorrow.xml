@@ -95,7 +95,9 @@
         <LinearLayout
             android:id="@+id/tomorrow_details_container"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:orientation="vertical">
         </LinearLayout>
 
@@ -107,7 +109,9 @@
         <LinearLayout
             android:id="@+id/tomorrow_wind_container"
             android:layout_width="match_parent"
-            android:layout_height="260dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:orientation="vertical">
         </LinearLayout>
 
@@ -119,7 +123,9 @@
         <LinearLayout
             android:id="@+id/tomorrow_precipitation_container"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:orientation="vertical">
         </LinearLayout>
 

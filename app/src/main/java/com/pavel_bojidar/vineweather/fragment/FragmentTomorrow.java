@@ -43,17 +43,18 @@ import static com.pavel_bojidar.vineweather.Constants.NIGHT;
 
 public class FragmentTomorrow extends WeatherFragment {
 
-    RelativeLayout mainLayout;
-    RecyclerView hourlyTempForecast;
-    Day tomorrow;
-    TextView date, condition, temp;
-    ImageView conditionImage;
-    ArrayList<HourForecast> tomorrowHourly;
+    private RelativeLayout mainLayout;
+    private RecyclerView hourlyTempForecast;
+    private Day tomorrow;
+    private TextView date, condition, temp;
+    private ImageView conditionImage;
+    private ArrayList<HourForecast> tomorrowHourly;
+    private FragmentManager fragmentManager;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tomorrow, null);
+        View view = inflater.inflate(R.layout.fragment_tomorrow, null, false);
         hourlyTempForecast = (RecyclerView) view.findViewById(R.id.tomorrow_hourly_temp);
         date = (TextView) view.findViewById(R.id.tomorrow_date);
         condition = (TextView) view.findViewById(R.id.tomorrow_condition);
@@ -71,6 +72,7 @@ public class FragmentTomorrow extends WeatherFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         Point size = new Point();
         getActivity().getWindowManager().getDefaultDisplay().getSize(size);
         int screenHeight = size.y;
@@ -79,11 +81,12 @@ public class FragmentTomorrow extends WeatherFragment {
         AppBarLayout appbar = (AppBarLayout) getActivity().findViewById(R.id.app_bar);
         int appbarHeight = appbar.getHeight();
         params.height = screenHeight - getStatusBarHeight() - appbarHeight;
-        FragmentManager fragmentManager = getFragmentManager();
+
+        fragmentManager = getChildFragmentManager();
+
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.tomorrow_details_container, new FragmentTomorrowDetails());
         fragmentTransaction.add(R.id.tomorrow_wind_container, WindFragment.newInstance(true));
-
         fragmentTransaction.add(R.id.tomorrow_precipitation_container, PrecipitationFragment.newInstance(true));
         fragmentTransaction.commit();
     }

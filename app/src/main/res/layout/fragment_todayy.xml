@@ -107,7 +107,9 @@
         <LinearLayout
             android:id="@+id/layout_current_detail"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:orientation="vertical">
         </LinearLayout>
 
@@ -119,7 +121,9 @@
         <LinearLayout
             android:id="@+id/layout_wind_detail"
             android:layout_width="match_parent"
-            android:layout_height="280dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:orientation="vertical">
         </LinearLayout>
 
@@ -131,7 +135,9 @@
         <LinearLayout
             android:id="@+id/layout_precip_detail"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:orientation="vertical">
         </LinearLayout>
 

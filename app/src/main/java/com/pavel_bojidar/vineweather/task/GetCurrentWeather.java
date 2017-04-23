@@ -28,6 +28,7 @@ import static com.pavel_bojidar.vineweather.Constants.KEY_ICON;
 import static com.pavel_bojidar.vineweather.Constants.KEY_IS_DAY;
 import static com.pavel_bojidar.vineweather.Constants.KEY_LAST_UPDATED;
 import static com.pavel_bojidar.vineweather.Constants.KEY_LAST_UPDATED_EPOCH;
+import static com.pavel_bojidar.vineweather.Constants.KEY_NAME;
 import static com.pavel_bojidar.vineweather.Constants.KEY_PRECIP_IN;
 import static com.pavel_bojidar.vineweather.Constants.KEY_PRECIP_MM;
 import static com.pavel_bojidar.vineweather.Constants.KEY_PRESSURE_IN;
@@ -43,6 +44,7 @@ import static com.pavel_bojidar.vineweather.Constants.KEY_WIND_KPH;
 import static com.pavel_bojidar.vineweather.Constants.KEY_WIND_MPH;
 import static com.pavel_bojidar.vineweather.Constants.NODE_CONDITION;
 import static com.pavel_bojidar.vineweather.Constants.NODE_CURRENT;
+import static com.pavel_bojidar.vineweather.Constants.NODE_LOCATION;
 
 /**
  * Created by Pavel Pavlov on 3/15/2017.
@@ -81,9 +83,11 @@ public class GetCurrentWeather extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
+        String locationCallbackName = null;
         CurrentWeather currentWeather = new CurrentWeather();
         try {
             JSONObject jo = new JSONObject(result);
+            locationCallbackName = jo.getJSONObject(NODE_LOCATION).getString(KEY_NAME);
             if (jo.has(NODE_CURRENT)) {
                 JSONObject currentJo = jo.getJSONObject(NODE_CURRENT);
                 JSONObject conditionJo = currentJo.getJSONObject(NODE_CONDITION);
@@ -117,6 +121,7 @@ public class GetCurrentWeather extends AsyncTask<String, Void, String> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        AppManager.getInstance().getCurrentLocation().setName(locationCallbackName);
         AppManager.getInstance().getCurrentLocation().setCurrentWeather(currentWeather);
         Activity activity = activityWeakReference.get();
         if (activity != null && activity instanceof WeatherActivity) {
