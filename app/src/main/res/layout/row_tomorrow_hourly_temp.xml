@@ -5,11 +5,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="@color/separatorTomorrow"/>
-
     <TextView
         android:id="@+id/row_forecast_details_degrees"
         android:layout_width="wrap_content"
@@ -42,10 +37,5 @@
         android:layout_marginBottom="2dp"
         android:textColor="@android:color/black"
         android:textSize="16sp" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="@color/separatorTomorrow"/>
 
 </LinearLayout>

@@ -122,7 +122,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     private MenuItem search;
     private Timer inputDelay;
     private ImageView navDrawerImage;
-    private TextView navDrawerDegree, navDrawerCondition;
+    private TextView navDrawerDegree, navDrawerCondition, noLocationSelected;
     private Button celsiusButton, fahrenheitButton;
     private AlertDialog alertDialog;
     private ArrayList<SearchCity> searchCities = new ArrayList<>();
@@ -217,6 +217,9 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
     private void startWeatherTasks() {
         if (isNetworkAvailable()) {
+            if (noLocationSelected != null) {
+                noLocationSelected.setVisibility(View.GONE);
+            }
             loadingView.setVisibility(View.VISIBLE);
             new GetCurrentWeather(new WeakReference<Activity>(this)) {
                 @Override
@@ -300,7 +303,15 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
             isInitialRun = false;
             removeFromRecentList(currentLocationName);
-            addToRecentList(currentLocationName);
+
+            /*
+            runtime check if app is running on emulator or real device
+             */
+            if (!(Build.MODEL.contains("google_sdk") ||
+                    Build.MODEL.contains("Emulator") ||
+                    Build.MODEL.contains("Android SDK"))) {
+                addToRecentList(currentLocationName);
+            }
         }
         MaPaWidgetProvider.startService(this);
         swipeRefresh.setRefreshing(false);
@@ -309,16 +320,20 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
     public void onUnitSwapped() {
         CurrentWeather currentWeather = AppManager.getInstance().getCurrentLocation().getCurrentWeather();
-        if (!isImperialUnits) {
-            navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempC()).concat(Constants.CELSIUS_SYMBOL));
-        } else {
-            navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempF()).concat(Constants.CELSIUS_SYMBOL));
+        if (currentWeather != null) {
+            if (!isImperialUnits) {
+                navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempC()).concat(Constants.CELSIUS_SYMBOL));
+            } else {
+                navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempF()).concat(Constants.CELSIUS_SYMBOL));
+            }
         }
         AppManager.getInstance().onUnitSwapped(this);
     }
 
     private void initViews() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        noLocationSelected = (TextView) findViewById(R.id.no_location);
 
         celsiusButton = (Button) findViewById(R.id.nav_drawer_celsius_button);
         fahrenheitButton = (Button) findViewById(R.id.nav_drawer_fahrenheit_button);
@@ -796,6 +811,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                     Toast.makeText(this, "Permission not granted, please choose a location.", Toast.LENGTH_SHORT).show();
                     viewPager.setVisibility(View.GONE);
                     loadingView.setVisibility(View.GONE);
+                    noLocationSelected.setVisibility(View.VISIBLE);
                     setTitle(null);
                     searchField.setHint("Select a city");
                     searchField.clearFocus();

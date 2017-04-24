@@ -14,7 +14,7 @@
             android:id="@+id/main_layout_tomorrow"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/tomorrowBackground"
+            android:background="@drawable/fragment_tomorrow_gradient_background"
             android:orientation="vertical"
             android:padding="8dp">
 
@@ -28,7 +28,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
-                    android:layout_weight="1"
+                    android:layout_weight="3"
                     android:orientation="vertical">
 
                     <TextView
@@ -61,7 +61,7 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:orientation="vertical">
 
                     <ImageView
