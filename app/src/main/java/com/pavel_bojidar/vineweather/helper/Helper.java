@@ -68,6 +68,9 @@ public class Helper {
 
     public static String decimalFormat(double input) {
         DecimalFormat df = new DecimalFormat("##");
+        if(input < 0 && input > -1){
+            return "0";
+        }
         return df.format(input);
     }
 

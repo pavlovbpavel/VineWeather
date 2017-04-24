@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -47,6 +49,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.Window;
 import android.view.WindowManager;
@@ -54,6 +57,7 @@ import android.view.WindowManager.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -121,10 +125,10 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     private Timer inputDelay;
     private ImageView navDrawerImage;
     private TextView navDrawerDegree, navDrawerCondition;
-    Switch navDrawerSwitch;
+    private Button celsiusButton, fahrenheitButton;
     private AlertDialog alertDialog;
     private ArrayList<SearchCity> searchCities = new ArrayList<>();
-    public static boolean isFahrenheit;
+    public static boolean isImperialUnits;
     private int currentTabColor = R.color.todayAppBarColor;
     private int currentTabColorDark = R.color.todayAppBarColorDark;
     private GoogleApiClient mGoogleApiClient;
@@ -137,6 +141,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         setContentView(R.layout.activity_navigation_drawer);
 
         preferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        isImperialUnits = preferences.getString(Constants.KEY_UNIT_TYPE, "metric").equals("imperial");
 
         initViews();
 
@@ -264,7 +269,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         navDrawerImage.setImageDrawable(Helper.chooseConditionIcon(this, currentWeather.getIs_day() == 1, false,
                 currentWeather.getCondition().getText()));
         navDrawerCondition.setText(currentWeather.getCondition().getText());
-        if (!isFahrenheit) {
+        if (!isImperialUnits) {
             navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempC()).concat(Constants.CELSIUS_SYMBOL));
         } else {
             navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempF()).concat(Constants.CELSIUS_SYMBOL));
@@ -287,7 +292,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
     public void onUnitSwapped(){
         CurrentWeather currentWeather = AppManager.getInstance().getCurrentLocation().getCurrentWeather();
-        if (!isFahrenheit) {
+        if (!isImperialUnits) {
             navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempC()).concat(Constants.CELSIUS_SYMBOL));
         } else {
             navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempF()).concat(Constants.CELSIUS_SYMBOL));
@@ -297,6 +302,41 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
     private void initViews() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        celsiusButton = (Button) findViewById(R.id.nav_drawer_celsius_button);
+        fahrenheitButton = (Button) findViewById(R.id.nav_drawer_fahrenheit_button);
+
+        if(isImperialUnits){
+            fahrenheitButton.getBackground().clearColorFilter();
+            celsiusButton.getBackground().setColorFilter(Color.TRANSPARENT, PorterDuff.Mode.MULTIPLY);
+        } else {
+            celsiusButton.getBackground().clearColorFilter();
+            fahrenheitButton.getBackground().setColorFilter(Color.TRANSPARENT, PorterDuff.Mode.MULTIPLY);
+        }
+
+        celsiusButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isImperialUnits = false;
+                preferences.edit().putString(Constants.KEY_UNIT_TYPE, "metric").apply();
+                celsiusButton.getBackground().clearColorFilter();
+                fahrenheitButton.getBackground().setColorFilter(Color.TRANSPARENT, PorterDuff.Mode.MULTIPLY);
+                drawer.closeDrawer(GravityCompat.START);
+                onUnitSwapped();
+            }
+        });
+
+        fahrenheitButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isImperialUnits = true;
+                preferences.edit().putString(Constants.KEY_UNIT_TYPE, "imperial").apply();
+                fahrenheitButton.getBackground().clearColorFilter();
+                celsiusButton.getBackground().setColorFilter(Color.TRANSPARENT, PorterDuff.Mode.MULTIPLY);
+                drawer.closeDrawer(GravityCompat.START);
+                onUnitSwapped();
+            }
+        });
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View hView = navigationView.getHeaderView(0);
@@ -404,16 +444,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         tabLayout.setupWithViewPager(viewPager);
 
         appBar = (AppBarLayout) findViewById(R.id.app_bar);
-
-        navDrawerSwitch = (Switch) findViewById(R.id.nav_drawer_switch);
-        navDrawerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                isFahrenheit = isChecked;
-                drawer.closeDrawer(GravityCompat.START);
-                onUnitSwapped();
-            }
-        });
 
         tabLayout.setOnTabSelectedListener(new OnTabSelectedListener() {
             @Override

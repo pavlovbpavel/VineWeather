@@ -2,7 +2,6 @@ package com.pavel_bojidar.vineweather.adapter;
 
 import android.support.transition.AutoTransition;
 import android.support.transition.ChangeBounds;
-import android.support.transition.Fade;
 import android.support.transition.Transition;
 import android.support.transition.TransitionManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,7 +10,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -81,14 +79,15 @@ public class FutureForecastAdapter extends RecyclerView.Adapter<ForecastViewHold
         holder.condition.setText(currentDay.getDay().getCondition().getText());
         holder.sun.setText(currentDay.getAstro().getSunrise().concat(", ").concat(currentDay.getAstro().getSunset()));
         holder.moon.setText(currentDay.getAstro().getMoonrise().concat(", ").concat(currentDay.getAstro().getMoonset()));
-        if (!WeatherActivity.isFahrenheit) {
+        if (!WeatherActivity.isImperialUnits) {
             holder.tempMax.setText(Helper.decimalFormat(currentDay.getDay().getMaxtempC()).concat(Constants.CELSIUS_SYMBOL));
             holder.tempMin.setText(Helper.decimalFormat(currentDay.getDay().getMintempC()).concat(Constants.CELSIUS_SYMBOL));
+            holder.wind.setText(String.valueOf(Helper.decimalFormat(currentDay.getDay().getMaxwindKph())).concat(" " + Constants.KM_H));
         } else {
             holder.tempMax.setText(Helper.decimalFormat(currentDay.getDay().getMaxtempF()).concat(Constants.CELSIUS_SYMBOL));
             holder.tempMin.setText(Helper.decimalFormat(currentDay.getDay().getMintempF()).concat(Constants.CELSIUS_SYMBOL));
+            holder.wind.setText(String.valueOf(Helper.decimalFormat(currentDay.getDay().getMaxwindMph())).concat(" " + Constants.MPH));
         }
-        holder.wind.setText(String.valueOf(Helper.decimalFormat(currentDay.getDay().getMaxwindKph())).concat(" " + Constants.KM_H));
         holder.humidity.setText(String.valueOf(Helper.decimalFormat(currentDay.getDay().getAvgHumidity()).concat(Constants.HUMIDITY_SYMBOL)));
         holder.conditionImage.setImageDrawable(Helper.chooseConditionIcon((holder.itemView.getContext()), true, true, currentDay.getDay().getCondition().getText()));
     }

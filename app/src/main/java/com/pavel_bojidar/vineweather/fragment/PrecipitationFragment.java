@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.R;
+import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.adapter.HourlyPrecipAdapter;
 import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.HourForecast;
@@ -21,16 +22,21 @@ import com.pavel_bojidar.vineweather.singleton.AppManager;
 
 import java.util.ArrayList;
 
+import static com.pavel_bojidar.vineweather.Constants.IN;
+import static com.pavel_bojidar.vineweather.Constants.IS_TOMORROW;
+import static com.pavel_bojidar.vineweather.Constants.MM;
+import static com.pavel_bojidar.vineweather.Constants.VOLUME_IN;
+import static com.pavel_bojidar.vineweather.Constants.VOLUME_MM;
+
 /**
  * Created by Pavel Pavlov on 4/13/2017.
  */
 
 public class PrecipitationFragment extends WeatherFragment {
 
-    public static final String IS_TOMORROW = "isTomorrow";
     private RecyclerView rvPrecipitation;
     private TextView volume, dailyVolume;
-    private ArrayList<HourForecast> hourlyPrecipForecast;
+    protected ArrayList<HourForecast> hourlyPrecipForecast;
 
     public static PrecipitationFragment newInstance(boolean isTomorrow) {
         PrecipitationFragment fragment = new PrecipitationFragment();
@@ -74,7 +80,12 @@ public class PrecipitationFragment extends WeatherFragment {
         rvPrecipitation.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         rvPrecipitation.setAdapter(new HourlyPrecipAdapter(hourlyPrecipForecast));
         Day currentDay = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(isTomorrow ? 1 : 0).getDay();
-        dailyVolume.setText("  ".concat(String.valueOf(currentDay.getTotalprecipMm() == 0 ? Helper.decimalFormat(currentDay.getTotalprecipMm()) : currentDay.getTotalprecipMm()).concat(" mm")));
-        volume.setText("Volume\n(mm)");
+        if (WeatherActivity.isImperialUnits) {
+            dailyVolume.setText("  ".concat(String.valueOf(currentDay.getTotalprecipIn() == 0 ? Helper.decimalFormat(currentDay.getTotalprecipIn()) : currentDay.getTotalprecipIn()).concat(IN)));
+            volume.setText(VOLUME_IN);
+        } else {
+            dailyVolume.setText("  ".concat(String.valueOf(currentDay.getTotalprecipMm() == 0 ? Helper.decimalFormat(currentDay.getTotalprecipMm()) : currentDay.getTotalprecipMm()).concat(MM)));
+            volume.setText(VOLUME_MM);
+        }
     }
 }

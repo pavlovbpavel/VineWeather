@@ -24,13 +24,15 @@ import android.widget.TextView;
 import com.pavel_bojidar.vineweather.BroadcastActions;
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
-import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.adapter.HourlyTempAdapter;
 import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.DayForecast;
 import com.pavel_bojidar.vineweather.model.maindata.Forecast;
 import com.pavel_bojidar.vineweather.model.maindata.Location;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
+
+import static com.pavel_bojidar.vineweather.Constants.FEELS_LIKE;
+import static com.pavel_bojidar.vineweather.Constants.LAST_UPDATED;
 
 /**
  * Created by Pavel Pavlov on 3/7/2017.
@@ -40,13 +42,13 @@ public class FragmentToday extends WeatherFragment {
 
     protected Forecast forecast;
     private RelativeLayout parent;
-    private DayForecast currentDay;
+    protected DayForecast currentDay;
     private Location currentLocation;
     private RecyclerView recyclerView;
     protected ImageView weatherIcon, windDirection;
     protected TextView degrees, condition, windCondition, windSpeed, feelsLike, lastUpdated;
     protected FragmentManager fragmentManager;
-    private boolean isFahrenheit;
+    private boolean isImperialUnits;
 
     @Nullable
     @Override
@@ -111,15 +113,15 @@ public class FragmentToday extends WeatherFragment {
         forecast = AppManager.getInstance().getCurrentLocation().getForecast();
         currentDay = forecast.getDayForecasts().get(0);
 
-        lastUpdated.setText("Last updated: ".concat(AppManager.getInstance().getCurrentLocation().getCurrentWeather().getLastUpdated()));
+        lastUpdated.setText(LAST_UPDATED.concat(AppManager.getInstance().getCurrentLocation().getCurrentWeather().getLastUpdated()));
         weatherIcon.setImageDrawable(Helper.chooseConditionIcon(parent.getContext(), currentLocation.getCurrentWeather().getIs_day() == 1, false,
                 currentLocation.getCurrentWeather().getCondition().getText()));
-        if (isFahrenheit) {
+        if (isImperialUnits) {
             degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempF()).concat(Constants.CELSIUS_SYMBOL));
-            feelsLike.setText("Feels like ".concat(Helper.decimalFormat(currentLocation.getCurrentWeather().getFeelslikeF())).concat(Constants.CELSIUS_SYMBOL));
+            feelsLike.setText(FEELS_LIKE.concat(Helper.decimalFormat(currentLocation.getCurrentWeather().getFeelslikeF())).concat(Constants.CELSIUS_SYMBOL));
         } else {
             degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempC()).concat(Constants.CELSIUS_SYMBOL));
-            feelsLike.setText("Feels like ".concat(Helper.decimalFormat(currentLocation.getCurrentWeather().getFeelslikeC())).concat(Constants.CELSIUS_SYMBOL));
+            feelsLike.setText(FEELS_LIKE.concat(Helper.decimalFormat(currentLocation.getCurrentWeather().getFeelslikeC())).concat(Constants.CELSIUS_SYMBOL));
         }
         condition.setText(currentLocation.getCurrentWeather().getCondition().getText());
 
@@ -134,7 +136,7 @@ public class FragmentToday extends WeatherFragment {
             public void onReceive(Context context, Intent intent) {
                 if(intent.getAction().equals(BroadcastActions.ACTION_UNIT_SWAPPED)){
                     Log.e("broadcast", "today - on unit swapped");
-                    isFahrenheit = intent.getBooleanExtra(Constants.KEY_UNIT_TYPE, false);
+                    isImperialUnits = intent.getBooleanExtra(Constants.KEY_UNIT_TYPE, false);
                     bindData();
                 } else {
                     if (AppManager.getInstance().getCurrentLocation() != null) {

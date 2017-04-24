@@ -26,7 +26,7 @@ import static com.pavel_bojidar.vineweather.Constants.HUMIDITY_SYMBOL;
  * Created by Pavel Pavlov on 4/8/2017.
  */
 
-public class FragmentTomorrowDetails extends WeatherFragment{
+public class FragmentTomorrowDetails extends WeatherFragment {
 
     TextView humidity, max, min, visibility, astro;
 
@@ -56,14 +56,15 @@ public class FragmentTomorrowDetails extends WeatherFragment{
         Astro tomorrowAstro = currentLocation.getForecast().getDayForecasts().get(1).getAstro();
 
         humidity.setText(String.valueOf(Helper.decimalFormat(tomorrow.getAvgHumidity()).concat(HUMIDITY_SYMBOL)));
-        if(WeatherActivity.isFahrenheit){
+        if (WeatherActivity.isImperialUnits) {
             max.setText(String.valueOf(Helper.decimalFormat(tomorrow.getMaxtempF()).concat(CELSIUS_SYMBOL).concat(", ")));
             min.setText(String.valueOf(Helper.decimalFormat(tomorrow.getMintempF()).concat(CELSIUS_SYMBOL)));
+            visibility.setText(String.valueOf(Helper.decimalFormat(tomorrow.getAvgVisibility_miles()).concat(" " + Constants.M)));
         } else {
             max.setText(String.valueOf(Helper.decimalFormat(tomorrow.getMaxtempC()).concat(CELSIUS_SYMBOL).concat(", ")));
             min.setText(String.valueOf(Helper.decimalFormat(tomorrow.getMintempC()).concat(CELSIUS_SYMBOL)));
+            visibility.setText(String.valueOf(Helper.decimalFormat(tomorrow.getAvgVisibility_km()).concat(" " + Constants.KM)));
         }
-        visibility.setText(String.valueOf(Helper.decimalFormat(tomorrow.getAvgVisibility_km()).concat(" " + Constants.KM)));
         astro.setText(tomorrowAstro.getSunrise().concat(", ").concat(tomorrowAstro.getSunset()));
     }
 

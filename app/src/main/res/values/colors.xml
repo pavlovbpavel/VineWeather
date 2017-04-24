@@ -6,6 +6,9 @@
     <color name="separator">#8098a3a4</color>
     <color name="separatorTomorrow">#80bcc9ca</color>
 
+    <color name="buttonSelected">#8098a3a4</color>
+    <color name="buttonUnselected">#e0e0e0</color>
+
     <color name="highlightedRow">#FAFAFA</color>
     <color name="row">#FFFFFF</color>
 

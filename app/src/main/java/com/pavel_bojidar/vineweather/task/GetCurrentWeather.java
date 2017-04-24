@@ -102,7 +102,7 @@ public class GetCurrentWeather extends AsyncTask<String, Void, String> {
                 currentWeather.setWindDegree(currentJo.getInt(KEY_WIND_DEGREE));
                 currentWeather.setWindDir(currentJo.getString(KEY_WIND_DIR));
                 currentWeather.setPressureMb(currentJo.getDouble(KEY_PRESSURE_MB));
-                currentWeather.setPrecipIn(currentJo.getDouble(KEY_PRESSURE_IN));
+                currentWeather.setPressureIn(currentJo.getDouble(KEY_PRESSURE_IN));
                 currentWeather.setPrecipMm(currentJo.getDouble(KEY_PRECIP_MM));
                 currentWeather.setPrecipIn(currentJo.getDouble(KEY_PRECIP_IN));
                 currentWeather.setHumidity(currentJo.getInt(KEY_HUMIDITY));

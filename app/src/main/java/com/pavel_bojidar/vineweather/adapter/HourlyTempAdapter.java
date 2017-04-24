@@ -49,7 +49,7 @@ public class HourlyTempAdapter extends RecyclerView.Adapter<HourlyForecastViewHo
     @Override
     public void onBindViewHolder(HourlyForecastViewHolder holder, int position) {
         HourForecast currentHour = forecast.get(position);
-        if (!WeatherActivity.isFahrenheit) {
+        if (!WeatherActivity.isImperialUnits) {
             holder.degrees.setText(Helper.decimalFormat(currentHour.getTempC()).concat(Constants.CELSIUS_SYMBOL));
         } else {
             holder.degrees.setText(Helper.decimalFormat(currentHour.getTempF()).concat(Constants.CELSIUS_SYMBOL));

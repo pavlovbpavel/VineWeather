@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
+import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.maindata.Location;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
@@ -52,9 +53,15 @@ public class CurrentDetailFragment extends WeatherFragment {
         Location currentLocation = AppManager.getInstance().getCurrentLocation();
 
         humidity.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getHumidity()) + " " + Constants.HUMIDITY_SYMBOL);
-        wind.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getWindKph()) + " " + Constants.KM_H);
-        pressure.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getPressureMb()) + Constants.KEY_PRESSURE_MBar);
-        visibility.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getVisability_km()) + " " + Constants.KM);
+        if(WeatherActivity.isImperialUnits){
+            wind.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getWindMph()) + " " + Constants.MPH);
+            pressure.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getPressureIn()).concat(Constants.IN));
+            visibility.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getVisability_mi()) + " " + Constants.M);
+        } else {
+            wind.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getWindKph()) + " " + Constants.KM_H);
+            pressure.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getPressureMb()).concat(Constants.KEY_PRESSURE_MBar));
+            visibility.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getVisability_km()) + " " + Constants.KM);
+        }
         sunDetail.setText(currentLocation.getForecast().getDayForecasts().get(0).getAstro().getSunrise().concat(", ")
                 .concat(currentLocation.getForecast().getDayForecasts().get(0).getAstro().getSunset()));
         moonDetail.setText(currentLocation.getForecast().getDayForecasts().get(0).getAstro().getMoonrise().concat(", ")

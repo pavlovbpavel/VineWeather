@@ -23,7 +23,6 @@ import android.widget.TextView;
 import com.pavel_bojidar.vineweather.BroadcastActions;
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
-import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.adapter.HourlyTempAdapter;
 import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.HourForecast;
@@ -53,7 +52,7 @@ public class FragmentTomorrow extends WeatherFragment {
     private ImageView conditionImage;
     protected ArrayList<HourForecast> tomorrowHourly;
     protected FragmentManager fragmentManager;
-    private boolean isFahrenheit;
+    private boolean isImperialUnits;
 
     @Nullable
     @Override
@@ -111,7 +110,7 @@ public class FragmentTomorrow extends WeatherFragment {
             public void onReceive(Context context, Intent intent) {
                 if(intent.getAction().equals(BroadcastActions.ACTION_UNIT_SWAPPED)){
                     Log.e("broadcast", "tomorrow - on unit swapped");
-                    isFahrenheit = intent.getBooleanExtra(Constants.KEY_UNIT_TYPE, false);
+                    isImperialUnits = intent.getBooleanExtra(Constants.KEY_UNIT_TYPE, false);
                     bindData();
                 } else {
                     if (AppManager.getInstance().getCurrentLocation() != null) {
@@ -128,7 +127,7 @@ public class FragmentTomorrow extends WeatherFragment {
         int unixTS = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getDateEpoch();
         date.setText(Helper.getWeekDay(Helper.getUnixDate(unixTS)).concat(Helper.getUnixCustomDate(unixTS)));
         condition.setText(tomorrow.getCondition().getText());
-        if (isFahrenheit) {
+        if (isImperialUnits) {
             temp.setText(DAY
                     .concat(String.valueOf(Helper.decimalFormat(tomorrow.getMaxtempF())
                             .concat(CELSIUS_SYMBOL).concat(ARROW_UP).concat(INTERPUNKT).concat(NIGHT)

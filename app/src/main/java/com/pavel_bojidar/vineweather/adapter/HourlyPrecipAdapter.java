@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.R;
+import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.adapter.HourlyPrecipAdapter.HourlyPrecipViewHolder;
 import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.HourForecast;
@@ -33,9 +34,13 @@ public class HourlyPrecipAdapter extends RecyclerView.Adapter<HourlyPrecipViewHo
     @Override
     public void onBindViewHolder(HourlyPrecipViewHolder holder, int position) {
         HourForecast currentHour = hourlyPrecip.get(position);
-        holder.volume.setText(String.valueOf(currentHour.getPrecipMm() == 0 ? "-" : currentHour.getPrecipMm()));
-        holder.hour.setText(Helper.getUnixAmPmHour(currentHour.getTimeEpoch()));
+        if (WeatherActivity.isImperialUnits) {
+            holder.volume.setText(String.valueOf(currentHour.getPrecipMm() == 0 ? "-" : currentHour.getPrecipIn()));
+        } else {
+            holder.volume.setText(String.valueOf(currentHour.getPrecipMm() == 0 ? "-" : currentHour.getPrecipMm()));
+        }
         holder.drop.setImageDrawable(Helper.choosePrecipitationIcon(holder.itemView.getContext(), currentHour.getPrecipMm()));
+        holder.hour.setText(Helper.getUnixAmPmHour(currentHour.getTimeEpoch()));
     }
 
     @Override

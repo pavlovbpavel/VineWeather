@@ -9,6 +9,7 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.R;
+import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.adapter.HourlyWindAdapter.WindViewHolder;
 import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.HourForecast;
@@ -37,7 +38,11 @@ public class HourlyWindAdapter extends RecyclerView.Adapter<WindViewHolder> {
     @Override
     public void onBindViewHolder(WindViewHolder holder, int position) {
         HourForecast currentHour = hourForecast.get(position);
-        holder.windSpeed.setText(Helper.decimalFormat(currentHour.getWindKph()));
+        if(WeatherActivity.isImperialUnits){
+            holder.windSpeed.setText(Helper.decimalFormat(currentHour.getWindMph()));
+        } else {
+            holder.windSpeed.setText(Helper.decimalFormat(currentHour.getWindKph()));
+        }
         holder.windHour.setText(Helper.getUnixAmPmHour(currentHour.getTimeEpoch()));
         holder.windIcon.setRotation(currentHour.getWindDegree());
         LayoutParams lp = (LayoutParams) holder.windFill.getLayoutParams();

@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.R;
+import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.adapter.HourlyWindAdapter;
 import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.HourForecast;
@@ -24,19 +25,20 @@ import com.pavel_bojidar.vineweather.model.maindata.Forecast;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 
 import static com.pavel_bojidar.vineweather.Constants.KM_H;
+import static com.pavel_bojidar.vineweather.Constants.MPH;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class WindFragment extends WeatherFragment {
 
-    RecyclerView rvWind;
-    TextView condition, speed;
-    ImageView conditionImage;
-    TextView currentWindSpeed, windDirection;
-    Forecast forecast;
-    boolean isTomorrow;
-    CurrentWeather currentWeather;
+    private RecyclerView rvWind;
+    private TextView condition, speed, unit;
+    private ImageView conditionImage;
+    private TextView currentWindSpeed, windDirection;
+    protected Forecast forecast;
+    private boolean isTomorrow;
+    protected CurrentWeather currentWeather;
 
     public static WindFragment newInstance(boolean isTomorrow) {
         WindFragment fragment = new WindFragment();
@@ -62,6 +64,7 @@ public class WindFragment extends WeatherFragment {
             conditionImage = (ImageView) view.findViewById(R.id.today_wind_direction);
             currentWindSpeed = (TextView) view.findViewById(R.id.today_wind_speed);
             windDirection = (TextView) view.findViewById(R.id.today_wind_direction_string);
+            unit = (TextView) view.findViewById(R.id.wind_today_speed_unit);
         }
         return view;
     }
@@ -94,36 +97,56 @@ public class WindFragment extends WeatherFragment {
         double average;
         for (int i = 0; i < forecast.getDayForecasts().get(1).getHourForecasts().size(); i++) {
             HourForecast currentHour = forecast.getDayForecasts().get(1).getHourForecasts().get(i);
-            if (currentHour.getWindKph() > maxWind) {
-                maxWind = currentHour.getWindKph();
-            }
-            if (currentHour.getWindKph() < minWind) {
-                minWind = currentHour.getWindKph();
+            if(WeatherActivity.isImperialUnits){
+                if (currentHour.getWindKph() > maxWind) {
+                    maxWind = currentHour.getWindMph();
+                }
+                if (currentHour.getWindKph() < minWind) {
+                    minWind = currentHour.getWindMph();
+                }
+            } else {
+                if (currentHour.getWindKph() > maxWind) {
+                    maxWind = currentHour.getWindKph();
+                }
+                if (currentHour.getWindKph() < minWind) {
+                    minWind = currentHour.getWindKph();
+                }
             }
         }
         rvWind.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         if (isTomorrow) {
             rvWind.setAdapter(new HourlyWindAdapter(forecast.getDayForecasts().get(1).getHourForecasts()));
-            speed.setText(Helper.decimalFormat(minWind).concat("-").concat(Helper.decimalFormat(maxWind).concat(" " + KM_H)));
+            if(WeatherActivity.isImperialUnits){
+                speed.setText(Helper.decimalFormat(minWind).concat("-").concat(Helper.decimalFormat(maxWind).concat(" " + MPH)));
+            } else {
+                speed.setText(Helper.decimalFormat(minWind).concat("-").concat(Helper.decimalFormat(maxWind).concat(" " + KM_H)));
+            }
             average = (minWind + maxWind) / 2;
             condition.setText(getCondition(average));
         } else {
             rvWind.setAdapter(new HourlyWindAdapter(forecast.getDayForecasts().get(0).getHourForecasts()));
             conditionImage.setRotation(currentWeather.getWindDegree());
-            condition.setText(getCondition(currentWeather.getWindKph()));
+            if (WeatherActivity.isImperialUnits) {
+                condition.setText(getCondition(currentWeather.getWindMph()));
+                currentWindSpeed.setText(Helper.decimalFormat(currentWeather.getWindMph()));
+                unit.setText(MPH);
+            } else {
+                condition.setText(getCondition(currentWeather.getWindKph()));
+                currentWindSpeed.setText(Helper.decimalFormat(currentWeather.getWindKph()));
+                unit.setText(KM_H);
+            }
             windDirection.setText(currentWeather.getWindDir());
-            currentWindSpeed.setText(Helper.decimalFormat(currentWeather.getWindKph()));
-            int windSpeed = (int)currentWeather.getWindKph();
-            if (windSpeed <= 5){
+            int windSpeed = (int) currentWeather.getWindKph();
+            if (windSpeed <= 5) {
                 currentWindSpeed.setTextColor(Color.parseColor("#fa599ec6"));
             }
-            if (windSpeed > 5 && windSpeed <= 20){
+            if (windSpeed > 5 && windSpeed <= 20) {
                 currentWindSpeed.setTextColor(Color.parseColor("#fa3085b6"));
             }
-            if (windSpeed > 20 && windSpeed <= 50){
+            if (windSpeed > 20 && windSpeed <= 50) {
                 currentWindSpeed.setTextColor(Color.parseColor("#fa2d9684"));
             }
-            if (windSpeed > 50 && windSpeed <= 250){
+            if (windSpeed > 50 && windSpeed <= 250) {
                 currentWindSpeed.setTextColor(Color.parseColor("#faa93230"));
             }
         }

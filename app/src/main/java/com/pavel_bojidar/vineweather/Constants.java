@@ -10,24 +10,24 @@ public class Constants {
      */
     public static final String KEY_LOCATION_NAME = "locationName";
     public static final String KEY_UNIT_TYPE = "unitType";
-    public static final String KEY_RECENT_LOCATIONS = "recents";
-    public static final String KEY_LOCATION_ID = "locationId";
     public static final String CELSIUS_SYMBOL = "\u00b0";
-    public static final String PRESSURE_SYMBOL = "hPa";
     public static final String HUMIDITY_SYMBOL = "%";
     public static final String KM_H = "km/h";
+    public static final String MPH = "mph";
     public static final String KM = "km";
-    public static final String TEMP_MAX = "Max: ";
-    public static final String TEMP_MIN = "Min: ";
+    public static final String M = "miles";
     public static final String DAY = "Day: ";
     public static final String NIGHT = "Night: ";
     public static final String INTERPUNKT = " \u00b7 ";
     public static final String ARROW_UP = "\u2191";
     public static final String ARROW_DOWN = "\u2193";
-    public static final String PARTLY_CLOUDY = "Partly cloudy";
-    public static final String CLEAR = "Clear";
-    public static final String HEAVY_RAIN = "Patchy light rain with thunder";
-    public static final String SUNNY = "Sunny";
+    public static final String FEELS_LIKE = "Feels like ";
+    public static final String LAST_UPDATED = "Last updated: ";
+    public static final String MM = " mm";
+    public static final String IN = " in";
+    public static final String VOLUME_MM = "Volume\n(mm)";
+    public static final String VOLUME_IN = "Volume\n(in)";
+    public static final String IS_TOMORROW = "isTomorrow";
 
     /*
     API CALL KEYS

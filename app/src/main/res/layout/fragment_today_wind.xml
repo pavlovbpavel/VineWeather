@@ -45,6 +45,7 @@
                 android:textColor="@android:color/black" />
 
             <TextView
+                android:id="@+id/wind_today_speed_unit"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"

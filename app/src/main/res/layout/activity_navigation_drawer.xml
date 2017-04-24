@@ -25,36 +25,44 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="170dp"
-            android:orientation="vertical"
-            android:padding="8dp">
+            android:layout_marginTop="160dp"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/units_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="8dp"
                 android:text="@string/units"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"/>
 
-            <Switch
-                android:id="@+id/nav_drawer_switch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <Button
+                android:id="@+id/nav_drawer_celsius_button"
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:stateListAnimator="@null"
                 android:layout_below="@id/units_text"
-                android:textOn="@string/f"
-                android:textOff="@string/c"
-                android:showText="true"
-                android:thumbTextPadding="12dp" />
+                android:layout_marginStart="6dp"
+                android:text="@string/metric"/>
 
+            <Button
+                android:id="@+id/nav_drawer_fahrenheit_button"
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:stateListAnimator="@null"
+                android:text="@string/imperial"
+                android:layout_alignBottom="@+id/nav_drawer_celsius_button"
+                android:layout_toEndOf="@+id/nav_drawer_celsius_button"/>
 
             <View
                 android:id="@+id/line"
                 android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:layout_below="@+id/nav_drawer_switch"
-                android:layout_marginTop="32dp"
-                android:background="@color/separator" />
+                android:layout_height="1dp"
+                android:layout_below="@+id/nav_drawer_fahrenheit_button"
+                android:layout_marginTop="16dp"
+                android:background="@color/separator"/>
 
 
             <TextView
@@ -62,16 +70,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/line"
-                android:layout_marginBottom="8dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="8dp"
                 android:text="@string/favotite_locations"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"/>
 
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/favorite_location_list"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_marginStart="8dp"
                 android:layout_alignParentBottom="true"
                 android:layout_below="@id/favorite_locations">
 

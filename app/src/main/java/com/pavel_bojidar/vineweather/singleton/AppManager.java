@@ -44,7 +44,7 @@ public class AppManager {
     public void onUnitSwapped(Context context) {
         Log.e("broadcast", "app manager - on unit swapped");
         Intent intent = new Intent(BroadcastActions.ACTION_UNIT_SWAPPED);
-        intent.putExtra(Constants.KEY_UNIT_TYPE, WeatherActivity.isFahrenheit);
+        intent.putExtra(Constants.KEY_UNIT_TYPE, WeatherActivity.isImperialUnits);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 }
