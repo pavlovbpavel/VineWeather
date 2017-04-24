@@ -283,6 +283,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             searchField.setHint(currentLocationName);
             isInitialRun = false;
             removeFromRecentList(currentLocationName);
+            addToRecentList(currentLocationName);
         }
         swipeRefresh.setRefreshing(false);
     }
@@ -568,10 +569,8 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                     String chosenCity = (String) searchPopupWindow.getListView().getItemAtPosition(position);
                                     searchPopupWindow.dismiss();
-                                    if (currentLocationName != null && !currentLocationName.isEmpty()) {
-                                        addToRecentList(currentLocationName);
-                                    }
                                     currentLocationName = chosenCity;
+                                    addToRecentList(currentLocationName);
                                     preferences.edit().putString(Constants.KEY_LOCATION_NAME, currentLocationName).apply();
                                     hideKeyboard();
                                     searchField.setText(null);
@@ -647,8 +646,8 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             if (recentList.contains(selectedLocation)) {
                 reorderRecentList(selectedLocation);
             }
-            addToRecentList(currentLocationName);
             currentLocationName = selectedLocation;
+            addToRecentList(currentLocationName);
             new AsyncTask<String, Void, Void>() {
                 @Override
                 protected void onPreExecute() {
