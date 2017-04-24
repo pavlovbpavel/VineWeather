@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#7ba2c4</color>
-    <color name="colorPrimaryDark">#6197c6</color>
+    <color name="colorPrimary">#0D47A1</color>
+    <color name="colorPrimaryDark">#06347e</color>
     <color name="colorAccent">#d7d7d7</color>
     <color name="separator">#8098a3a4</color>
     <color name="separatorTomorrow">#80bcc9ca</color>
@@ -9,17 +9,17 @@
     <color name="highlightedRow">#FAFAFA</color>
     <color name="row">#FFFFFF</color>
 
-    <color name="forecastAppBarColor">#006064</color>
-    <color name="forecastAppBarColorDark">#1A237E</color>
-
-    <color name="tomorrowBackground">#9FA8DA</color>
     <color name="todayBackground">#9fccda</color>
+    <color name="tomorrowBackground">#4FC3F7</color>
 
-    <color name="todayAppBarColor">#7ba2c4</color>
-    <color name="todayAppBarColorDark">#6385a3</color>
+    <color name="todayAppBarColor">#0D47A1</color>
+    <color name="todayAppBarColorDark">#06347e</color>
 
-    <color name="tomorrowAppBarColor">#5C6BC0</color>
-    <color name="tomorrowAppBarColorDark">#475397</color>
+    <color name="tomorrowAppBarColor">#0277BD</color>
+    <color name="tomorrowAppBarColorDark">#01579B</color>
+
+    <color name="forecastAppBarColor">#006064</color>
+    <color name="forecastAppBarColorDark">#004749</color>
 
     <color name="transperant">#00136770</color>
     <color name="windLow">#fa599ec6</color>

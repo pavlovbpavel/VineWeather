@@ -55,7 +55,11 @@ public class HourlyTempAdapter extends RecyclerView.Adapter<HourlyForecastViewHo
             holder.degrees.setText(Helper.decimalFormat(currentHour.getTempF()).concat(Constants.CELSIUS_SYMBOL));
         }
         holder.hour.setText(Helper.getUnixAmPmHour(currentHour.getTimeEpoch()));
-        holder.icon.setImageDrawable(Helper.chooseConditionIcon(holder.itemView.getContext(), currentHour.getIsDay() == 1, currentHour.getCondition().getText()));
+        if(fragmentNumber == 2) {
+            holder.icon.setImageDrawable(Helper.chooseConditionIcon(holder.itemView.getContext(), currentHour.getIsDay() == 1, true, currentHour.getCondition().getText()));
+        } else {
+            holder.icon.setImageDrawable(Helper.chooseConditionIcon(holder.itemView.getContext(), currentHour.getIsDay() == 1, false, currentHour.getCondition().getText()));
+        }
     }
 
     @Override

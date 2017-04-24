@@ -125,6 +125,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     private ArrayList<SearchCity> searchCities = new ArrayList<>();
     public static boolean isFahrenheit;
     private int currentTabColor = R.color.todayAppBarColor;
+    private int currentTabColorDark = R.color.todayAppBarColorDark;
     private GoogleApiClient mGoogleApiClient;
     private boolean isInitialRun = true;
     private SwipeRefreshLayout swipeRefresh;
@@ -259,7 +260,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         loadingView.setVisibility(View.GONE);
 
         CurrentWeather currentWeather = AppManager.getInstance().getCurrentLocation().getCurrentWeather();
-        navDrawerImage.setImageDrawable(Helper.chooseConditionIcon(this, currentWeather.getIs_day() == 1,
+        navDrawerImage.setImageDrawable(Helper.chooseConditionIcon(this, currentWeather.getIs_day() == 1, false,
                 currentWeather.getCondition().getText()));
         navDrawerCondition.setText(currentWeather.getCondition().getText());
         if (!isFahrenheit) {
@@ -384,12 +385,11 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
         recentLocationRecyclerView = (RecyclerView) findViewById(R.id.favorite_location_list);
 
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.addTab(tabLayout.newTab().setText("Today"));
-        tabLayout.addTab(tabLayout.newTab().setText("Tomorrow"));
-        tabLayout.addTab(tabLayout.newTab().setText("10 Days"));
         viewPager = (ViewPager) findViewById(R.id.pager);
         viewPager.setOffscreenPageLimit(3);
+
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
 
         appBar = (AppBarLayout) findViewById(R.id.app_bar);
 
@@ -409,18 +409,21 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                 switch (tab.getPosition()) {
                     case 0:
                         animateColorChange(appBar, currentTabColor, R.color.todayAppBarColor);
+                        animateStatusBarColorChange(currentTabColorDark, R.color.todayAppBarColorDark);
+                        currentTabColorDark = R.color.todayAppBarColorDark;
                         currentTabColor = R.color.todayAppBarColor;
-//                        changeStatusBarColor(R.color.todayAppBarColorDark);
                         break;
                     case 1:
                         animateColorChange(appBar, currentTabColor, R.color.tomorrowAppBarColor);
+                        animateStatusBarColorChange(currentTabColorDark, R.color.tomorrowAppBarColorDark);
+                        currentTabColorDark = R.color.tomorrowAppBarColorDark;
                         currentTabColor = R.color.tomorrowAppBarColor;
-//                        changeStatusBarColor(R.color.tomorrowAppBarColorDark);
                         break;
                     case 2:
                         animateColorChange(appBar, currentTabColor, R.color.forecastAppBarColor);
+                        animateStatusBarColorChange(currentTabColorDark, R.color.forecastAppBarColorDark);
+                        currentTabColorDark = R.color.forecastAppBarColorDark;
                         currentTabColor = R.color.forecastAppBarColor;
-//                        changeStatusBarColor(R.color.forecastAppBarColorDark);
                         break;
                 }
                 viewPager.setCurrentItem(tab.getPosition(), true);
@@ -457,9 +460,11 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         });
     }
 
-
     private void setViewPagerAdapter() {
         viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
+
+            private String[] tabTitles = new String[]{"Today", "Tomorrow", "10 Days"};
+
             @Override
             public Fragment getItem(int position) {
                 switch (position) {
@@ -477,6 +482,11 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             @Override
             public int getCount() {
                 return 3;
+            }
+
+            @Override
+            public CharSequence getPageTitle(int position) {
+                return tabTitles[position];
             }
         });
     }
@@ -698,7 +708,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             Window window = this.getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(this.getResources().getColor(resID));
+            window.setStatusBarColor(resID);
         }
     }
 
@@ -711,6 +721,20 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             @Override
             public void onAnimationUpdate(ValueAnimator animator) {
                 view.setBackgroundColor((int) animator.getAnimatedValue());
+            }
+        });
+        colorAnimation.start();
+    }
+
+    private void animateStatusBarColorChange(int from, int to) {
+        int colorFrom = getResources().getColor(from);
+        int colorTo = getResources().getColor(to);
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+        colorAnimation.setDuration(300);
+        colorAnimation.addUpdateListener(new AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                changeStatusBarColor((int) animator.getAnimatedValue());
             }
         });
         colorAnimation.start();
@@ -736,16 +760,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == 123) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }
                 Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                 if (mLastLocation != null) {
                     currentLocationName = String.valueOf(mLastLocation.getLatitude()).concat(" ").concat(String.valueOf(mLastLocation.getLongitude()));

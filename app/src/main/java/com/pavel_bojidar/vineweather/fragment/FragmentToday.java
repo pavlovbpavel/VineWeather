@@ -76,10 +76,6 @@ public class FragmentToday extends WeatherFragment {
         int appbarHeight = appbar.getHeight();
         params.height = screenHeight - getStatusBarHeight() - appbarHeight;
 
-        forecast = AppManager.getInstance().getCurrentLocation().getForecast();
-        currentDay = forecast.getDayForecasts().get(0);
-        FragmentManager fragmentManager = getFragmentManager();
-
         fragmentManager = getChildFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         CurrentDetailFragment fragmentCurrentDetails = new CurrentDetailFragment();
@@ -108,8 +104,12 @@ public class FragmentToday extends WeatherFragment {
     }
 
     private void bindData() {
+
+        forecast = AppManager.getInstance().getCurrentLocation().getForecast();
+        currentDay = forecast.getDayForecasts().get(0);
+
         lastUpdated.setText("Last updated: ".concat(AppManager.getInstance().getCurrentLocation().getCurrentWeather().getLastUpdated()));
-        weatherIcon.setImageDrawable(Helper.chooseConditionIcon(parent.getContext(), currentLocation.getCurrentWeather().getIs_day() == 1,
+        weatherIcon.setImageDrawable(Helper.chooseConditionIcon(parent.getContext(), currentLocation.getCurrentWeather().getIs_day() == 1, false,
                 currentLocation.getCurrentWeather().getCondition().getText()));
         if (!WeatherActivity.isFahrenheit) {
             degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempC()).concat(Constants.CELSIUS_SYMBOL));
@@ -123,9 +123,6 @@ public class FragmentToday extends WeatherFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(new HourlyTempAdapter(currentDay.getHourForecasts(), 0));
 
-        if (recyclerView.getAdapter() != null) {
-            recyclerView.getAdapter().notifyDataSetChanged();
-        }
     }
 
     @Override

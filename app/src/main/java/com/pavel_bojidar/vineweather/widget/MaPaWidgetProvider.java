@@ -40,7 +40,7 @@ public class MaPaWidgetProvider extends AppWidgetProvider {
 
             boolean isDay = WidgetService.isDay == 1;
 
-            Drawable drawable = Helper.chooseConditionIcon(context.getApplicationContext(), isDay, WidgetService.condition);
+            Drawable drawable = Helper.chooseConditionIcon(context.getApplicationContext(), isDay, false, WidgetService.condition);
             views.setImageViewResource(R.id.image_view_widget, Helper.imageWidget);
 
             Intent intent1 = new Intent(context.getApplicationContext(), WeatherActivity.class);

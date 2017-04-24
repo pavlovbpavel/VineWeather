@@ -14,7 +14,7 @@
             android:id="@+id/today_parent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/todayBackground"
+            android:background="@drawable/fragment_today_gradient_background"
             android:orientation="vertical"
             android:padding="8dp">
 
