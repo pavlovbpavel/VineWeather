@@ -17,6 +17,7 @@ import com.pavel_bojidar.vineweather.BroadcastActions;
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
 import com.pavel_bojidar.vineweather.adapter.FutureForecastAdapter;
+import com.pavel_bojidar.vineweather.adapter.FutureForecastAdapter.RowAnimation;
 import com.pavel_bojidar.vineweather.model.maindata.Forecast;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 
@@ -63,6 +64,16 @@ public class FragmentForecast extends WeatherFragment {
     private void bindData() {
         forecast = AppManager.getInstance().getCurrentLocation().getForecast();
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(new FutureForecastAdapter(forecast));
+        recyclerView.setAdapter(new FutureForecastAdapter(forecast, new RowAnimation() {
+            @Override
+            public void onAnimationStart() {
+                recyclerView.setLayoutFrozen(true);
+            }
+
+            @Override
+            public void onAnimationFinnish() {
+                recyclerView.setLayoutFrozen(false);
+            }
+        }));
     }
 }

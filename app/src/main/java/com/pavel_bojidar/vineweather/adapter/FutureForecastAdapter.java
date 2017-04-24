@@ -1,8 +1,10 @@
 package com.pavel_bojidar.vineweather.adapter;
 
+import android.support.annotation.NonNull;
 import android.support.transition.AutoTransition;
 import android.support.transition.ChangeBounds;
 import android.support.transition.Transition;
+import android.support.transition.Transition.TransitionListener;
 import android.support.transition.TransitionManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,9 +31,11 @@ public class FutureForecastAdapter extends RecyclerView.Adapter<ForecastViewHold
 
     private Forecast forecast;
     private Transition transition;
+    private RowAnimation animationListener;
 
-    public FutureForecastAdapter(Forecast forecast) {
+    public FutureForecastAdapter(Forecast forecast, RowAnimation animationListener) {
         this.forecast = forecast;
+        this.animationListener = animationListener;
     }
 
     @Override
@@ -63,6 +67,38 @@ public class FutureForecastAdapter extends RecyclerView.Adapter<ForecastViewHold
                     transition = new AutoTransition();
                     transition.setDuration(200);
                 }
+                transition.addListener(new TransitionListener() {
+                    @Override
+                    public void onTransitionStart(@NonNull Transition transition) {
+                        if (animationListener != null) {
+                            animationListener.onAnimationStart();
+                        }
+                    }
+
+                    @Override
+                    public void onTransitionEnd(@NonNull Transition transition) {
+                        if (animationListener != null) {
+                            animationListener.onAnimationFinnish();
+                        }
+                    }
+
+                    @Override
+                    public void onTransitionCancel(@NonNull Transition transition) {
+                        if (animationListener != null) {
+                            animationListener.onAnimationFinnish();
+                        }
+                    }
+
+                    @Override
+                    public void onTransitionPause(@NonNull Transition transition) {
+
+                    }
+
+                    @Override
+                    public void onTransitionResume(@NonNull Transition transition) {
+
+                    }
+                });
                 TransitionManager.beginDelayedTransition((ViewGroup) holder.itemView.getParent(), transition);
                 visible = !visible;
                 holder.masterLayout.setVisibility(visible ? View.VISIBLE : View.GONE);
@@ -120,5 +156,11 @@ public class FutureForecastAdapter extends RecyclerView.Adapter<ForecastViewHold
             masterLayout = (RelativeLayout) itemView.findViewById(R.id.forecast_details_master_layout);
             hourlyForecast = (RecyclerView) itemView.findViewById(R.id.forecast_details_recycler_view);
         }
+    }
+
+    public interface RowAnimation {
+        void onAnimationStart();
+
+        void onAnimationFinnish();
     }
 }

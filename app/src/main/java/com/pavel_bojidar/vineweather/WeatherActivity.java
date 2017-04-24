@@ -58,11 +58,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -290,7 +288,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     }
 
 
-    public void onUnitSwapped(){
+    public void onUnitSwapped() {
         CurrentWeather currentWeather = AppManager.getInstance().getCurrentLocation().getCurrentWeather();
         if (!isImperialUnits) {
             navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempC()).concat(Constants.CELSIUS_SYMBOL));
@@ -306,7 +304,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         celsiusButton = (Button) findViewById(R.id.nav_drawer_celsius_button);
         fahrenheitButton = (Button) findViewById(R.id.nav_drawer_fahrenheit_button);
 
-        if(isImperialUnits){
+        if (isImperialUnits) {
             fahrenheitButton.getBackground().clearColorFilter();
             celsiusButton.getBackground().setColorFilter(Color.TRANSPARENT, PorterDuff.Mode.MULTIPLY);
         } else {
@@ -468,6 +466,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                         currentTabColor = R.color.forecastAppBarColor;
                         break;
                 }
+                swipeRefresh.setColorSchemeResources((currentTabColor));
                 viewPager.setCurrentItem(tab.getPosition(), true);
             }
 
