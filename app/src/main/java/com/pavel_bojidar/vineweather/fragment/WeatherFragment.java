@@ -23,7 +23,10 @@ public abstract class WeatherFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(getReceiver(), new IntentFilter(BroadcastActions.ACTION_LOCATION_UPDATED));
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(BroadcastActions.ACTION_LOCATION_UPDATED);
+        intentFilter.addAction(BroadcastActions.ACTION_UNIT_SWAPPED);
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(getReceiver(), intentFilter);
     }
 
     @Nullable

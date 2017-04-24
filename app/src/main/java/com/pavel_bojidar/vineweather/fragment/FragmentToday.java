@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.pavel_bojidar.vineweather.BroadcastActions;
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
 import com.pavel_bojidar.vineweather.WeatherActivity;
@@ -44,6 +46,7 @@ public class FragmentToday extends WeatherFragment {
     protected ImageView weatherIcon, windDirection;
     protected TextView degrees, condition, windCondition, windSpeed, feelsLike, lastUpdated;
     protected FragmentManager fragmentManager;
+    private boolean isFahrenheit;
 
     @Nullable
     @Override
@@ -111,18 +114,17 @@ public class FragmentToday extends WeatherFragment {
         lastUpdated.setText("Last updated: ".concat(AppManager.getInstance().getCurrentLocation().getCurrentWeather().getLastUpdated()));
         weatherIcon.setImageDrawable(Helper.chooseConditionIcon(parent.getContext(), currentLocation.getCurrentWeather().getIs_day() == 1, false,
                 currentLocation.getCurrentWeather().getCondition().getText()));
-        if (!WeatherActivity.isFahrenheit) {
-            degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempC()).concat(Constants.CELSIUS_SYMBOL));
-            feelsLike.setText("Feels like ".concat(Helper.decimalFormat(currentLocation.getCurrentWeather().getFeelslikeC())).concat(Constants.CELSIUS_SYMBOL));
-        } else {
+        if (isFahrenheit) {
             degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempF()).concat(Constants.CELSIUS_SYMBOL));
             feelsLike.setText("Feels like ".concat(Helper.decimalFormat(currentLocation.getCurrentWeather().getFeelslikeF())).concat(Constants.CELSIUS_SYMBOL));
+        } else {
+            degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempC()).concat(Constants.CELSIUS_SYMBOL));
+            feelsLike.setText("Feels like ".concat(Helper.decimalFormat(currentLocation.getCurrentWeather().getFeelslikeC())).concat(Constants.CELSIUS_SYMBOL));
         }
         condition.setText(currentLocation.getCurrentWeather().getCondition().getText());
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(new HourlyTempAdapter(currentDay.getHourForecasts(), 0));
-
     }
 
     @Override
@@ -130,8 +132,14 @@ public class FragmentToday extends WeatherFragment {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (AppManager.getInstance().getCurrentLocation() != null) {
+                if(intent.getAction().equals(BroadcastActions.ACTION_UNIT_SWAPPED)){
+                    Log.e("broadcast", "today - on unit swapped");
+                    isFahrenheit = intent.getBooleanExtra(Constants.KEY_UNIT_TYPE, false);
                     bindData();
+                } else {
+                    if (AppManager.getInstance().getCurrentLocation() != null) {
+                        bindData();
+                    }
                 }
             }
         };

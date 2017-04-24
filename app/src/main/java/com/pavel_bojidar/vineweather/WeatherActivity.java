@@ -98,6 +98,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static android.support.v4.view.ViewPager.SCROLL_STATE_DRAGGING;
+import static com.pavel_bojidar.vineweather.Constants.KEY_LOCATION_NAME;
 import static com.pavel_bojidar.vineweather.Constants.KEY_NAME;
 
 
@@ -283,6 +284,17 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         swipeRefresh.setRefreshing(false);
     }
 
+
+    public void onUnitSwapped(){
+        CurrentWeather currentWeather = AppManager.getInstance().getCurrentLocation().getCurrentWeather();
+        if (!isFahrenheit) {
+            navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempC()).concat(Constants.CELSIUS_SYMBOL));
+        } else {
+            navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempF()).concat(Constants.CELSIUS_SYMBOL));
+        }
+        AppManager.getInstance().onUnitSwapped(this);
+    }
+
     private void initViews() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -398,8 +410,8 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 isFahrenheit = isChecked;
-                startWeatherTasks();
                 drawer.closeDrawer(GravityCompat.START);
+                onUnitSwapped();
             }
         });
 
@@ -684,12 +696,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         }
     }
 
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
     @Override
     public void onBackPressed() {
         hideKeyboard();
@@ -703,46 +709,17 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         }
     }
 
-    private void changeStatusBarColor(int resID) {
-        if (android.os.Build.VERSION.SDK_INT >= 21) {
-            Window window = this.getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(resID);
-        }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    private void animateColorChange(final View view, int from, int to) {
-        int colorFrom = getResources().getColor(from);
-        int colorTo = getResources().getColor(to);
-        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-        colorAnimation.setDuration(300);
-        colorAnimation.addUpdateListener(new AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animator) {
-                view.setBackgroundColor((int) animator.getAnimatedValue());
-            }
-        });
-        colorAnimation.start();
-    }
-
-    private void animateStatusBarColorChange(int from, int to) {
-        int colorFrom = getResources().getColor(from);
-        int colorTo = getResources().getColor(to);
-        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-        colorAnimation.setDuration(300);
-        colorAnimation.addUpdateListener(new AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animator) {
-                changeStatusBarColor((int) animator.getAnimatedValue());
-            }
-        });
-        colorAnimation.start();
-    }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 123);
             }
@@ -786,11 +763,52 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Toast.makeText(this, "Connection to Google Location Services timed out.", Toast.LENGTH_SHORT).show();
+        currentLocationName = preferences.getString(KEY_LOCATION_NAME, null);
+        startWeatherTasks();
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(this, "Cannot connect to Google Location Services.", Toast.LENGTH_SHORT).show();
+        currentLocationName = preferences.getString(KEY_LOCATION_NAME, null);
+        startWeatherTasks();
+    }
 
+    private void changeStatusBarColor(int resID) {
+        if (android.os.Build.VERSION.SDK_INT >= 21) {
+            Window window = this.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(resID);
+        }
+    }
+
+    private void animateColorChange(final View view, int from, int to) {
+        int colorFrom = getResources().getColor(from);
+        int colorTo = getResources().getColor(to);
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+        colorAnimation.setDuration(300);
+        colorAnimation.addUpdateListener(new AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                view.setBackgroundColor((int) animator.getAnimatedValue());
+            }
+        });
+        colorAnimation.start();
+    }
+
+    private void animateStatusBarColorChange(int from, int to) {
+        int colorFrom = getResources().getColor(from);
+        int colorTo = getResources().getColor(to);
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+        colorAnimation.setDuration(300);
+        colorAnimation.addUpdateListener(new AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                changeStatusBarColor((int) animator.getAnimatedValue());
+            }
+        });
+        colorAnimation.start();
     }
 }

@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.pavel_bojidar.vineweather.BroadcastActions;
+import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
 import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.adapter.HourlyTempAdapter;
@@ -50,6 +53,7 @@ public class FragmentTomorrow extends WeatherFragment {
     private ImageView conditionImage;
     protected ArrayList<HourForecast> tomorrowHourly;
     protected FragmentManager fragmentManager;
+    private boolean isFahrenheit;
 
     @Nullable
     @Override
@@ -105,7 +109,15 @@ public class FragmentTomorrow extends WeatherFragment {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                bindData();
+                if(intent.getAction().equals(BroadcastActions.ACTION_UNIT_SWAPPED)){
+                    Log.e("broadcast", "tomorrow - on unit swapped");
+                    isFahrenheit = intent.getBooleanExtra(Constants.KEY_UNIT_TYPE, false);
+                    bindData();
+                } else {
+                    if (AppManager.getInstance().getCurrentLocation() != null) {
+                        bindData();
+                    }
+                }
             }
         };
     }
@@ -116,16 +128,16 @@ public class FragmentTomorrow extends WeatherFragment {
         int unixTS = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getDateEpoch();
         date.setText(Helper.getWeekDay(Helper.getUnixDate(unixTS)).concat(Helper.getUnixCustomDate(unixTS)));
         condition.setText(tomorrow.getCondition().getText());
-        if (!WeatherActivity.isFahrenheit) {
-            temp.setText(DAY
-                    .concat(String.valueOf(Helper.decimalFormat(tomorrow.getMaxtempC())
-                            .concat(CELSIUS_SYMBOL).concat(ARROW_UP).concat(INTERPUNKT).concat(NIGHT)
-                            .concat(Helper.decimalFormat(tomorrow.getMintempC()).concat(CELSIUS_SYMBOL).concat(ARROW_DOWN)))));
-        } else {
+        if (isFahrenheit) {
             temp.setText(DAY
                     .concat(String.valueOf(Helper.decimalFormat(tomorrow.getMaxtempF())
                             .concat(CELSIUS_SYMBOL).concat(ARROW_UP).concat(INTERPUNKT).concat(NIGHT)
                             .concat(Helper.decimalFormat(tomorrow.getMintempF()).concat(CELSIUS_SYMBOL).concat(ARROW_DOWN)))));
+        } else {
+            temp.setText(DAY
+                    .concat(String.valueOf(Helper.decimalFormat(tomorrow.getMaxtempC())
+                            .concat(CELSIUS_SYMBOL).concat(ARROW_UP).concat(INTERPUNKT).concat(NIGHT)
+                            .concat(Helper.decimalFormat(tomorrow.getMintempC()).concat(CELSIUS_SYMBOL).concat(ARROW_DOWN)))));
         }
         conditionImage.setImageDrawable(Helper.chooseConditionIcon(getContext(), true, false, tomorrow.getCondition().getText()));
         hourlyTempForecast.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));

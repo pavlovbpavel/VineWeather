@@ -9,6 +9,7 @@ public class Constants {
     APP SPECIFIC KEYS
      */
     public static final String KEY_LOCATION_NAME = "locationName";
+    public static final String KEY_UNIT_TYPE = "unitType";
     public static final String KEY_RECENT_LOCATIONS = "recents";
     public static final String KEY_LOCATION_ID = "locationId";
     public static final String CELSIUS_SYMBOL = "\u00b0";
