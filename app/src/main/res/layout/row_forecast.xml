@@ -3,10 +3,10 @@
     android:id="@+id/forecast_transition_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/row_week_forecast"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -84,19 +84,20 @@
 
         </LinearLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/forecast_details_master_layout"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_margin="8dp"
         android:visibility="gone"
+        android:layout_margin="8dp"
         android:padding="8dp">
 
         <LinearLayout
+            android:id="@+id/wind_detail_forecast"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -117,6 +118,8 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/humidity_detail_forecast"
+            android:layout_below="@id/wind_detail_forecast"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -137,6 +140,8 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/astro_sun_detail_forecast"
+            android:layout_below="@id/humidity_detail_forecast"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -157,6 +162,8 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/astro_moon_detail_forecast"
+            android:layout_below="@id/astro_sun_detail_forecast"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -177,6 +184,7 @@
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
+            android:layout_below="@id/astro_moon_detail_forecast"
             android:id="@+id/forecast_details_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -184,11 +192,11 @@
             android:layout_marginTop="16dp">
         </android.support.v7.widget.RecyclerView>
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1px"
+        android:layout_height="2px"
         android:background="@color/separator"/>
 
 </LinearLayout>

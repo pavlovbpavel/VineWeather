@@ -2,6 +2,7 @@ package com.pavel_bojidar.vineweather.adapter;
 
 import android.support.transition.AutoTransition;
 import android.support.transition.ChangeBounds;
+import android.support.transition.Fade;
 import android.support.transition.Transition;
 import android.support.transition.TransitionManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.Constants;
@@ -100,7 +102,8 @@ public class FutureForecastAdapter extends RecyclerView.Adapter<ForecastViewHold
 
         private ImageView conditionImage;
         private RecyclerView hourlyForecast;
-        private LinearLayout layout, masterLayout;
+        private RelativeLayout masterLayout;
+        private RelativeLayout layout;
         private TextView date, tempMin, tempMax, condition, wind, humidity, sun, moon;
 
         ForecastViewHolder(View itemView) {
@@ -112,10 +115,10 @@ public class FutureForecastAdapter extends RecyclerView.Adapter<ForecastViewHold
             moon = (TextView) itemView.findViewById(R.id.hidden_content_moon);
             tempMin = (TextView) itemView.findViewById(R.id.temperature_week_min);
             tempMax = (TextView) itemView.findViewById(R.id.temperature_week_max);
-            layout = (LinearLayout) itemView.findViewById(R.id.row_week_forecast);
+            layout = (RelativeLayout) itemView.findViewById(R.id.row_week_forecast);
             humidity = (TextView) itemView.findViewById(R.id.hidden_content_humidity);
             conditionImage = (ImageView) itemView.findViewById(R.id.condition_image_week);
-            masterLayout = (LinearLayout) itemView.findViewById(R.id.forecast_details_master_layout);
+            masterLayout = (RelativeLayout) itemView.findViewById(R.id.forecast_details_master_layout);
             hourlyForecast = (RecyclerView) itemView.findViewById(R.id.forecast_details_recycler_view);
         }
     }
