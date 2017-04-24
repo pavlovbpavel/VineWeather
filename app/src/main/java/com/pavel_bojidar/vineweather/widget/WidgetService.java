@@ -7,16 +7,15 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.pavel_bojidar.vineweather.Constants;
+import com.pavel_bojidar.vineweather.WeatherActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Scanner;
 
 public class WidgetService extends Service {
@@ -45,15 +44,15 @@ public class WidgetService extends Service {
                 String strJSON = "";
                 String validInput = null;
 
-                try {
-                    validInput = URLEncoder.encode(params[0], "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    validInput = URLEncoder.encode(params[0], "UTF-8");
+//                } catch (UnsupportedEncodingException e) {
+//                    e.printStackTrace();
+//                }
                 try {
                     Log.e("mimi", "1");
                     URL url = new URL(
-                            "http://api.apixu.com/v1/forecast.json?key=af8f97f36ad940fab0b191628171204&q=" + validInput + "&days=1");
+                            "http://api.apixu.com/v1/forecast.json?key=af8f97f36ad940fab0b191628171204&q=" + params[0] + "&days=1");
 
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
@@ -103,7 +102,7 @@ public class WidgetService extends Service {
                     e.printStackTrace();
                 }
             }
-        }.execute("Sofia");
+        }.execute(WeatherActivity.widgetLocation != null ? WeatherActivity.widgetLocation : "Sofia");
 
         return START_STICKY;
     }

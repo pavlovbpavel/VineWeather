@@ -132,6 +132,8 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     private GoogleApiClient mGoogleApiClient;
     private boolean isInitialRun = true;
     private SwipeRefreshLayout swipeRefresh;
+    public static String widgetLocation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,13 +143,15 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         preferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
         isImperialUnits = preferences.getString(Constants.KEY_UNIT_TYPE, "metric").equals("imperial");
 
+        preferences = getSharedPreferences("Degree Symbol", MODE_PRIVATE);
+        boolean isFahrenheit = preferences.getBoolean("isImperialUnits", false);
+        isImperialUnits = isFahrenheit;
+
         initViews();
 
         buildGoogleApiClient();
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-
-        MaPaWidgetProvider.startService(this);
     }
 
     private void buildGoogleApiClient() {
@@ -168,6 +172,13 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         } else {
             startWeatherTasks();
             searchField.setHint(Helper.filterCityName(currentLocationName));
+            if (!isImperialUnits) {
+                celsiusButton.callOnClick();
+                AppManager.getInstance().onUnitSwapped(this);
+            } else {
+                fahrenheitButton.callOnClick();
+                AppManager.getInstance().onUnitSwapped(this);
+            }
         }
     }
 
@@ -197,6 +208,10 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     @Override
     protected void onStop() {
         mGoogleApiClient.disconnect();
+        preferences = getSharedPreferences("Degree Symbol", MODE_PRIVATE);
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putBoolean("isImperialUnits", isImperialUnits);
+        edit.apply();
         super.onStop();
     }
 
@@ -281,10 +296,13 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         if (isInitialRun) {
             currentLocationName = AppManager.getInstance().getCurrentLocation().getName();
             searchField.setHint(currentLocationName);
+            widgetLocation = currentLocationName;
+
             isInitialRun = false;
             removeFromRecentList(currentLocationName);
             addToRecentList(currentLocationName);
         }
+        MaPaWidgetProvider.startService(this);
         swipeRefresh.setRefreshing(false);
     }
 

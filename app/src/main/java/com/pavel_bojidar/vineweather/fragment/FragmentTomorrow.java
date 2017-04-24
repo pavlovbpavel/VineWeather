@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.pavel_bojidar.vineweather.BroadcastActions;
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
+import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.adapter.HourlyTempAdapter;
 import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.HourForecast;
@@ -127,7 +128,7 @@ public class FragmentTomorrow extends WeatherFragment {
         int unixTS = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getDateEpoch();
         date.setText(Helper.getWeekDay(Helper.getUnixDate(unixTS)).concat(Helper.getUnixCustomDate(unixTS)));
         condition.setText(tomorrow.getCondition().getText());
-        if (isImperialUnits) {
+        if (WeatherActivity.isImperialUnits) {
             temp.setText(DAY
                     .concat(String.valueOf(Helper.decimalFormat(tomorrow.getMaxtempF())
                             .concat(CELSIUS_SYMBOL).concat(ARROW_UP).concat(INTERPUNKT).concat(NIGHT)

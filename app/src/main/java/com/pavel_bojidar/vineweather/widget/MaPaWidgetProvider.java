@@ -24,10 +24,10 @@ public class MaPaWidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
-        ComponentName thisWidget = new ComponentName(context, MaPaWidgetProvider.class);
+         ComponentName thisWidget = new ComponentName(context, MaPaWidgetProvider.class);
          allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
 
-        startService(context.getApplicationContext());
+         startService(context.getApplicationContext());
 
         for (int widgetId : allWidgetIds) {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ma_pa_widget);
@@ -39,6 +39,7 @@ public class MaPaWidgetProvider extends AppWidgetProvider {
             views.setTextViewText(R.id.condition_widget, WidgetService.condition);
 
             boolean isDay = WidgetService.isDay == 1;
+
 
             Drawable drawable = Helper.chooseConditionIcon(context.getApplicationContext(), isDay, false, WidgetService.condition);
             views.setImageViewResource(R.id.image_view_widget, Helper.imageWidget);
@@ -54,7 +55,6 @@ public class MaPaWidgetProvider extends AppWidgetProvider {
 
     public static void startService(Context context) {
         Intent intent = new Intent(context, WidgetService.class);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, allWidgetIds);
         context.startService(intent);
     }
 
