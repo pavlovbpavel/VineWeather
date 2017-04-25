@@ -15,6 +15,9 @@
     <color name="todayBackground">#9fccda</color>
     <color name="tomorrowBackground">#4FC3F7</color>
 
+    <color name="mapaWidgetLogoColor">#e0e0e0</color>
+    <color name="mapaWidgetSeparatorColor">#64e0e0e0</color>
+
     <color name="todayAppBarColor">#0D47A1</color>
     <color name="todayAppBarColorDark">#06347e</color>
 

@@ -32,8 +32,8 @@ public class MaPaWidgetProvider extends AppWidgetProvider {
 
             views.setTextViewText(R.id.location_widget, WidgetService.locationName + "");
             views.setTextViewText(R.id.degree_widget, Helper.decimalFormat(WidgetService.degree) + Constants.CELSIUS_SYMBOL);
-            views.setTextViewText(R.id.min_max_degree_widget, WidgetService.min + Constants.CELSIUS_SYMBOL +
-                    "/" + WidgetService.max + Constants.CELSIUS_SYMBOL);
+            views.setTextViewText(R.id.min_max_degree_widget, Helper.decimalFormat(WidgetService.max) + Constants.CELSIUS_SYMBOL +
+                    "/" + Helper.decimalFormat(WidgetService.min) + Constants.CELSIUS_SYMBOL);
             views.setTextViewText(R.id.condition_widget, WidgetService.condition);
 
             if(WidgetService.condition != null) {
