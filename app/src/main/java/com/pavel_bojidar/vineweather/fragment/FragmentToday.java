@@ -137,7 +137,7 @@ public class FragmentToday extends WeatherFragment {
             public void onReceive(Context context, Intent intent) {
                 if(intent.getAction().equals(BroadcastActions.ACTION_UNIT_SWAPPED)){
                     Log.e("broadcast", "today - on unit swapped");
-                    isImperialUnits = intent.getBooleanExtra(Constants.KEY_UNIT_TYPE, false);
+                    isImperialUnits = intent.getBooleanExtra(Constants.UNITS_IMPERIAL, false);
                     bindData();
                 } else {
                     if (AppManager.getInstance().getCurrentLocation() != null) {

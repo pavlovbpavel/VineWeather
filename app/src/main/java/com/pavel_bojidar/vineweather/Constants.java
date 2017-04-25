@@ -9,7 +9,7 @@ public class Constants {
     APP SPECIFIC KEYS
      */
     public static final String KEY_LOCATION_NAME = "locationName";
-    public static final String KEY_UNIT_TYPE = "unitType";
+    public static final String UNITS_IMPERIAL = "unitType";
     public static final String CELSIUS_SYMBOL = "\u00b0";
     public static final String HUMIDITY_SYMBOL = "%";
     public static final String KM_H = "km/h";

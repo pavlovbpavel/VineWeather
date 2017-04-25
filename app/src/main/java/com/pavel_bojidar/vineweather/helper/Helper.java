@@ -221,6 +221,7 @@ public class Helper {
                 case "Moderate or heavy showers of ice pellets":
                 case "Patchy light rain in area with thunder":
                 case "Moderate or heavy rain in area with thunder":
+                case "Moderate or heavy rain with thunder":
                     imageWidget = R.drawable.storm_weather_icon;
                     return isForecast ? resources.getDrawable(R.drawable.storm_weather_icon_rv) : resources.getDrawable(R.drawable.storm_weather_icon);
                 default:
