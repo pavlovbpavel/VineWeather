@@ -128,10 +128,8 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     private SwipeRefreshLayout swipeRefresh;
     public static String widgetLocation;
     private boolean fromLocation;
-
     private RecentListAdapter recentAdapter;
     private Gson gson = new Gson();
-
     private NetworkReceiver networkReceiver = new NetworkReceiver(new ConnectivityChanged() {
         @Override
         public void onConnected() {
@@ -760,6 +758,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                 if (preferences.getString(Constants.KEY_LOCATION_NAME, null) != null) {
                     currentLocationName = preferences.getString(Constants.KEY_LOCATION_NAME, null);
                     startWeatherTasks();
+                    searchField.setHint(Helper.filterCityName(currentLocationName));
                 } else {
                     Toast.makeText(this, "Permission not granted, please choose a location.", Toast.LENGTH_SHORT).show();
                     viewPager.setVisibility(View.GONE);
