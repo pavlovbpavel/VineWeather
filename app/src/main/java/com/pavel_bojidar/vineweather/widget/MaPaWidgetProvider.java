@@ -1,6 +1,5 @@
 package com.pavel_bojidar.vineweather.widget;
 
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
@@ -11,7 +10,6 @@ import android.widget.RemoteViews;
 
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
-import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.helper.Helper;
 
 /**
@@ -44,10 +42,9 @@ public class MaPaWidgetProvider extends AppWidgetProvider {
 
             views.setImageViewResource(R.id.image_view_widget, Helper.imageWidget);
 
-            Intent intent1 = new Intent(context.getApplicationContext(), WeatherActivity.class);
-
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent1, 0);
-            views.setOnClickPendingIntent(R.id.widget_layout, pendingIntent);
+//            Intent intent1 = new Intent(context.getApplicationContext(), WeatherActivity.class);
+//            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent1, 0);
+//            views.setOnClickPendingIntent(R.id.widget_layout, pendingIntent);
 
             appWidgetManager.updateAppWidget(widgetId, views);
         }
