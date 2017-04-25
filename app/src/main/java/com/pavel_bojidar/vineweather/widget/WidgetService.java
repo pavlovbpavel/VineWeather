@@ -14,8 +14,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Scanner;
 
 public class WidgetService extends Service {
@@ -34,7 +36,6 @@ public class WidgetService extends Service {
         return null;
     }
 
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
@@ -44,15 +45,15 @@ public class WidgetService extends Service {
                 String strJSON = "";
                 String validInput = null;
 
-//                try {
-//                    validInput = URLEncoder.encode(params[0], "UTF-8");
-//                } catch (UnsupportedEncodingException e) {
-//                    e.printStackTrace();
-//                }
+                try {
+                    validInput = URLEncoder.encode(params[0], "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
                 try {
                     Log.e("mimi", "1");
                     URL url = new URL(
-                            "http://api.apixu.com/v1/forecast.json?key=af8f97f36ad940fab0b191628171204&q=" + params[0] + "&days=1");
+                            "http://api.apixu.com/v1/forecast.json?key=af8f97f36ad940fab0b191628171204&q=" + validInput + "&days=1");
 
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
@@ -85,19 +86,26 @@ public class WidgetService extends Service {
                     locationName = locationObj.getString("name");
 
                     JSONObject currentObj = callObject.getJSONObject("current");
-                    degree = currentObj.getDouble("temp_c");
+                    if (WeatherActivity.isImperialUnits) {
+                        degree = currentObj.getDouble("temp_f");
+                    } else {
+                        degree = currentObj.getDouble("temp_c");
+                    }
                     isDay = currentObj.getInt(Constants.KEY_IS_DAY);
 
                     JSONObject conditionObj = currentObj.getJSONObject(Constants.NODE_CONDITION);
                     condition = conditionObj.getString(Constants.KEY_TEXT);
 
-
                     JSONObject forecastObj = callObject.getJSONObject(Constants.NODE_FORECAST);
                     JSONArray forecastDays = forecastObj.getJSONArray(Constants.NODE_FORECASTDAY);
                     JSONObject todayObj = forecastDays.getJSONObject(0).getJSONObject(Constants.NODE_DAY);
-                    min = todayObj.getDouble(Constants.KEY_MINTEMP_C);
-                    max = todayObj.getDouble(Constants.KEY_MAXTEMP_C);
-
+                    if (WeatherActivity.isImperialUnits) {
+                        min = todayObj.getDouble(Constants.KEY_MINTEMP_F);
+                        max = todayObj.getDouble(Constants.KEY_MAXTEMP_F);
+                    } else {
+                        min = todayObj.getDouble(Constants.KEY_MINTEMP_C);
+                        max = todayObj.getDouble(Constants.KEY_MAXTEMP_C);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

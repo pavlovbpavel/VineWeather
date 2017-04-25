@@ -19,7 +19,7 @@ import com.pavel_bojidar.vineweather.helper.Helper;
  */
 public class MaPaWidgetProvider extends AppWidgetProvider {
 
-    static int[] allWidgetIds;
+    public static int[] allWidgetIds;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -38,10 +38,10 @@ public class MaPaWidgetProvider extends AppWidgetProvider {
                     "/" + WidgetService.max + Constants.CELSIUS_SYMBOL);
             views.setTextViewText(R.id.condition_widget, WidgetService.condition);
 
-            boolean isDay = WidgetService.isDay == 1;
+            if(WidgetService.condition != null) {
+                Drawable drawable = Helper.chooseConditionIcon(context, WidgetService.isDay == 1, false, WidgetService.condition);
+            }
 
-
-//            Drawable drawable = Helper.chooseConditionIcon(context.getApplicationContext(), isDay, false, WidgetService.condition);
             views.setImageViewResource(R.id.image_view_widget, Helper.imageWidget);
 
             Intent intent1 = new Intent(context.getApplicationContext(), WeatherActivity.class);

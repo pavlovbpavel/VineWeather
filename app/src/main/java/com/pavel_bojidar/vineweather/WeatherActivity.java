@@ -5,6 +5,7 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.Activity;
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -69,7 +70,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.pavel_bojidar.vineweather.NetworkReceiver.ConnectivityChanged;
 import com.pavel_bojidar.vineweather.adapter.RecentListAdapter;
 import com.pavel_bojidar.vineweather.adapter.RecentListAdapter.RecentSelectedListener;
 import com.pavel_bojidar.vineweather.fragment.FragmentForecast;
@@ -79,6 +79,8 @@ import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.SearchCity;
 import com.pavel_bojidar.vineweather.model.maindata.CurrentWeather;
 import com.pavel_bojidar.vineweather.popupwindow.CitySearchPopupWindow;
+import com.pavel_bojidar.vineweather.receiver.NetworkReceiver;
+import com.pavel_bojidar.vineweather.receiver.NetworkReceiver.ConnectivityChanged;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 import com.pavel_bojidar.vineweather.task.GetCurrentWeather;
 import com.pavel_bojidar.vineweather.task.GetForecast;
@@ -212,7 +214,16 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         SharedPreferences.Editor edit = preferences.edit();
         edit.putBoolean("isImperialUnits", isImperialUnits);
         edit.apply();
+        requestWidgetUpdate();
         super.onStop();
+
+    }
+
+    private void requestWidgetUpdate() {
+        Intent intent = new Intent(this,MaPaWidgetProvider.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, MaPaWidgetProvider.allWidgetIds);
+        sendBroadcast(intent);
     }
 
     private void startWeatherTasks() {
@@ -313,8 +324,8 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                 addToRecentList(currentLocationName);
             }
         }
-        MaPaWidgetProvider.startService(this);
         swipeRefresh.setRefreshing(false);
+        MaPaWidgetProvider.startService(this);
     }
 
 
@@ -328,6 +339,8 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             }
         }
         AppManager.getInstance().onUnitSwapped(this);
+        requestWidgetUpdate();
+        MaPaWidgetProvider.startService(this);
     }
 
     private void initViews() {
@@ -775,7 +788,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
-
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {

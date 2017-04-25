@@ -1,4 +1,4 @@
-package com.pavel_bojidar.vineweather;
+package com.pavel_bojidar.vineweather.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -33,7 +33,7 @@ public class NetworkReceiver extends BroadcastReceiver {
         }
     }
 
-    interface ConnectivityChanged {
+    public interface ConnectivityChanged {
         void onConnected();
     }
 }
