@@ -302,19 +302,23 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         conditionTodayColorSet = Helper.chooseConditionColorSet(conditionToday, isDay);
         conditionTomorrowColorSet = Helper.chooseConditionColorSet(conditionTomorrow, true);
         if(viewPager.getCurrentItem() == 0) {
+            if(conditionTodayColorSet != null) {
             animateColorChange(appBar, currentTabColor, conditionTodayColorSet[0]);
             animateStatusBarColorChange(currentTabColorDark, conditionTodayColorSet[1]);
             currentTabColorDark = conditionTodayColorSet[1];
             currentTabColor = conditionTodayColorSet[0];
-            gradient = Helper.chooseHeaderColorSet(WeatherActivity.this, conditionTodayColorSet);
-            headerContainer.setBackgroundDrawable(gradient);
+                gradient = Helper.chooseHeaderColorSet(WeatherActivity.this, conditionTodayColorSet);
+                headerContainer.setBackgroundDrawable(gradient);
+            }
         } else if (viewPager.getCurrentItem() == 1) {
+            if(conditionTomorrowColorSet != null) {
             animateColorChange(appBar, currentTabColor, conditionTomorrowColorSet[0]);
             animateStatusBarColorChange(currentTabColorDark, conditionTomorrowColorSet[1]);
             currentTabColorDark = conditionTomorrowColorSet[1];
             currentTabColor = conditionTomorrowColorSet[0];
-            gradient = Helper.chooseHeaderColorSet(WeatherActivity.this, conditionTomorrowColorSet);
-            headerContainer.setBackgroundDrawable(gradient);
+                gradient = Helper.chooseHeaderColorSet(WeatherActivity.this, conditionTomorrowColorSet);
+                headerContainer.setBackgroundDrawable(gradient);
+            }
         } else {
             animateColorChange(appBar, currentTabColor, R.color.forecastAppBarColor);
             animateStatusBarColorChange(currentTabColorDark, R.color.forecastAppBarColorDark);

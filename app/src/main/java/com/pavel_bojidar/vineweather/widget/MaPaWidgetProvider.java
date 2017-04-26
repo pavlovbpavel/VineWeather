@@ -42,10 +42,6 @@ public class MaPaWidgetProvider extends AppWidgetProvider {
 
             views.setImageViewResource(R.id.image_view_widget, Helper.imageWidget);
 
-//            Intent intent1 = new Intent(context.getApplicationContext(), WeatherActivity.class);
-//            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent1, 0);
-//            views.setOnClickPendingIntent(R.id.widget_layout, pendingIntent);
-
             appWidgetManager.updateAppWidget(widgetId, views);
         }
     }

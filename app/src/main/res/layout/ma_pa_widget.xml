@@ -1,7 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:background="@drawable/widget_shape"
                 android:id="@+id/widget_layout"
                 android:padding="@dimen/widget_margin">
@@ -43,7 +42,7 @@
         android:textColor="#ffffff"
         android:textSize="24sp"
         android:paddingTop="18dp"
-        android:paddingStart="8dp"
+        android:paddingStart="7dp"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/image_view_widget" />
 
@@ -54,7 +53,7 @@
         android:text="Condition"
         android:textAlignment="viewStart"
         android:textColor="#ffffff"
-        android:textSize="14sp"
+        android:textSize="12sp"
         android:paddingTop="2dp"
         android:paddingStart="8dp"
         android:layout_below="@+id/location_widget"
@@ -69,7 +68,6 @@
         android:textColor="#ffffff"
         android:paddingTop="16dp"
         android:paddingStart="8dp"
-
         android:textSize="26sp"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/location_widget"/>
@@ -79,14 +77,13 @@
         android:layout_width="70dp"
         android:layout_height="32dp"
         android:text="Min/Max"
+        android:gravity="start"
         android:textAlignment="textStart"
         android:textColor="#ffffff"
         android:paddingTop="2dp"
         android:paddingStart="8dp"
-        android:textSize="14sp"
+        android:textSize="12sp"
         android:layout_below="@+id/degree_widget"
         android:layout_toEndOf="@+id/condition_widget"/>
-
-
 
 </RelativeLayout>

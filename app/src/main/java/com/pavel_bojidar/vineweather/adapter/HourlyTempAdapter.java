@@ -34,10 +34,8 @@ public class HourlyTempAdapter extends RecyclerView.Adapter<HourlyForecastViewHo
         HourlyForecastViewHolder holder = null;
         switch (fragmentNumber) {
             case 0:
-                holder = new HourlyForecastViewHolder(parent.inflate(parent.getContext(), R.layout.row_today_hourly_temp, null));
-                break;
             case 1:
-                holder = new HourlyForecastViewHolder(parent.inflate(parent.getContext(), R.layout.row_tomorrow_hourly_temp, null));
+                holder = new HourlyForecastViewHolder(parent.inflate(parent.getContext(), R.layout.row_today_hourly_temp, null));
                 break;
             case 2:
                 holder = new HourlyForecastViewHolder(parent.inflate(parent.getContext(), R.layout.row_forecast_hourly_temp, null));
