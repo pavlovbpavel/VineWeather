@@ -14,6 +14,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.GradientDrawable.Orientation;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -62,6 +64,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -111,6 +114,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     private String currentLocationName;
     private ProgressBar loadingView;
     private EditText searchField;
+    private RelativeLayout headerContainer;
     final boolean[] weatherTasksCompleted = {false, false};
     private CitySearchPopupWindow searchPopupWindow;
     private Toolbar toolbar;
@@ -118,7 +122,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     private MenuItem search;
     private Timer inputDelay;
     private ImageView navDrawerImage;
-    private TextView navDrawerDegree, navDrawerCondition, noLocationSelected;
+    private TextView navDrawerDegree, navDrawerCondition, noLocationSelected, navDrawerLocation;
     private Button celsiusButton, fahrenheitButton;
     private AlertDialog alertDialog;
     public static boolean isImperialUnits;
@@ -268,6 +272,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         CurrentWeather currentWeather = AppManager.getInstance().getCurrentLocation().getCurrentWeather();
         navDrawerImage.setImageDrawable(Helper.chooseConditionIcon(this, currentWeather.getIs_day() == 1, false,
                 currentWeather.getCondition().getText()));
+
         navDrawerCondition.setText(currentWeather.getCondition().getText());
         if (!isImperialUnits) {
             navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempC()).concat(Constants.CELSIUS_SYMBOL));
@@ -286,6 +291,18 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             searchField.setHint(currentLocationName);
             widgetLocation = currentLocationName;
             addToRecentList(currentLocationName);
+        }
+        navDrawerLocation.setText(Helper.filterCityName(currentLocationName));
+
+        if (currentWeather.getCondition().getText().length() >= 30) {
+            navDrawerCondition.setTextSize(14);
+        } else {
+            navDrawerCondition.setTextSize(16);
+        }
+        if(currentLocationName.length() >= 12){
+            navDrawerLocation.setTextSize(20);
+        } else {
+            navDrawerLocation.setTextSize(24);
         }
 
         swipeRefresh.setRefreshing(false);
@@ -309,9 +326,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
     private void initViews() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-
         noLocationSelected = (TextView) findViewById(R.id.no_location);
-
         celsiusButton = (Button) findViewById(R.id.nav_drawer_celsius_button);
         fahrenheitButton = (Button) findViewById(R.id.nav_drawer_fahrenheit_button);
 
@@ -361,6 +376,9 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         navDrawerImage = (ImageView) hView.findViewById(R.id.nav_drawer_image);
         navDrawerDegree = (TextView) hView.findViewById(R.id.nav_drawer_degree);
         navDrawerCondition = (TextView) hView.findViewById(R.id.nav_drawer_condition);
+        navDrawerLocation = (TextView) hView.findViewById(R.id.nav_drawer_location);
+        headerContainer = (RelativeLayout) hView.findViewById(R.id.header_container_layout);
+
 
         setSupportActionBar(toolbar);
 
@@ -456,24 +474,36 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         tabLayout.setOnTabSelectedListener(new OnTabSelectedListener() {
             @Override
             public void onTabSelected(Tab tab) {
+
+                GradientDrawable gradient;
+
                 switch (tab.getPosition()) {
                     case 0:
                         animateColorChange(appBar, currentTabColor, R.color.todayAppBarColor);
                         animateStatusBarColorChange(currentTabColorDark, R.color.todayAppBarColorDark);
                         currentTabColorDark = R.color.todayAppBarColorDark;
                         currentTabColor = R.color.todayAppBarColor;
+                        gradient = new GradientDrawable(Orientation.TOP_BOTTOM, new int[]{Color.parseColor("#0D47A1"), Color.parseColor("#06347e")});
+                        gradient.setCornerRadius(0f);
+                        headerContainer.setBackgroundDrawable(gradient);
                         break;
                     case 1:
                         animateColorChange(appBar, currentTabColor, R.color.tomorrowAppBarColor);
                         animateStatusBarColorChange(currentTabColorDark, R.color.tomorrowAppBarColorDark);
                         currentTabColorDark = R.color.tomorrowAppBarColorDark;
                         currentTabColor = R.color.tomorrowAppBarColor;
+                        gradient = new GradientDrawable(Orientation.TOP_BOTTOM, new int[]{Color.parseColor("#0277BD"), Color.parseColor("#01579B")});
+                        gradient.setCornerRadius(0f);
+                        headerContainer.setBackgroundDrawable(gradient);
                         break;
                     case 2:
                         animateColorChange(appBar, currentTabColor, R.color.forecastAppBarColor);
                         animateStatusBarColorChange(currentTabColorDark, R.color.forecastAppBarColorDark);
                         currentTabColorDark = R.color.forecastAppBarColorDark;
                         currentTabColor = R.color.forecastAppBarColor;
+                        gradient = new GradientDrawable(Orientation.TOP_BOTTOM, new int[]{Color.parseColor("#006064"), Color.parseColor("#004749")});
+                        gradient.setCornerRadius(0f);
+                        headerContainer.setBackgroundDrawable(gradient);
                         break;
                 }
                 swipeRefresh.setColorSchemeResources((currentTabColor));

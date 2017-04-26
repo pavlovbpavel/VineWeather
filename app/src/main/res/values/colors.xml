@@ -17,9 +17,11 @@
 
     <color name="mapaWidgetLogoColor">#e0e0e0</color>
     <color name="mapaWidgetSeparatorColor">#64e0e0e0</color>
+    <color name="mapaDrawerSeparatorColor">#8ce0e0e0</color>
 
     <color name="todayAppBarColor">#0D47A1</color>
     <color name="todayAppBarColorDark">#06347e</color>
+
 
     <color name="tomorrowAppBarColor">#0277BD</color>
     <color name="tomorrowAppBarColorDark">#01579B</color>
