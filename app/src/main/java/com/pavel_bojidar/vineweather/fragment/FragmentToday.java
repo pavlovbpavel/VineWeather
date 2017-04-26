@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,9 +27,12 @@ import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.adapter.HourlyTempAdapter;
 import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.DayForecast;
+import com.pavel_bojidar.vineweather.model.HourForecast;
 import com.pavel_bojidar.vineweather.model.maindata.Forecast;
 import com.pavel_bojidar.vineweather.model.maindata.Location;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
+
+import java.util.Date;
 
 import static com.pavel_bojidar.vineweather.Constants.FEELS_LIKE;
 import static com.pavel_bojidar.vineweather.Constants.LAST_UPDATED;
@@ -49,7 +51,6 @@ public class FragmentToday extends WeatherFragment {
     protected ImageView weatherIcon, windDirection;
     protected TextView degrees, condition, windCondition, windSpeed, feelsLike, lastUpdated;
     protected FragmentManager fragmentManager;
-    private boolean isImperialUnits;
 
     @Nullable
     @Override
@@ -128,6 +129,16 @@ public class FragmentToday extends WeatherFragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(new HourlyTempAdapter(currentDay.getHourForecasts(), 0));
+
+//        HourlyTempAdapter tempAdapter = (HourlyTempAdapter) recyclerView.getAdapter();
+//        Long now = new Date().getTime();
+//        HourForecast currentHour;
+//        for (int i = 0; i < currentDay.getHourForecasts().size(); i++) {
+//            currentHour = currentDay.getHourForecasts().get(i);
+//            if (currentHour.getTimeEpoch() < now) {
+//                tempAdapter.removeItem(i);
+//            }
+//        }
     }
 
     @Override
@@ -136,8 +147,6 @@ public class FragmentToday extends WeatherFragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if(intent.getAction().equals(BroadcastActions.ACTION_UNIT_SWAPPED)){
-                    Log.e("broadcast", "today - on unit swapped");
-                    isImperialUnits = intent.getBooleanExtra(Constants.UNITS_IMPERIAL, false);
                     bindData();
                 } else {
                     if (AppManager.getInstance().getCurrentLocation() != null) {

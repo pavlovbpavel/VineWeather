@@ -45,14 +45,14 @@
                 android:stateListAnimator="@null"
                 android:layout_below="@id/units_text"
                 android:layout_marginStart="6dp"
-                android:text="@string/metric"/>
+                android:text="@string/c"/>
 
             <Button
                 android:id="@+id/nav_drawer_fahrenheit_button"
                 android:layout_width="50dp"
                 android:layout_height="40dp"
                 android:stateListAnimator="@null"
-                android:text="@string/imperial"
+                android:text="@string/f"
                 android:layout_alignBottom="@+id/nav_drawer_celsius_button"
                 android:layout_toEndOf="@+id/nav_drawer_celsius_button"/>
 

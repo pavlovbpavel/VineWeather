@@ -79,4 +79,9 @@ public class HourlyTempAdapter extends RecyclerView.Adapter<HourlyForecastViewHo
             icon = (ImageView) itemView.findViewById(R.id.row_forecast_details_icon);
         }
     }
+
+    public void removeItem(int position) {
+        forecast.remove(position);
+        notifyItemRemoved(position);
+    }
 }

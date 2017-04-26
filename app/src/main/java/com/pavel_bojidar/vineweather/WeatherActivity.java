@@ -98,8 +98,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static android.support.v4.view.ViewPager.SCROLL_STATE_DRAGGING;
+import static com.pavel_bojidar.vineweather.Constants.INTERNET_CONNECTION;
 import static com.pavel_bojidar.vineweather.Constants.KEY_LOCATION_NAME;
 import static com.pavel_bojidar.vineweather.Constants.KEY_NAME;
+import static com.pavel_bojidar.vineweather.Constants.SERVER_CONNECTION_FAILURE;
 
 
 public class WeatherActivity extends AppCompatActivity implements RecentSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -134,6 +136,8 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     private boolean fromLocation;
     private RecentListAdapter recentAdapter;
     private Gson gson = new Gson();
+    public static boolean isConnected;
+
     private NetworkReceiver networkReceiver = new NetworkReceiver(new ConnectivityChanged() {
         @Override
         public void onConnected() {
@@ -144,7 +148,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             LocalBroadcastManager.getInstance(WeatherActivity.this).unregisterReceiver(networkReceiver);
         }
     });
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -213,6 +216,10 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
     private void startWeatherTasks() {
         if (isNetworkAvailable()) {
+            if (!isConnected) {
+                showAlertDialog(SERVER_CONNECTION_FAILURE);
+                return;
+            }
             if (noLocationSelected != null) {
                 noLocationSelected.setVisibility(View.GONE);
             }
@@ -235,29 +242,44 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                 }
             }.execute(currentLocationName);
         } else {
-            showAlertDialog();
+            showAlertDialog(INTERNET_CONNECTION);
         }
     }
 
-    private void showAlertDialog() {
+    public void showAlertDialog(String event) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("No internet Connection");
-        builder.setMessage("Please turn on internet connection to continue");
-        builder.setCancelable(false);
-        builder.setNegativeButton("Quit", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
-        builder.setPositiveButton("Connect to WIFI", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-            }
-        });
-        alertDialog = builder.create();
-        alertDialog.show();
-        LocalBroadcastManager.getInstance(this).registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        if (event.equals(INTERNET_CONNECTION)) {
+            builder.setTitle("No internet Connection");
+            builder.setMessage("Please turn on internet connection to continue");
+            builder.setCancelable(false);
+            builder.setNegativeButton("Quit", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            });
+            builder.setPositiveButton("Connect to WIFI", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                }
+            });
+            alertDialog = builder.create();
+            alertDialog.show();
+            LocalBroadcastManager.getInstance(this).registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        }
+        if (event.equals(SERVER_CONNECTION_FAILURE)) {
+            builder.setTitle("Error");
+            builder.setMessage("Sorry, something went wrong. A team of highly trained monkeys has been dispatched to deal with this situation");
+            builder.setCancelable(false);
+            builder.setNegativeButton("Quit", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            });
+            alertDialog = builder.create();
+            alertDialog.show();
+        }
     }
 
     public void onLocationUpdated() {
@@ -299,8 +321,10 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         } else {
             navDrawerCondition.setTextSize(16);
         }
-        if(currentLocationName.length() >= 12){
-            navDrawerLocation.setTextSize(20);
+        if (Helper.filterCityName(currentLocationName).length() >= 14 && Helper.filterCityName(currentLocationName).length() <= 18) {
+            navDrawerLocation.setTextSize(18);
+        } else if (Helper.filterCityName(currentLocationName).length() > 18) {
+            navDrawerLocation.setTextSize(14);
         } else {
             navDrawerLocation.setTextSize(24);
         }
@@ -578,7 +602,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
     private void performSearch(Editable s) {
         if (isNetworkAvailable()) {
-            new GetLocations() {
+            new GetLocations(new WeakReference<Activity>(this)) {
                 @Override
                 protected void onPostExecute(String result) {
                     super.onPostExecute(result);
@@ -631,7 +655,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                 }
             }.execute(s.toString());
         } else {
-            showAlertDialog();
+            showAlertDialog(INTERNET_CONNECTION);
         }
     }
 

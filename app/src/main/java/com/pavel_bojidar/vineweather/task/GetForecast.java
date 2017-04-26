@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.AsyncTask;
 
 import com.pavel_bojidar.vineweather.WeatherActivity;
-import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.Astro;
 import com.pavel_bojidar.vineweather.model.Condition;
 import com.pavel_bojidar.vineweather.model.DayForecast;
@@ -22,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -91,9 +91,9 @@ import static com.pavel_bojidar.vineweather.Constants.NODE_LOCATION;
 
 public class GetForecast extends AsyncTask<String, Void, String> {
 
-    WeakReference<Activity> activityWeakReference;
+    private WeakReference<Activity> activityWeakReference;
 
-    public GetForecast(WeakReference<Activity> activityWeakReference) {
+    protected GetForecast(WeakReference<Activity> activityWeakReference) {
         this.activityWeakReference = activityWeakReference;
     }
 
@@ -109,10 +109,16 @@ public class GetForecast extends AsyncTask<String, Void, String> {
         try {
             URL url = new URL(
                     "http://api.apixu.com/v1/forecast.json?key=" + API_KEY + "&q=" + validInput + "&days=10");
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(url.openStream()));
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                result.append(line);
+            HttpURLConnection http = (HttpURLConnection)url.openConnection();
+            if(http.getResponseCode() > 400){
+                WeatherActivity.isConnected = false;
+            } else {
+                WeatherActivity.isConnected = true;
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(url.openStream()));
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    result.append(line);
+                }
             }
         } catch (IOException ex) {
             ex.printStackTrace();

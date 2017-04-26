@@ -28,6 +28,8 @@ public class Constants {
     public static final String VOLUME_MM = "Volume\n(mm)";
     public static final String VOLUME_IN = "Volume\n(in)";
     public static final String IS_TOMORROW = "isTomorrow";
+    public static final String INTERNET_CONNECTION = "internetConnection";
+    public static final String SERVER_CONNECTION_FAILURE = "serverConnectionFailure";
 
     /*
     API CALL KEYS
