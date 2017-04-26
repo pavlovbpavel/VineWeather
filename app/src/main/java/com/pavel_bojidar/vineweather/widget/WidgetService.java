@@ -53,7 +53,7 @@ public class WidgetService extends Service {
                 try {
                     Log.e("mimi", "1");
                     URL url = new URL(
-                            "http://api.apixu.com/v1/forecast.json?key=1d411b434a6040d782b115249172604=" + validInput + "&days=1");
+                            "http://api.apixu.com/v1/forecast.json?key=954d7898a6e84f25a6f123340172604&q=" + validInput + "&days=1");
 
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
@@ -82,14 +82,14 @@ public class WidgetService extends Service {
                 try {
                     JSONObject callObject = new JSONObject(result);
 
-                    JSONObject locationObj = callObject.getJSONObject("location");
-                    locationName = locationObj.getString("name");
+                    JSONObject locationObj = callObject.getJSONObject(Constants.NODE_LOCATION);
+                    locationName = locationObj.getString(Constants.KEY_NAME);
 
-                    JSONObject currentObj = callObject.getJSONObject("current");
+                    JSONObject currentObj = callObject.getJSONObject(Constants.NODE_CURRENT);
                     if (WeatherActivity.isImperialUnits) {
-                        degree = currentObj.getDouble("temp_f");
+                        degree = currentObj.getDouble(Constants.KEY_TEMP_F);
                     } else {
-                        degree = currentObj.getDouble("temp_c");
+                        degree = currentObj.getDouble(Constants.KEY_TEMP_C);
                     }
                     isDay = currentObj.getInt(Constants.KEY_IS_DAY);
 
