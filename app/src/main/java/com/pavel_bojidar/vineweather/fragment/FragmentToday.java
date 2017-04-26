@@ -27,12 +27,9 @@ import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.adapter.HourlyTempAdapter;
 import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.DayForecast;
-import com.pavel_bojidar.vineweather.model.HourForecast;
 import com.pavel_bojidar.vineweather.model.maindata.Forecast;
 import com.pavel_bojidar.vineweather.model.maindata.Location;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
-
-import java.util.Date;
 
 import static com.pavel_bojidar.vineweather.Constants.FEELS_LIKE;
 import static com.pavel_bojidar.vineweather.Constants.LAST_UPDATED;
@@ -102,14 +99,6 @@ public class FragmentToday extends WeatherFragment {
         return result;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (AppManager.getInstance().getCurrentLocation() != null) {
-            bindData();
-        }
-    }
-
     private void bindData() {
 
         forecast = AppManager.getInstance().getCurrentLocation().getForecast();
@@ -130,12 +119,15 @@ public class FragmentToday extends WeatherFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(new HourlyTempAdapter(currentDay.getHourForecasts(), 0));
 
+        parent.setBackgroundDrawable(Helper.chooseFragmentBackground(getContext(), currentLocation.getCurrentWeather().getCondition().getText(), currentLocation.getCurrentWeather().getIs_day() == 1));
+
 //        HourlyTempAdapter tempAdapter = (HourlyTempAdapter) recyclerView.getAdapter();
-//        Long now = new Date().getTime();
+//        Long now = (long) AppManager.getInstance().getCurrentLocation().getCurrentWeather().getLastUpdateEpoch();
 //        HourForecast currentHour;
 //        for (int i = 0; i < currentDay.getHourForecasts().size(); i++) {
 //            currentHour = currentDay.getHourForecasts().get(i);
-//            if (currentHour.getTimeEpoch() < now) {
+//            Long currentEpoch = (long) currentHour.getTimeEpoch();
+//            if (currentEpoch < now) {
 //                tempAdapter.removeItem(i);
 //            }
 //        }

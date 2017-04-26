@@ -53,7 +53,6 @@ public class FragmentTomorrow extends WeatherFragment {
     private ImageView conditionImage;
     protected ArrayList<HourForecast> tomorrowHourly;
     protected FragmentManager fragmentManager;
-    private boolean isImperialUnits;
 
     @Nullable
     @Override
@@ -65,12 +64,6 @@ public class FragmentTomorrow extends WeatherFragment {
         temp = (TextView) view.findViewById(R.id.tomorrow_max_min);
         conditionImage = (ImageView) view.findViewById(R.id.tomorrow_image);
         return view;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        bindData();
     }
 
     @Override
@@ -110,8 +103,6 @@ public class FragmentTomorrow extends WeatherFragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if(intent.getAction().equals(BroadcastActions.ACTION_UNIT_SWAPPED)){
-                    Log.e("broadcast", "tomorrow - on unit swapped");
-                    isImperialUnits = intent.getBooleanExtra(Constants.UNITS_IMPERIAL, false);
                     bindData();
                 } else {
                     if (AppManager.getInstance().getCurrentLocation() != null) {
@@ -142,5 +133,6 @@ public class FragmentTomorrow extends WeatherFragment {
         conditionImage.setImageDrawable(Helper.chooseConditionIcon(getContext(), true, false, tomorrow.getCondition().getText()));
         hourlyTempForecast.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         hourlyTempForecast.setAdapter(new HourlyTempAdapter(tomorrowHourly, 1));
+        mainLayout.setBackground(Helper.chooseFragmentBackground(getContext(), tomorrow.getCondition().getText(), true));
     }
 }

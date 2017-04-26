@@ -2,7 +2,11 @@ package com.pavel_bojidar.vineweather.helper;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.GradientDrawable.Orientation;
+import android.support.v4.content.res.ResourcesCompat;
 
 import com.pavel_bojidar.vineweather.R;
 
@@ -312,5 +316,191 @@ public class Helper {
                     return resources.getDrawable(R.drawable.unknown);
             }
         }
+    }
+
+    public static Drawable chooseFragmentBackground(Context context, String condition, boolean isDay){
+
+        Resources resources = context.getResources();
+
+        switch (condition){
+            case "Clear":
+            case "Partly cloudy":
+                return isDay ? resources.getDrawable(R.drawable.condition_clear_background_day) : resources.getDrawable(R.drawable.condition_clear_background_night);
+            case "Freezing fog":
+            case "Overcast":
+            case "Mist":
+            case "Fog":
+            case "Cloudy":
+                return isDay ? resources.getDrawable(R.drawable.condition_overcast_background_day) : resources.getDrawable(R.drawable.condition_overcast_background_night);
+            case "Freezing drizzle":
+            case "Heavy freezing drizzle":
+            case "Light freezing rain":
+            case "Moderate or heavy freezing rain":
+            case "Moderate or heavy sleet":
+            case "Moderate or heavy sleet showers":
+            case "Patchy light drizzle":
+            case "Light sleet":
+            case "Patchy sleet nearby":
+            case "Light sleet showers":
+            case "Patchy sleet possible":
+            case "Moderate or heavy rain shower":
+            case "Torrential rain shower":
+            case "Light rain":
+            case "Moderate rain at times":
+            case "Moderate rain":
+            case "Heavy rain at times":
+            case "Heavy rain":
+            case "Patchy rain nearby":
+            case "Patchy freezing drizzle nearby":
+            case "Light drizzle":
+            case "Patchy rain possible":
+            case "Patchy light rain":
+            case "Light rain shower":
+            case "Moderate or heavy snow showers":
+            case "Light showers of ice pellets":
+            case "Moderate or heavy showers of ice pellets":
+                return isDay ? resources.getDrawable(R.drawable.condition_rainy_background_day) : resources.getDrawable(R.drawable.condition_rainy_background_night);
+            case "Blizzard":
+            case "Patchy snow possible":
+            case "Blowing snow":
+            case "Patchy snow nearby":
+            case "Light snow showers":
+            case "Patchy light snow":
+            case "Light snow":
+            case "Patchy moderate snow":
+            case "Moderate snow":
+            case "Patchy heavy snow":
+            case "Heavy snow":
+            case "Ice pellets":
+                return isDay ? resources.getDrawable(R.drawable.condition_snowy_background_day) : resources.getDrawable(R.drawable.condition_snowy_background_night);
+            case "Thundery outbreaks in nearby":
+            case "Thundery outbreaks possible":
+            case "Patchy light snow in area with thunder":
+            case "Moderate or heavy snow in area with thunder":
+            case "Patchy light rain in area with thunder":
+            case "Moderate or heavy rain in area with thunder":
+            case "Moderate or heavy rain with thunder":
+            case "Patchy light rain with thunder":
+                return isDay ? resources.getDrawable(R.drawable.condition_thundery_background_day) : resources.getDrawable(R.drawable.condition_thundery_background_night);
+            default:
+                return isDay ? resources.getDrawable(R.drawable.condition_clear_background_day) : resources.getDrawable(R.drawable.condition_clear_background_night);
+        }
+    }
+
+    public static int[] chooseConditionColorSet (String condition, boolean isDay){
+
+        int[] colorSet = new int[2];
+
+        switch (condition){
+            case "Clear":
+            case "Partly cloudy":
+                if(isDay){
+                    colorSet[0] = R.color.conditionClearDay;
+                    colorSet[1] = R.color.conditionClearDayDark;
+                } else {
+                    colorSet[0] = R.color.conditionClearNight;
+                    colorSet[1] = R.color.conditionClearNightDark;
+                }
+                return colorSet;
+            case "Freezing fog":
+            case "Overcast":
+            case "Mist":
+            case "Fog":
+            case "Cloudy":
+                if(isDay){
+                    colorSet[0] = R.color.conditionOvercastDay;
+                    colorSet[1] = R.color.conditionOvercastDayDark;
+                } else {
+                    colorSet[0] = R.color.conditionOvercastNight;
+                    colorSet[1] = R.color.conditionOvercastNightDark;
+                }
+                return colorSet;
+            case "Freezing drizzle":
+            case "Heavy freezing drizzle":
+            case "Light freezing rain":
+            case "Moderate or heavy freezing rain":
+            case "Moderate or heavy sleet":
+            case "Moderate or heavy sleet showers":
+            case "Patchy light drizzle":
+            case "Light sleet":
+            case "Patchy sleet nearby":
+            case "Light sleet showers":
+            case "Patchy sleet possible":
+            case "Moderate or heavy rain shower":
+            case "Torrential rain shower":
+            case "Light rain":
+            case "Moderate rain at times":
+            case "Moderate rain":
+            case "Heavy rain at times":
+            case "Heavy rain":
+            case "Patchy rain nearby":
+            case "Patchy freezing drizzle nearby":
+            case "Light drizzle":
+            case "Patchy rain possible":
+            case "Patchy light rain":
+            case "Light rain shower":
+            case "Moderate or heavy snow showers":
+            case "Light showers of ice pellets":
+            case "Moderate or heavy showers of ice pellets":
+                if(isDay){
+                    colorSet[0] = R.color.conditionRainyDay;
+                    colorSet[1] = R.color.conditionRainyDayDark;
+                } else {
+                    colorSet[0] = R.color.conditionRainyNight;
+                    colorSet[1] = R.color.conditionRainyNightDark;
+                }
+                return colorSet;
+            case "Blizzard":
+            case "Patchy snow possible":
+            case "Blowing snow":
+            case "Patchy snow nearby":
+            case "Light snow showers":
+            case "Patchy light snow":
+            case "Light snow":
+            case "Patchy moderate snow":
+            case "Moderate snow":
+            case "Patchy heavy snow":
+            case "Heavy snow":
+            case "Ice pellets":
+                if(isDay){
+                    colorSet[0] = R.color.conditionSnowyDay;
+                    colorSet[1] = R.color.conditionSnowyDayDark;
+                } else {
+                    colorSet[0] = R.color.conditionSnowyNight;
+                    colorSet[1] = R.color.conditionSnowyNightDark;
+                }
+                return colorSet;
+            case "Thundery outbreaks in nearby":
+            case "Thundery outbreaks possible":
+            case "Patchy light snow in area with thunder":
+            case "Moderate or heavy snow in area with thunder":
+            case "Patchy light rain in area with thunder":
+            case "Moderate or heavy rain in area with thunder":
+            case "Moderate or heavy rain with thunder":
+            case "Patchy light rain with thunder":
+                if(isDay){
+                    colorSet[0] = R.color.conditionThunderyDay;
+                    colorSet[1] = R.color.conditionThunderyDayDark;
+                } else {
+                    colorSet[0] = R.color.conditionThunderyNight;
+                    colorSet[1] = R.color.conditionThunderyNightDark;
+                }
+                return colorSet;
+            default:
+                if(isDay){
+                    colorSet[0] = R.color.conditionClearDay;
+                    colorSet[1] = R.color.conditionClearDayDark;
+                } else {
+                    colorSet[0] = R.color.conditionClearNight;
+                    colorSet[1] = R.color.conditionClearNightDark;
+                }
+                return colorSet;
+        }
+    }
+
+    public static GradientDrawable chooseHeaderColorSet (Context context, int[] colorSet) {
+        int colorLight = ResourcesCompat.getColor(context.getResources(), colorSet[0], null);
+        int colorDark = ResourcesCompat.getColor(context.getResources(), colorSet[1], null);
+        return new GradientDrawable(Orientation.TOP_BOTTOM, new int[] {colorLight, colorDark});
     }
 }

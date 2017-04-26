@@ -14,13 +14,14 @@
             android:id="@+id/today_parent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/fragment_today_gradient_background"
+            android:background="@drawable/condition_clear_background_day"
             android:orientation="vertical"
             android:padding="8dp">
 
             <TextView
                 android:layout_marginTop="8dp"
                 android:text="last updated"
+                android:textColor="@color/transperantWhite"
                 android:id="@+id/last_updated_tv"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
@@ -44,8 +45,8 @@
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:layout_gravity="center"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginTop="16dp"/>
+                        android:layout_marginEnd="6dp"
+                        android:layout_marginTop="24dp"/>
 
                 </LinearLayout>
 

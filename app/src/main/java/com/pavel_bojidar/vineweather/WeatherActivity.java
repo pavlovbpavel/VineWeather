@@ -111,7 +111,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     private AppBarLayout appBar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private RecyclerView recentLocationRecyclerView;
+    protected RecyclerView recentLocationRecyclerView;
     private SharedPreferences preferences;
     private String currentLocationName;
     private ProgressBar loadingView;
@@ -133,10 +133,13 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     private GoogleApiClient mGoogleApiClient;
     private SwipeRefreshLayout swipeRefresh;
     public static String widgetLocation;
-    private boolean fromLocation;
+    protected boolean fromLocation, isDay;
     private RecentListAdapter recentAdapter;
     private Gson gson = new Gson();
-    public static boolean isConnected;
+    public static boolean isConnected = true;
+    protected String conditionToday, conditionTomorrow;
+    int[] conditionTodayColorSet, conditionTomorrowColorSet;
+    private GradientDrawable gradient;
 
     private NetworkReceiver networkReceiver = new NetworkReceiver(new ConnectivityChanged() {
         @Override
@@ -216,10 +219,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
     private void startWeatherTasks() {
         if (isNetworkAvailable()) {
-            if (!isConnected) {
-                showAlertDialog(SERVER_CONNECTION_FAILURE);
-                return;
-            }
             if (noLocationSelected != null) {
                 noLocationSelected.setVisibility(View.GONE);
             }
@@ -286,12 +285,47 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         if (!weatherTasksCompleted[0] || !weatherTasksCompleted[1]) {
             return;
         }
+        if (!isConnected) {
+            showAlertDialog(SERVER_CONNECTION_FAILURE);
+            return;
+        }
         weatherTasksCompleted[0] = false;
         weatherTasksCompleted[1] = false;
         viewPager.setVisibility(View.VISIBLE);
         loadingView.setVisibility(View.GONE);
 
         CurrentWeather currentWeather = AppManager.getInstance().getCurrentLocation().getCurrentWeather();
+
+        isDay = AppManager.getInstance().getCurrentLocation().getCurrentWeather().getIs_day() == 1;
+        conditionToday = AppManager.getInstance().getCurrentLocation().getCurrentWeather().getCondition().getText();
+        conditionTomorrow = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getDay().getCondition().getText();
+        conditionTodayColorSet = Helper.chooseConditionColorSet(conditionToday, isDay);
+        conditionTomorrowColorSet = Helper.chooseConditionColorSet(conditionTomorrow, true);
+        if(viewPager.getCurrentItem() == 0) {
+            animateColorChange(appBar, currentTabColor, conditionTodayColorSet[0]);
+            animateStatusBarColorChange(currentTabColorDark, conditionTodayColorSet[1]);
+            currentTabColorDark = conditionTodayColorSet[1];
+            currentTabColor = conditionTodayColorSet[0];
+            gradient = Helper.chooseHeaderColorSet(WeatherActivity.this, conditionTodayColorSet);
+            headerContainer.setBackgroundDrawable(gradient);
+        } else if (viewPager.getCurrentItem() == 1) {
+            animateColorChange(appBar, currentTabColor, conditionTomorrowColorSet[0]);
+            animateStatusBarColorChange(currentTabColorDark, conditionTomorrowColorSet[1]);
+            currentTabColorDark = conditionTomorrowColorSet[1];
+            currentTabColor = conditionTomorrowColorSet[0];
+            gradient = Helper.chooseHeaderColorSet(WeatherActivity.this, conditionTomorrowColorSet);
+            headerContainer.setBackgroundDrawable(gradient);
+        } else {
+            animateColorChange(appBar, currentTabColor, R.color.forecastAppBarColor);
+            animateStatusBarColorChange(currentTabColorDark, R.color.forecastAppBarColorDark);
+            currentTabColorDark = R.color.forecastAppBarColorDark;
+            currentTabColor = R.color.forecastAppBarColor;
+            gradient = new GradientDrawable(Orientation.TOP_BOTTOM, new int[]{Color.parseColor("#006064"), Color.parseColor("#004749")});
+            gradient.setCornerRadius(0f);
+            headerContainer.setBackgroundDrawable(gradient);
+        }
+        swipeRefresh.setColorSchemeResources((currentTabColor));
+
         navDrawerImage.setImageDrawable(Helper.chooseConditionIcon(this, currentWeather.getIs_day() == 1, false,
                 currentWeather.getCondition().getText()));
 
@@ -316,8 +350,11 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         }
         navDrawerLocation.setText(Helper.filterCityName(currentLocationName));
 
-        if (currentWeather.getCondition().getText().length() >= 30) {
+
+        if (currentWeather.getCondition().getText().length() >= 30 && currentWeather.getCondition().getText().length() < 35) {
             navDrawerCondition.setTextSize(14);
+        } else if (currentWeather.getCondition().getText().length() >= 35){
+            navDrawerCondition.setTextSize(10);
         } else {
             navDrawerCondition.setTextSize(16);
         }
@@ -499,25 +536,21 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             @Override
             public void onTabSelected(Tab tab) {
 
-                GradientDrawable gradient;
-
                 switch (tab.getPosition()) {
                     case 0:
-                        animateColorChange(appBar, currentTabColor, R.color.todayAppBarColor);
-                        animateStatusBarColorChange(currentTabColorDark, R.color.todayAppBarColorDark);
-                        currentTabColorDark = R.color.todayAppBarColorDark;
-                        currentTabColor = R.color.todayAppBarColor;
-                        gradient = new GradientDrawable(Orientation.TOP_BOTTOM, new int[]{Color.parseColor("#0D47A1"), Color.parseColor("#06347e")});
-                        gradient.setCornerRadius(0f);
+                        animateColorChange(appBar, currentTabColor, conditionTodayColorSet[0]);
+                        animateStatusBarColorChange(currentTabColorDark, conditionTodayColorSet[1]);
+                        currentTabColorDark = conditionTodayColorSet[1];
+                        currentTabColor = conditionTodayColorSet[0];
+                        gradient = Helper.chooseHeaderColorSet(WeatherActivity.this, conditionTodayColorSet);
                         headerContainer.setBackgroundDrawable(gradient);
                         break;
                     case 1:
-                        animateColorChange(appBar, currentTabColor, R.color.tomorrowAppBarColor);
-                        animateStatusBarColorChange(currentTabColorDark, R.color.tomorrowAppBarColorDark);
-                        currentTabColorDark = R.color.tomorrowAppBarColorDark;
-                        currentTabColor = R.color.tomorrowAppBarColor;
-                        gradient = new GradientDrawable(Orientation.TOP_BOTTOM, new int[]{Color.parseColor("#0277BD"), Color.parseColor("#01579B")});
-                        gradient.setCornerRadius(0f);
+                        animateColorChange(appBar, currentTabColor, conditionTomorrowColorSet[0]);
+                        animateStatusBarColorChange(currentTabColorDark, conditionTomorrowColorSet[1]);
+                        currentTabColorDark = conditionTomorrowColorSet[1];
+                        currentTabColor = conditionTomorrowColorSet[0];
+                        gradient = Helper.chooseHeaderColorSet(WeatherActivity.this, conditionTomorrowColorSet);
                         headerContainer.setBackgroundDrawable(gradient);
                         break;
                     case 2:

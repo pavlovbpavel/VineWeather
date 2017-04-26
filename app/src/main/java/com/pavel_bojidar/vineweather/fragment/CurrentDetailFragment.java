@@ -41,14 +41,6 @@ public class CurrentDetailFragment extends WeatherFragment {
         return view;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (AppManager.getInstance().getCurrentLocation() != null) {
-            bindData();
-        }
-    }
-
     private void bindData() {
         Location currentLocation = AppManager.getInstance().getCurrentLocation();
 

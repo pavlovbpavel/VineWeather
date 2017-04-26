@@ -70,14 +70,6 @@ public class WindFragment extends WeatherFragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (AppManager.getInstance().getCurrentLocation() != null) {
-            bindData();
-        }
-    }
-
-    @Override
     protected BroadcastReceiver getReceiver() {
         return new BroadcastReceiver() {
             @Override

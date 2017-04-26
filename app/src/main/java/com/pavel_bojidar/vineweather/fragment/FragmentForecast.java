@@ -8,13 +8,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.pavel_bojidar.vineweather.BroadcastActions;
-import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
 import com.pavel_bojidar.vineweather.adapter.FutureForecastAdapter;
 import com.pavel_bojidar.vineweather.adapter.FutureForecastAdapter.RowAnimation;
@@ -39,18 +37,11 @@ public class FragmentForecast extends WeatherFragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        bindData();
-    }
-
-    @Override
     protected BroadcastReceiver getReceiver() {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.e("broadcast", "forecast - on unit swapped");
-                if(intent.getAction().equals(BroadcastActions.ACTION_UNIT_SWAPPED)){
+                if (intent.getAction().equals(BroadcastActions.ACTION_UNIT_SWAPPED)) {
                     bindData();
                 } else {
                     if (AppManager.getInstance().getCurrentLocation() != null) {

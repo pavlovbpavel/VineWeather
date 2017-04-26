@@ -42,14 +42,6 @@ public class FragmentTomorrowDetails extends WeatherFragment {
         return view;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (AppManager.getInstance().getCurrentLocation() != null) {
-            bindData();
-        }
-    }
-
     private void bindData() {
         Location currentLocation = AppManager.getInstance().getCurrentLocation();
         Day tomorrow = currentLocation.getForecast().getDayForecasts().get(1).getDay();

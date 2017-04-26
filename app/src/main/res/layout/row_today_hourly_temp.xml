@@ -11,8 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="2dp"
-        android:textSize="16sp"
-        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textColor="@color/transperantWhite"
         android:paddingEnd="4dp"
         android:paddingStart="4dp"
         android:text="8C"/>
@@ -35,7 +35,7 @@
         android:paddingStart="4dp"
         android:text="11 PM"
         android:layout_marginBottom="2dp"
-        android:textColor="@android:color/black"
+        android:textColor="@color/transperantWhite"
         android:textSize="16sp" />
 
 </LinearLayout>
