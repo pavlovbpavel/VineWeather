@@ -53,7 +53,7 @@ public class WidgetService extends Service {
                 try {
                     Log.e("mimi", "1");
                     URL url = new URL(
-                            "http://api.apixu.com/v1/forecast.json?key=af8f97f36ad940fab0b191628171204&q=" + validInput + "&days=1");
+                            "http://api.apixu.com/v1/forecast.json?key=1d411b434a6040d782b115249172604=" + validInput + "&days=1");
 
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
