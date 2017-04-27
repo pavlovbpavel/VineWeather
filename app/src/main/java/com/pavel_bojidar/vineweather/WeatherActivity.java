@@ -165,7 +165,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         if (json != null) {
             recentList = gson.fromJson(json, ArrayList.class);
         }
-
         initViews();
 
         buildGoogleApiClient();
@@ -355,7 +354,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         navDrawerLocation.setText(Helper.filterCityName(currentLocationName));
 
 
-        if (currentWeather.getCondition().getText().length() >= 30 && currentWeather.getCondition().getText().length() < 35) {
+        if (currentWeather.getCondition().getText().length() >= 25 && currentWeather.getCondition().getText().length() < 30) {
             navDrawerCondition.setTextSize(14);
         } else if (currentWeather.getCondition().getText().length() >= 35){
             navDrawerCondition.setTextSize(10);
@@ -386,7 +385,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         }
         AppManager.getInstance().onUnitSwapped(this);
         requestWidgetUpdate();
-        MaPaWidgetProvider.startService(this);
     }
 
     private void initViews() {
@@ -500,7 +498,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
         });
 
