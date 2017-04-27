@@ -656,7 +656,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                             });
                         }
                     } catch (JSONException e) {
-                        showAlertDialog(SERVER_CONNECTION_FAILURE);
+
                     }
                 }
             }.execute(s.toString());

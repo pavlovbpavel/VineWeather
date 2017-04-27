@@ -54,7 +54,7 @@ public class GetCurrentWeather extends AsyncTask<String, Void, String> {
         try {
             validInput = URLEncoder.encode(params[0], "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            WeatherActivity.isConnected = false;
+
         }
         try {
             URL url = new URL(
@@ -70,7 +70,7 @@ public class GetCurrentWeather extends AsyncTask<String, Void, String> {
                 }
             }
         } catch (IOException ex) {
-            WeatherActivity.isConnected = false;
+
         }
         return strJSON;
     }
