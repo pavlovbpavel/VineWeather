@@ -43,6 +43,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -62,6 +63,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -249,7 +251,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                 animateStatusBarColorChange(currentTabColorDark, conditionTodayColorSet[1]);
                 currentTabColorDark = conditionTodayColorSet[1];
                 currentTabColor = conditionTodayColorSet[0];
-                gradient = Helper.chooseHeaderColorSet(WeatherActivity.this, conditionTodayColorSet);
+                gradient = Helper.chooseHeaderColorSet(this, conditionTodayColorSet);
                 headerContainer.setBackgroundDrawable(gradient);
             }
         } else if (viewPager.getCurrentItem() == 1) {
@@ -258,7 +260,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                 animateStatusBarColorChange(currentTabColorDark, conditionTomorrowColorSet[1]);
                 currentTabColorDark = conditionTomorrowColorSet[1];
                 currentTabColor = conditionTomorrowColorSet[0];
-                gradient = Helper.chooseHeaderColorSet(WeatherActivity.this, conditionTomorrowColorSet);
+                gradient = Helper.chooseHeaderColorSet(this, conditionTomorrowColorSet);
                 headerContainer.setBackgroundDrawable(gradient);
             }
         }
@@ -622,17 +624,18 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                         if (searchPopupWindow == null) {
                             searchPopupWindow = new CitySearchPopupWindow(WeatherActivity.this, cityNames);
                             searchPopupWindow.setAnchorView(toolbar);
+                            searchPopupWindow.setInputMethodMode(ListPopupWindow.INPUT_METHOD_NEEDED);
+                            searchPopupWindow.setForceIgnoreOutsideTouch(true);
                         }
                         searchPopupWindow.updateSuggestionsList(cityNames);
                         if (!cityNames.isEmpty()) {
+
                             searchPopupWindow.show();
                         } else {
                             searchPopupWindow.dismiss();
                         }
                         if (searchPopupWindow.isShowing()) {
                             searchPopupWindow.setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-                            searchPopupWindow.setInputMethodMode(CitySearchPopupWindow.INPUT_METHOD_NEEDED);
-                            searchPopupWindow.setForceIgnoreOutsideTouch(true);
                             showKeyboard();
                             searchPopupWindow.getListView().setOnItemClickListener(new OnItemClickListener() {
                                 @Override
@@ -754,7 +757,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     private void buildGoogleApiClient() {
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(WeatherActivity.this)
+                    .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
                     .build();
@@ -863,14 +866,15 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     @Override
     public void onBackPressed() {
         hideKeyboard();
-        if (searchPopupWindow != null && searchPopupWindow.isShowing()) {
-            searchPopupWindow.dismiss();
-        }
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+            return;
         }
+        if (searchPopupWindow != null && searchPopupWindow.isShowing()) {
+            searchPopupWindow.dismiss();
+            return;
+        }
+        super.onBackPressed();
     }
 
     public void showKeyboard() {

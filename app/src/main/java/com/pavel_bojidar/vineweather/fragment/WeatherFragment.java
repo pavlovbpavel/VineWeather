@@ -23,15 +23,9 @@ public abstract class WeatherFragment extends Fragment {
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(getReceiver(), intentFilter);
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(getReceiver());
     }
 

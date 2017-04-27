@@ -100,7 +100,7 @@ public class FragmentToday extends WeatherFragment {
         currentDay = forecast.getDayForecasts().get(0);
 
         lastUpdated.setText(LAST_UPDATED.concat(AppManager.getInstance().getCurrentLocation().getCurrentWeather().getLastUpdated()));
-        weatherIcon.setImageDrawable(Helper.chooseConditionIcon(parent.getContext(),
+        weatherIcon.setImageDrawable(Helper.chooseConditionIcon(weatherIcon.getContext(),
                 currentLocation.getCurrentWeather().getIs_day() == 1, false,
                 currentLocation.getCurrentWeather().getCondition().getText()));
 
@@ -117,7 +117,7 @@ public class FragmentToday extends WeatherFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(new HourlyTempAdapter(currentDay.getHourForecasts(), 0));
 
-        parent.setBackgroundDrawable(Helper.chooseFragmentBackground(getContext(),
+        parent.setBackgroundDrawable(Helper.chooseFragmentBackground(parent.getContext(),
                 currentLocation.getCurrentWeather().getCondition().getText(),
                 currentLocation.getCurrentWeather().getIs_day() == 1));
     }

@@ -123,9 +123,9 @@ public class FragmentTomorrow extends WeatherFragment {
                             .concat(CELSIUS_SYMBOL).concat(ARROW_UP).concat(INTERPUNKT).concat(NIGHT)
                             .concat(Helper.decimalFormat(tomorrow.getMintempC()).concat(CELSIUS_SYMBOL).concat(ARROW_DOWN)))));
         }
-        conditionImage.setImageDrawable(Helper.chooseConditionIcon(getContext(), true, false, tomorrow.getCondition().getText()));
+        conditionImage.setImageDrawable(Helper.chooseConditionIcon(conditionImage.getContext(), true, false, tomorrow.getCondition().getText()));
         hourlyTempForecast.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         hourlyTempForecast.setAdapter(new HourlyTempAdapter(tomorrowHourly, 1));
-        mainLayout.setBackground(Helper.chooseFragmentBackground(getContext(), tomorrow.getCondition().getText(), true));
+        mainLayout.setBackground(Helper.chooseFragmentBackground(mainLayout.getContext(), tomorrow.getCondition().getText(), true));
     }
 }
