@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Created by Pavel Pavlov on 4/1/2017.
  */
 
-public class CurrentWeather implements Serializable{
+public class CurrentWeather implements Serializable {
 
     private int last_updated_epoch;
     private int wind_degree;
@@ -30,7 +30,7 @@ public class CurrentWeather implements Serializable{
     private double visability_km;
     private double visability_mi;
 
-    Condition mCondition = new Condition();
+    private Condition mCondition = new Condition();
 
     public int getLastUpdateEpoch() {
         return last_updated_epoch;

@@ -1,14 +1,11 @@
 package com.pavel_bojidar.vineweather;
 
-/**
- * Created by Pavel Pavlov on 3/12/2017.
- */
-
 public class Constants {
     /*
     APP SPECIFIC KEYS
      */
     public static final String KEY_LOCATION_NAME = "locationName";
+    public static final String KEY_RECENT_PLACES = "recent_places";
     public static final String UNITS_IMPERIAL = "unitType";
     public static final String CELSIUS_SYMBOL = "\u00b0";
     public static final String HUMIDITY_SYMBOL = "%";
@@ -30,7 +27,10 @@ public class Constants {
     public static final String IS_TOMORROW = "isTomorrow";
     public static final String INTERNET_CONNECTION = "internetConnection";
     public static final String SERVER_CONNECTION_FAILURE = "serverConnectionFailure";
-
+    public static final String COLOR_LIGHT_BLUE = "#fa599ec6";
+    public static final String COLOR_DARK_BLUE = "#fa3085b6";
+    public static final String COLOR_GREEN = "#fa2d9684";
+    public static final String COLOR_RED = "#faa93230";
     /*
     API CALL KEYS
      */
@@ -44,13 +44,6 @@ public class Constants {
     public static final String NODE_ASTRO = "astro";
     public static final String NODE_HOUR = "hour";
     public static final String KEY_NAME = "name";
-    public static final String KEY_REGION = "region";
-    public static final String KEY_COUNTRY = "country";
-    public static final String KEY_LATITUDE = "lat";
-    public static final String KEY_LONGITUDE = "lon";
-    public static final String KEY_TIMEZONE = "tz_id";
-    public static final String KEY_LOCAL_TIME = "localtime";
-    public static final String KEY_LOCAL_TIME_EPOCH = "localtime_epoch";
     public static final String KEY_DATE = "date";
     public static final String KEY_DATE_EPOCH = "date_epoch";
     public static final String KEY_LAST_UPDATED = "last_updated";

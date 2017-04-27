@@ -4,7 +4,6 @@ import android.Manifest;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
-import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -92,7 +91,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -101,12 +99,11 @@ import static android.support.v4.view.ViewPager.SCROLL_STATE_DRAGGING;
 import static com.pavel_bojidar.vineweather.Constants.INTERNET_CONNECTION;
 import static com.pavel_bojidar.vineweather.Constants.KEY_LOCATION_NAME;
 import static com.pavel_bojidar.vineweather.Constants.KEY_NAME;
+import static com.pavel_bojidar.vineweather.Constants.KEY_RECENT_PLACES;
 import static com.pavel_bojidar.vineweather.Constants.SERVER_CONNECTION_FAILURE;
-
 
 public class WeatherActivity extends AppCompatActivity implements RecentSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private static final String KEY_RECENT_PLACES = "recent_places";
     private DrawerLayout drawer;
     private AppBarLayout appBar;
     private TabLayout tabLayout;
@@ -165,6 +162,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         if (json != null) {
             recentList = gson.fromJson(json, ArrayList.class);
         }
+
         initViews();
 
         buildGoogleApiClient();
@@ -172,31 +170,11 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
-    private void buildGoogleApiClient() {
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(WeatherActivity.this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
-        }
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
         if (currentLocationName == null) {
             mGoogleApiClient.connect();
-        } else {
-            startWeatherTasks();
-            searchField.setHint(Helper.filterCityName(currentLocationName));
-            if (!isImperialUnits) {
-                celsiusButton.callOnClick();
-                AppManager.getInstance().onUnitSwapped(this);
-            } else {
-                fahrenheitButton.callOnClick();
-                AppManager.getInstance().onUnitSwapped(this);
-            }
         }
     }
 
@@ -222,7 +200,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                 noLocationSelected.setVisibility(View.GONE);
             }
             loadingView.setVisibility(View.VISIBLE);
-            new GetCurrentWeather(new WeakReference<Activity>(this)) {
+            new GetCurrentWeather() {
                 @Override
                 protected void onPostExecute(String result) {
                     super.onPostExecute(result);
@@ -231,7 +209,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                 }
             }.execute(currentLocationName);
 
-            new GetForecast(new WeakReference<Activity>(this)) {
+            new GetForecast() {
                 @Override
                 protected void onPostExecute(String result) {
                     super.onPostExecute(result);
@@ -242,6 +220,106 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         } else {
             showAlertDialog(INTERNET_CONNECTION);
         }
+    }
+
+    public void onLocationUpdated() {
+        if (!weatherTasksCompleted[0] || !weatherTasksCompleted[1]) {
+            return;
+        }
+        if (!isConnected) {
+            showAlertDialog(SERVER_CONNECTION_FAILURE);
+            return;
+        }
+        weatherTasksCompleted[0] = false;
+        weatherTasksCompleted[1] = false;
+        viewPager.setVisibility(View.VISIBLE);
+        loadingView.setVisibility(View.GONE);
+
+        CurrentWeather currentWeather = AppManager.getInstance().getCurrentLocation().getCurrentWeather();
+
+        isDay = AppManager.getInstance().getCurrentLocation().getCurrentWeather().getIs_day() == 1;
+        conditionToday = AppManager.getInstance().getCurrentLocation().getCurrentWeather().getCondition().getText();
+        conditionTomorrow = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getDay().getCondition().getText();
+        conditionTodayColorSet = Helper.chooseConditionColorSet(conditionToday, isDay);
+        conditionTomorrowColorSet = Helper.chooseConditionColorSet(conditionTomorrow, true);
+
+        if (viewPager.getCurrentItem() == 0) {
+            if (conditionTodayColorSet != null) {
+                animateColorChange(appBar, currentTabColor, conditionTodayColorSet[0]);
+                animateStatusBarColorChange(currentTabColorDark, conditionTodayColorSet[1]);
+                currentTabColorDark = conditionTodayColorSet[1];
+                currentTabColor = conditionTodayColorSet[0];
+                gradient = Helper.chooseHeaderColorSet(WeatherActivity.this, conditionTodayColorSet);
+                headerContainer.setBackgroundDrawable(gradient);
+            }
+        } else if (viewPager.getCurrentItem() == 1) {
+            if (conditionTomorrowColorSet != null) {
+                animateColorChange(appBar, currentTabColor, conditionTomorrowColorSet[0]);
+                animateStatusBarColorChange(currentTabColorDark, conditionTomorrowColorSet[1]);
+                currentTabColorDark = conditionTomorrowColorSet[1];
+                currentTabColor = conditionTomorrowColorSet[0];
+                gradient = Helper.chooseHeaderColorSet(WeatherActivity.this, conditionTomorrowColorSet);
+                headerContainer.setBackgroundDrawable(gradient);
+            }
+        }
+
+        swipeRefresh.setColorSchemeResources((currentTabColor));
+
+        navDrawerImage.setImageDrawable(Helper.chooseConditionIcon(this, currentWeather.getIs_day() == 1, false,
+                currentWeather.getCondition().getText()));
+        navDrawerCondition.setText(currentWeather.getCondition().getText());
+        if (!isImperialUnits) {
+            navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempC()).concat(Constants.CELSIUS_SYMBOL));
+        } else {
+            navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempF()).concat(Constants.CELSIUS_SYMBOL));
+        }
+
+        if (viewPager.getAdapter() == null) {
+            setViewPagerAdapter();
+        }
+
+        AppManager.getInstance().onLocationUpdated(this);
+
+        if (fromLocation) {
+            fromLocation = false;
+            currentLocationName = AppManager.getInstance().getCurrentLocation().getName();
+            searchField.setHint(currentLocationName);
+            widgetLocation = currentLocationName;
+            addToRecentList(currentLocationName);
+        }
+        navDrawerLocation.setText(Helper.filterCityName(currentLocationName));
+
+        if (currentWeather.getCondition().getText().length() >= 25 && currentWeather.getCondition().getText().length() < 30) {
+            navDrawerCondition.setTextSize(14);
+        } else if (currentWeather.getCondition().getText().length() >= 35) {
+            navDrawerCondition.setTextSize(10);
+        } else {
+            navDrawerCondition.setTextSize(16);
+        }
+
+        if (Helper.filterCityName(currentLocationName).length() >= 14 && Helper.filterCityName(currentLocationName).length() <= 18) {
+            navDrawerLocation.setTextSize(18);
+        } else if (Helper.filterCityName(currentLocationName).length() > 18) {
+            navDrawerLocation.setTextSize(14);
+        } else {
+            navDrawerLocation.setTextSize(24);
+        }
+
+        swipeRefresh.setRefreshing(false);
+        MaPaWidgetProvider.startService(this);
+    }
+
+    public void onUnitSwapped() {
+        CurrentWeather currentWeather = AppManager.getInstance().getCurrentLocation().getCurrentWeather();
+        if (currentWeather != null) {
+            if (!isImperialUnits) {
+                navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempC()).concat(Constants.CELSIUS_SYMBOL));
+            } else {
+                navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempF()).concat(Constants.CELSIUS_SYMBOL));
+            }
+        }
+        AppManager.getInstance().onUnitSwapped(this);
+        requestWidgetUpdate();
     }
 
     public void showAlertDialog(String event) {
@@ -278,113 +356,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             alertDialog = builder.create();
             alertDialog.show();
         }
-    }
-
-    public void onLocationUpdated() {
-        if (!weatherTasksCompleted[0] || !weatherTasksCompleted[1]) {
-            return;
-        }
-        if (!isConnected) {
-            showAlertDialog(SERVER_CONNECTION_FAILURE);
-            return;
-        }
-        weatherTasksCompleted[0] = false;
-        weatherTasksCompleted[1] = false;
-        viewPager.setVisibility(View.VISIBLE);
-        loadingView.setVisibility(View.GONE);
-
-        CurrentWeather currentWeather = AppManager.getInstance().getCurrentLocation().getCurrentWeather();
-
-        isDay = AppManager.getInstance().getCurrentLocation().getCurrentWeather().getIs_day() == 1;
-        conditionToday = AppManager.getInstance().getCurrentLocation().getCurrentWeather().getCondition().getText();
-        conditionTomorrow = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getDay().getCondition().getText();
-        conditionTodayColorSet = Helper.chooseConditionColorSet(conditionToday, isDay);
-        conditionTomorrowColorSet = Helper.chooseConditionColorSet(conditionTomorrow, true);
-        if(viewPager.getCurrentItem() == 0) {
-            if(conditionTodayColorSet != null) {
-            animateColorChange(appBar, currentTabColor, conditionTodayColorSet[0]);
-            animateStatusBarColorChange(currentTabColorDark, conditionTodayColorSet[1]);
-            currentTabColorDark = conditionTodayColorSet[1];
-            currentTabColor = conditionTodayColorSet[0];
-                gradient = Helper.chooseHeaderColorSet(WeatherActivity.this, conditionTodayColorSet);
-                headerContainer.setBackgroundDrawable(gradient);
-            }
-        } else if (viewPager.getCurrentItem() == 1) {
-            if(conditionTomorrowColorSet != null) {
-            animateColorChange(appBar, currentTabColor, conditionTomorrowColorSet[0]);
-            animateStatusBarColorChange(currentTabColorDark, conditionTomorrowColorSet[1]);
-            currentTabColorDark = conditionTomorrowColorSet[1];
-            currentTabColor = conditionTomorrowColorSet[0];
-                gradient = Helper.chooseHeaderColorSet(WeatherActivity.this, conditionTomorrowColorSet);
-                headerContainer.setBackgroundDrawable(gradient);
-            }
-        } else {
-            animateColorChange(appBar, currentTabColor, R.color.forecastAppBarColor);
-            animateStatusBarColorChange(currentTabColorDark, R.color.forecastAppBarColorDark);
-            currentTabColorDark = R.color.forecastAppBarColorDark;
-            currentTabColor = R.color.forecastAppBarColor;
-            gradient = new GradientDrawable(Orientation.TOP_BOTTOM, new int[]{Color.parseColor("#006064"), Color.parseColor("#004749")});
-            gradient.setCornerRadius(0f);
-            headerContainer.setBackgroundDrawable(gradient);
-        }
-        swipeRefresh.setColorSchemeResources((currentTabColor));
-
-        navDrawerImage.setImageDrawable(Helper.chooseConditionIcon(this, currentWeather.getIs_day() == 1, false,
-                currentWeather.getCondition().getText()));
-
-        navDrawerCondition.setText(currentWeather.getCondition().getText());
-        if (!isImperialUnits) {
-            navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempC()).concat(Constants.CELSIUS_SYMBOL));
-        } else {
-            navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempF()).concat(Constants.CELSIUS_SYMBOL));
-        }
-
-        if (viewPager.getAdapter() == null) {
-            setViewPagerAdapter();
-        }
-        AppManager.getInstance().onLocationUpdated(this);
-
-        if (fromLocation) {
-            fromLocation = false;
-            currentLocationName = AppManager.getInstance().getCurrentLocation().getName();
-            searchField.setHint(currentLocationName);
-            widgetLocation = currentLocationName;
-            addToRecentList(currentLocationName);
-        }
-        navDrawerLocation.setText(Helper.filterCityName(currentLocationName));
-
-
-        if (currentWeather.getCondition().getText().length() >= 25 && currentWeather.getCondition().getText().length() < 30) {
-            navDrawerCondition.setTextSize(14);
-        } else if (currentWeather.getCondition().getText().length() >= 35){
-            navDrawerCondition.setTextSize(10);
-        } else {
-            navDrawerCondition.setTextSize(16);
-        }
-        if (Helper.filterCityName(currentLocationName).length() >= 14 && Helper.filterCityName(currentLocationName).length() <= 18) {
-            navDrawerLocation.setTextSize(18);
-        } else if (Helper.filterCityName(currentLocationName).length() > 18) {
-            navDrawerLocation.setTextSize(14);
-        } else {
-            navDrawerLocation.setTextSize(24);
-        }
-
-        swipeRefresh.setRefreshing(false);
-        MaPaWidgetProvider.startService(this);
-    }
-
-
-    public void onUnitSwapped() {
-        CurrentWeather currentWeather = AppManager.getInstance().getCurrentLocation().getCurrentWeather();
-        if (currentWeather != null) {
-            if (!isImperialUnits) {
-                navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempC()).concat(Constants.CELSIUS_SYMBOL));
-            } else {
-                navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempF()).concat(Constants.CELSIUS_SYMBOL));
-            }
-        }
-        AppManager.getInstance().onUnitSwapped(this);
-        requestWidgetUpdate();
     }
 
     private void initViews() {
@@ -636,11 +607,10 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
     private void performSearch(Editable s) {
         if (isNetworkAvailable()) {
-            new GetLocations(new WeakReference<Activity>(this)) {
+            new GetLocations() {
                 @Override
                 protected void onPostExecute(String result) {
                     super.onPostExecute(result);
-
                     try {
                         //callback is the returned result from the API call
                         JSONArray callback = new JSONArray(result);
@@ -649,7 +619,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                             JSONObject currentItem = callback.getJSONObject(i);
                             cityNames.add(currentItem.getString(KEY_NAME));
                         }
-
                         if (searchPopupWindow == null) {
                             searchPopupWindow = new CitySearchPopupWindow(WeatherActivity.this, cityNames);
                             searchPopupWindow.setAnchorView(toolbar);
@@ -684,7 +653,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                             });
                         }
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        showAlertDialog(SERVER_CONNECTION_FAILURE);
                     }
                 }
             }.execute(s.toString());
@@ -694,7 +663,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     }
 
     private void addToRecentList(String cityName) {
-
         if (!recentList.contains(cityName)) {
             if (recentList.size() >= 10) {
                 recentList.remove(recentList.get(9));
@@ -777,42 +745,20 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void hideKeyboard() {
-        View view = this.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
-
-    public void showKeyboard() {
-        showKeyboard(getCurrentFocus());
-    }
-
-    public void showKeyboard(View focusedView) {
-        if (focusedView != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(focusedView, InputMethodManager.SHOW_IMPLICIT);
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        hideKeyboard();
-        if (searchPopupWindow != null && searchPopupWindow.isShowing()) {
-            searchPopupWindow.dismiss();
-        }
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    private void buildGoogleApiClient() {
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(WeatherActivity.this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
     }
 
     @Override
@@ -912,5 +858,37 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             }
         });
         colorAnimation.start();
+    }
+
+    @Override
+    public void onBackPressed() {
+        hideKeyboard();
+        if (searchPopupWindow != null && searchPopupWindow.isShowing()) {
+            searchPopupWindow.dismiss();
+        }
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    public void showKeyboard() {
+        showKeyboard(getCurrentFocus());
+    }
+
+    public void showKeyboard(View focusedView) {
+        if (focusedView != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(focusedView, InputMethodManager.SHOW_IMPLICIT);
+        }
+    }
+
+    public void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }

@@ -23,10 +23,6 @@ import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.DayForecast;
 import com.pavel_bojidar.vineweather.model.maindata.Forecast;
 
-/**
- * Created by Pavel Pavlov on 3/18/2017.
- */
-
 public class FutureForecastAdapter extends RecyclerView.Adapter<ForecastViewHolder> {
 
     private Forecast forecast;

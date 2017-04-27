@@ -24,12 +24,13 @@ import com.pavel_bojidar.vineweather.model.maindata.CurrentWeather;
 import com.pavel_bojidar.vineweather.model.maindata.Forecast;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 
+import static com.pavel_bojidar.vineweather.Constants.COLOR_DARK_BLUE;
+import static com.pavel_bojidar.vineweather.Constants.COLOR_GREEN;
+import static com.pavel_bojidar.vineweather.Constants.COLOR_LIGHT_BLUE;
+import static com.pavel_bojidar.vineweather.Constants.COLOR_RED;
 import static com.pavel_bojidar.vineweather.Constants.KM_H;
 import static com.pavel_bojidar.vineweather.Constants.MPH;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class WindFragment extends WeatherFragment {
 
     private RecyclerView rvWind;
@@ -84,6 +85,7 @@ public class WindFragment extends WeatherFragment {
     private void bindData() {
         forecast = AppManager.getInstance().getCurrentLocation().getForecast();
         currentWeather = AppManager.getInstance().getCurrentLocation().getCurrentWeather();
+
         double maxWind = 0;
         double minWind = Integer.MAX_VALUE;
         double average;
@@ -130,16 +132,16 @@ public class WindFragment extends WeatherFragment {
             windDirection.setText(currentWeather.getWindDir());
             int windSpeed = (int) currentWeather.getWindKph();
             if (windSpeed <= 5) {
-                currentWindSpeed.setTextColor(Color.parseColor("#fa599ec6"));
+                currentWindSpeed.setTextColor(Color.parseColor(COLOR_LIGHT_BLUE));
             }
             if (windSpeed > 5 && windSpeed <= 20) {
-                currentWindSpeed.setTextColor(Color.parseColor("#fa3085b6"));
+                currentWindSpeed.setTextColor(Color.parseColor(COLOR_DARK_BLUE));
             }
             if (windSpeed > 20 && windSpeed <= 50) {
-                currentWindSpeed.setTextColor(Color.parseColor("#fa2d9684"));
+                currentWindSpeed.setTextColor(Color.parseColor(COLOR_GREEN));
             }
             if (windSpeed > 50 && windSpeed <= 250) {
-                currentWindSpeed.setTextColor(Color.parseColor("#faa93230"));
+                currentWindSpeed.setTextColor(Color.parseColor(COLOR_RED));
             }
         }
     }

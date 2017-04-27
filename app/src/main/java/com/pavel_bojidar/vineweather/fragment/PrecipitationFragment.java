@@ -28,10 +28,6 @@ import static com.pavel_bojidar.vineweather.Constants.MM;
 import static com.pavel_bojidar.vineweather.Constants.VOLUME_IN;
 import static com.pavel_bojidar.vineweather.Constants.VOLUME_MM;
 
-/**
- * Created by Pavel Pavlov on 4/13/2017.
- */
-
 public class PrecipitationFragment extends WeatherFragment {
 
     private RecyclerView rvPrecipitation;

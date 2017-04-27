@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.BroadcastActions;
-import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
 import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.adapter.HourlyTempAdapter;
@@ -38,11 +36,6 @@ import static com.pavel_bojidar.vineweather.Constants.CELSIUS_SYMBOL;
 import static com.pavel_bojidar.vineweather.Constants.DAY;
 import static com.pavel_bojidar.vineweather.Constants.INTERPUNKT;
 import static com.pavel_bojidar.vineweather.Constants.NIGHT;
-
-
-/**
- * Created by Pavel Pavlov on 3/10/2017.
- */
 
 public class FragmentTomorrow extends WeatherFragment {
 
@@ -102,7 +95,7 @@ public class FragmentTomorrow extends WeatherFragment {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if(intent.getAction().equals(BroadcastActions.ACTION_UNIT_SWAPPED)){
+                if (intent.getAction().equals(BroadcastActions.ACTION_UNIT_SWAPPED)) {
                     bindData();
                 } else {
                     if (AppManager.getInstance().getCurrentLocation() != null) {

@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Created by Pavel Pavlov on 4/1/2017.
  */
 
-public class Day implements Serializable{
+public class Day implements Serializable {
 
     private double maxtemp_c;
     private double maxtemp_f;
@@ -24,104 +24,93 @@ public class Day implements Serializable{
     private double avgVisibility_miles;
     private double avgHumidity;
 
-    Condition mCondition = new Condition();
+    private Condition mCondition = new Condition();
 
-    public double getMaxtempC()
-    {
+    public double getMaxtempC() {
         return maxtemp_c;
     }
-    public void setMaxtempC(double mMaxtemp_c)
-    {
+
+    public void setMaxtempC(double mMaxtemp_c) {
         this.maxtemp_c = mMaxtemp_c;
     }
 
-    public double getMaxtempF()
-    {
+    public double getMaxtempF() {
         return maxtemp_f;
     }
-    public void setMaxtempF(double mMaxtemp_f)
-    {
+
+    public void setMaxtempF(double mMaxtemp_f) {
         this.maxtemp_f = mMaxtemp_f;
     }
 
-    public double getMintempC()
-    {
+    public double getMintempC() {
         return mintemp_c;
     }
-    public void setMintempC(double mMintemp_c)
-    {
+
+    public void setMintempC(double mMintemp_c) {
         this.mintemp_c = mMintemp_c;
     }
 
-    public double getMintempF()
-    {
+    public double getMintempF() {
         return mintemp_f;
     }
-    public void setMintempF(double mMintemp_f)
-    {
+
+    public void setMintempF(double mMintemp_f) {
         this.mintemp_f = mMintemp_f;
     }
 
-    public double getAvgtempC()
-    {
+    public double getAvgtempC() {
         return avgtemp_c;
     }
-    public void setAvgtempC(double mAvgtemp_c)
-    {
+
+    public void setAvgtempC(double mAvgtemp_c) {
         this.avgtemp_c = mAvgtemp_c;
     }
 
-    public double getAvgtempF()
-    {
+    public double getAvgtempF() {
         return avgtemp_f;
     }
-    public void setAvgtempF(double mAvgtemp_f)
-    {
+
+    public void setAvgtempF(double mAvgtemp_f) {
         this.avgtemp_f = mAvgtemp_f;
     }
 
-    public double getMaxwindMph()
-    {
+    public double getMaxwindMph() {
         return maxwind_mph;
     }
-    public void setMaxwindMph(double mMaxwind_mph)
-    {
+
+    public void setMaxwindMph(double mMaxwind_mph) {
         this.maxwind_mph = mMaxwind_mph;
     }
 
-    public double getMaxwindKph()
-    {
+    public double getMaxwindKph() {
         return maxwind_kph;
     }
-    public void setMaxwindKph(double mMaxwind_kph)
-    {
+
+    public void setMaxwindKph(double mMaxwind_kph) {
         this.maxwind_kph = mMaxwind_kph;
     }
 
-    public double getTotalprecipMm()
-    {
+    public double getTotalprecipMm() {
         return totalprecip_mm;
     }
-    public void setTotalprecipMm(double mTotalprecip_mm)
-    {
+
+    public void setTotalprecipMm(double mTotalprecip_mm) {
         this.totalprecip_mm = mTotalprecip_mm;
     }
 
-    public double getTotalprecipIn()
-    {
+    public double getTotalprecipIn() {
         return totalprecip_in;
     }
-    public void setTotalprecipIn(double mTotalprecip_in)
-    {
+
+    public void setTotalprecipIn(double mTotalprecip_in) {
         this.totalprecip_in = mTotalprecip_in;
     }
 
-    public Condition getCondition()
-    {
+    public Condition getCondition() {
         return mCondition;
     }
-    public void setCondition(Condition mCondition)
-    {
+
+    public void setCondition(Condition mCondition) {
         this.mCondition = mCondition;
     }
 

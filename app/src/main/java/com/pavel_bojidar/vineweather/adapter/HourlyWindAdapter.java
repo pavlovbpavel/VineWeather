@@ -16,10 +16,6 @@ import com.pavel_bojidar.vineweather.model.HourForecast;
 
 import java.util.List;
 
-/**
- * Created by ASUS on 8.4.2017 г..
- */
-
 public class HourlyWindAdapter extends RecyclerView.Adapter<WindViewHolder> {
 
     private List<HourForecast> hourForecast;
@@ -38,28 +34,29 @@ public class HourlyWindAdapter extends RecyclerView.Adapter<WindViewHolder> {
     @Override
     public void onBindViewHolder(WindViewHolder holder, int position) {
         HourForecast currentHour = hourForecast.get(position);
-        if(WeatherActivity.isImperialUnits){
+        if (WeatherActivity.isImperialUnits) {
             holder.windSpeed.setText(Helper.decimalFormat(currentHour.getWindMph()));
         } else {
             holder.windSpeed.setText(Helper.decimalFormat(currentHour.getWindKph()));
         }
         holder.windHour.setText(Helper.getUnixAmPmHour(currentHour.getTimeEpoch()));
         holder.windIcon.setRotation(currentHour.getWindDegree());
-        LayoutParams lp = (LayoutParams) holder.windFill.getLayoutParams();
 
+        LayoutParams lp = (LayoutParams) holder.windFill.getLayoutParams();
         lp.height = (int) (holder.itemView.getContext().getResources().getDimensionPixelSize(R.dimen.wind_height) * (float) (currentHour.getWindKph() / maxWindSpeed));
         holder.windFill.setLayoutParams(lp);
-        int windSpeed = (int)currentHour.getWindKph();
-        if (windSpeed <= 5){
+
+        int windSpeed = (int) currentHour.getWindKph();
+        if (windSpeed <= 5) {
             holder.windFill.setBackgroundResource(R.color.windLow);
         }
-        if (windSpeed > 5 && windSpeed <= 20){
+        if (windSpeed > 5 && windSpeed <= 20) {
             holder.windFill.setBackgroundResource(R.color.windAverage);
         }
-        if (windSpeed > 20 && windSpeed <= 50){
+        if (windSpeed > 20 && windSpeed <= 50) {
             holder.windFill.setBackgroundResource(R.color.windHigh);
         }
-        if (windSpeed > 50 && windSpeed <= 250){
+        if (windSpeed > 50 && windSpeed <= 250) {
             holder.windFill.setBackgroundResource(R.color.windExtreme);
         }
     }

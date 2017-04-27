@@ -22,13 +22,9 @@ import com.pavel_bojidar.vineweather.singleton.AppManager;
 import static com.pavel_bojidar.vineweather.Constants.CELSIUS_SYMBOL;
 import static com.pavel_bojidar.vineweather.Constants.HUMIDITY_SYMBOL;
 
-/**
- * Created by Pavel Pavlov on 4/8/2017.
- */
-
 public class FragmentTomorrowDetails extends WeatherFragment {
 
-    TextView humidity, max, min, visibility, astro;
+    private TextView humidity, max, min, visibility, astro;
 
     @Nullable
     @Override
@@ -46,7 +42,6 @@ public class FragmentTomorrowDetails extends WeatherFragment {
         Location currentLocation = AppManager.getInstance().getCurrentLocation();
         Day tomorrow = currentLocation.getForecast().getDayForecasts().get(1).getDay();
         Astro tomorrowAstro = currentLocation.getForecast().getDayForecasts().get(1).getAstro();
-
         humidity.setText(String.valueOf(Helper.decimalFormat(tomorrow.getAvgHumidity()).concat(HUMIDITY_SYMBOL)));
         if (WeatherActivity.isImperialUnits) {
             max.setText(String.valueOf(Helper.decimalFormat(tomorrow.getMaxtempF()).concat(CELSIUS_SYMBOL).concat(", ")));

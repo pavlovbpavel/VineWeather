@@ -14,10 +14,6 @@ import com.pavel_bojidar.vineweather.model.HourForecast;
 
 import java.util.List;
 
-/**
- * Created by Pavel Pavlov on 4/13/2017.
- */
-
 public class HourlyPrecipAdapter extends RecyclerView.Adapter<HourlyPrecipViewHolder> {
 
     private List<HourForecast> hourlyPrecip;
@@ -50,8 +46,8 @@ public class HourlyPrecipAdapter extends RecyclerView.Adapter<HourlyPrecipViewHo
 
     class HourlyPrecipViewHolder extends RecyclerView.ViewHolder {
 
-        TextView volume, hour;
-        ImageView drop;
+        private TextView volume, hour;
+        private ImageView drop;
 
         public HourlyPrecipViewHolder(View itemView) {
             super(itemView);

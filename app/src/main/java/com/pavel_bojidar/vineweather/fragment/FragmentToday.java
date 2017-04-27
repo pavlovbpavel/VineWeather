@@ -34,10 +34,6 @@ import com.pavel_bojidar.vineweather.singleton.AppManager;
 import static com.pavel_bojidar.vineweather.Constants.FEELS_LIKE;
 import static com.pavel_bojidar.vineweather.Constants.LAST_UPDATED;
 
-/**
- * Created by Pavel Pavlov on 3/7/2017.
- */
-
 public class FragmentToday extends WeatherFragment {
 
     protected Forecast forecast;
@@ -63,7 +59,6 @@ public class FragmentToday extends WeatherFragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.layout_rv_hours_forecast);
         lastUpdated = (TextView) view.findViewById(R.id.last_updated_tv);
         currentLocation = AppManager.getInstance().getCurrentLocation();
-
         return view;
     }
 
@@ -82,7 +77,7 @@ public class FragmentToday extends WeatherFragment {
 
         fragmentManager = getChildFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        CurrentDetailFragment fragmentCurrentDetails = new CurrentDetailFragment();
+        FragmentTodayDetails fragmentCurrentDetails = new FragmentTodayDetails();
 
         fragmentTransaction.add(R.id.layout_current_detail, fragmentCurrentDetails);
         fragmentTransaction.add(R.id.layout_wind_detail, WindFragment.newInstance(false));
@@ -105,8 +100,10 @@ public class FragmentToday extends WeatherFragment {
         currentDay = forecast.getDayForecasts().get(0);
 
         lastUpdated.setText(LAST_UPDATED.concat(AppManager.getInstance().getCurrentLocation().getCurrentWeather().getLastUpdated()));
-        weatherIcon.setImageDrawable(Helper.chooseConditionIcon(parent.getContext(), currentLocation.getCurrentWeather().getIs_day() == 1, false,
+        weatherIcon.setImageDrawable(Helper.chooseConditionIcon(parent.getContext(),
+                currentLocation.getCurrentWeather().getIs_day() == 1, false,
                 currentLocation.getCurrentWeather().getCondition().getText()));
+
         if (WeatherActivity.isImperialUnits) {
             degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempF()).concat(Constants.CELSIUS_SYMBOL));
             feelsLike.setText(FEELS_LIKE.concat(Helper.decimalFormat(currentLocation.getCurrentWeather().getFeelslikeF())).concat(Constants.CELSIUS_SYMBOL));
@@ -114,23 +111,15 @@ public class FragmentToday extends WeatherFragment {
             degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempC()).concat(Constants.CELSIUS_SYMBOL));
             feelsLike.setText(FEELS_LIKE.concat(Helper.decimalFormat(currentLocation.getCurrentWeather().getFeelslikeC())).concat(Constants.CELSIUS_SYMBOL));
         }
+
         condition.setText(currentLocation.getCurrentWeather().getCondition().getText());
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(new HourlyTempAdapter(currentDay.getHourForecasts(), 0));
 
-        parent.setBackgroundDrawable(Helper.chooseFragmentBackground(getContext(), currentLocation.getCurrentWeather().getCondition().getText(), currentLocation.getCurrentWeather().getIs_day() == 1));
-
-//        HourlyTempAdapter tempAdapter = (HourlyTempAdapter) recyclerView.getAdapter();
-//        Long now = (long) AppManager.getInstance().getCurrentLocation().getCurrentWeather().getLastUpdateEpoch();
-//        HourForecast currentHour;
-//        for (int i = 0; i < currentDay.getHourForecasts().size(); i++) {
-//            currentHour = currentDay.getHourForecasts().get(i);
-//            Long currentEpoch = (long) currentHour.getTimeEpoch();
-//            if (currentEpoch < now) {
-//                tempAdapter.removeItem(i);
-//            }
-//        }
+        parent.setBackgroundDrawable(Helper.chooseFragmentBackground(getContext(),
+                currentLocation.getCurrentWeather().getCondition().getText(),
+                currentLocation.getCurrentWeather().getIs_day() == 1));
     }
 
     @Override
@@ -138,7 +127,7 @@ public class FragmentToday extends WeatherFragment {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if(intent.getAction().equals(BroadcastActions.ACTION_UNIT_SWAPPED)){
+                if (intent.getAction().equals(BroadcastActions.ACTION_UNIT_SWAPPED)) {
                     bindData();
                 } else {
                     if (AppManager.getInstance().getCurrentLocation() != null) {

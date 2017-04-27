@@ -1,11 +1,7 @@
 package com.pavel_bojidar.vineweather.task;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v4.content.LocalBroadcastManager;
 
-import com.pavel_bojidar.vineweather.BroadcastActions;
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.model.Condition;
@@ -17,7 +13,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -50,17 +45,7 @@ import static com.pavel_bojidar.vineweather.Constants.NODE_CONDITION;
 import static com.pavel_bojidar.vineweather.Constants.NODE_CURRENT;
 import static com.pavel_bojidar.vineweather.Constants.NODE_LOCATION;
 
-/**
- * Created by Pavel Pavlov on 3/15/2017.
- */
-
 public class GetCurrentWeather extends AsyncTask<String, Void, String> {
-
-    WeakReference<Activity> activityWeakReference;
-
-    public GetCurrentWeather(WeakReference<Activity> activityWeakReference) {
-        this.activityWeakReference = activityWeakReference;
-    }
 
     @Override
     protected String doInBackground(String... params) {
@@ -69,13 +54,13 @@ public class GetCurrentWeather extends AsyncTask<String, Void, String> {
         try {
             validInput = URLEncoder.encode(params[0], "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            WeatherActivity.isConnected = false;
         }
         try {
             URL url = new URL(
                     "http://api.apixu.com/v1/current.json?key=" + Constants.API_KEY + "&q=" + validInput);
-            HttpURLConnection http = (HttpURLConnection)url.openConnection();
-            if(http.getResponseCode() > 400){
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            if (http.getResponseCode() > 400) {
                 WeatherActivity.isConnected = false;
             } else {
                 WeatherActivity.isConnected = true;
@@ -85,7 +70,7 @@ public class GetCurrentWeather extends AsyncTask<String, Void, String> {
                 }
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+            WeatherActivity.isConnected = false;
         }
         return strJSON;
     }
@@ -129,13 +114,9 @@ public class GetCurrentWeather extends AsyncTask<String, Void, String> {
                 currentWeather.setCondition(condition);
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            WeatherActivity.isConnected = false;
         }
         AppManager.getInstance().getCurrentLocation().setName(locationCallbackName);
         AppManager.getInstance().getCurrentLocation().setCurrentWeather(currentWeather);
-        Activity activity = activityWeakReference.get();
-        if (activity != null && activity instanceof WeatherActivity) {
-            ((WeatherActivity) activity).onLocationUpdated();
-        }
     }
 }

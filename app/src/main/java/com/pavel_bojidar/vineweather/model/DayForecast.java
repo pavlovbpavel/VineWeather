@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * Created by Pavel Pavlov on 3/25/2017.
  */
 
-public class DayForecast implements Serializable{
+public class DayForecast implements Serializable {
 
     private String date;
     private int date_epoch;
@@ -17,48 +17,39 @@ public class DayForecast implements Serializable{
     private Astro astro = new Astro();
     private ArrayList<HourForecast> hourForecasts = new ArrayList<>();
 
-    public String getDate()
-    {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(String mDate)
-    {
+    public void setDate(String mDate) {
         this.date = mDate;
     }
 
-    public int getDateEpoch()
-    {
+    public int getDateEpoch() {
         return date_epoch;
     }
 
-    public void setDateEpoch(int mDateEpoch)
-    {
+    public void setDateEpoch(int mDateEpoch) {
         this.date_epoch = mDateEpoch;
     }
 
-    public Day getDay()
-    {
+    public Day getDay() {
         return day;
     }
 
-    public void setDay(Day mDay)
-    {
+    public void setDay(Day mDay) {
         this.day = mDay;
     }
 
-    public Astro getAstro()
-    {
+    public Astro getAstro() {
         return astro;
     }
 
-    public void setAstro(Astro mAstro)
-    {
+    public void setAstro(Astro mAstro) {
         this.astro = mAstro;
     }
 
-    public ArrayList<HourForecast> getHourForecasts()
-    {
+    public ArrayList<HourForecast> getHourForecasts() {
         return hourForecasts;
     }
 

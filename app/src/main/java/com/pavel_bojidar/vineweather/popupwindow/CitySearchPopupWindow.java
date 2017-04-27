@@ -16,10 +16,6 @@ import com.pavel_bojidar.vineweather.R;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Pavel Pavlov on 3/16/2017.
- */
-
 public class CitySearchPopupWindow extends ListPopupWindow {
 
     private SearchAdapter searchAdapter;
@@ -48,7 +44,7 @@ public class CitySearchPopupWindow extends ListPopupWindow {
 
     private class SearchAdapter extends ArrayAdapter<String> {
 
-        public SearchAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<String> objects) {
+        SearchAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<String> objects) {
             super(context, resource, objects);
         }
 

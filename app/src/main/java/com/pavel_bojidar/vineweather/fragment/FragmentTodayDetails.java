@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,34 +17,26 @@ import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.maindata.Location;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class CurrentDetailFragment extends WeatherFragment {
+public class FragmentTodayDetails extends WeatherFragment {
 
-    TextView humidity, wind, pressure, visibility, sunDetail, moonDetail;
-
+    private TextView humidity, wind, pressure, visibility, sunDetail, moonDetail;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_current_detail, container, false);
-
         humidity = (TextView) view.findViewById(R.id.today_humidity_percentage);
         wind = (TextView) view.findViewById(R.id.today_wind_detail);
         pressure = (TextView) view.findViewById(R.id.today_pressure_detail);
         visibility = (TextView) view.findViewById(R.id.today_visibility_detail);
         sunDetail = (TextView) view.findViewById(R.id.today_sun_detail);
         moonDetail = (TextView) view.findViewById(R.id.today_moon_detail);
-
         return view;
     }
 
     private void bindData() {
         Location currentLocation = AppManager.getInstance().getCurrentLocation();
-
         humidity.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getHumidity()) + " " + Constants.HUMIDITY_SYMBOL);
-        if(WeatherActivity.isImperialUnits){
+        if (WeatherActivity.isImperialUnits) {
             wind.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getWindMph()) + " " + Constants.MPH);
             pressure.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getPressureIn()).concat(Constants.IN));
             visibility.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getVisability_mi()) + " " + Constants.M);

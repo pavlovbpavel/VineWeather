@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by Pavel Pavlov on 4/1/2017.
  */
 
-public class Astro implements Serializable{
+public class Astro implements Serializable {
 
     private String sunrise;
     private String sunset;

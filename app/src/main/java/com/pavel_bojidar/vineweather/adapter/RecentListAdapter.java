@@ -12,14 +12,9 @@ import com.pavel_bojidar.vineweather.helper.Helper;
 
 import java.util.ArrayList;
 
-/**
- * Created by Pavel Pavlov on 3/11/2017.
- */
-
 public class RecentListAdapter extends RecyclerView.Adapter<RecentLocationsViewHolder> {
 
     private ArrayList<String> locations;
-
     private RecentSelectedListener listener;
 
     public RecentListAdapter(ArrayList<String> locations, RecentSelectedListener listener) {

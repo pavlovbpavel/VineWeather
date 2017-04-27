@@ -15,10 +15,6 @@ import com.pavel_bojidar.vineweather.model.HourForecast;
 
 import java.util.ArrayList;
 
-/**
- * Created by Pavel Pavlov on 4/7/2017.
- */
-
 public class HourlyTempAdapter extends RecyclerView.Adapter<HourlyForecastViewHolder> {
 
     private ArrayList<HourForecast> forecast;
@@ -53,7 +49,7 @@ public class HourlyTempAdapter extends RecyclerView.Adapter<HourlyForecastViewHo
             holder.degrees.setText(Helper.decimalFormat(currentHour.getTempF()).concat(Constants.CELSIUS_SYMBOL));
         }
         holder.hour.setText(Helper.getUnixAmPmHour(currentHour.getTimeEpoch()));
-        if(fragmentNumber == 2) {
+        if (fragmentNumber == 2) {
             holder.icon.setImageDrawable(Helper.chooseConditionIcon(holder.itemView.getContext(), currentHour.getIsDay() == 1, true, currentHour.getCondition().getText()));
         } else {
             holder.icon.setImageDrawable(Helper.chooseConditionIcon(holder.itemView.getContext(), currentHour.getIsDay() == 1, false, currentHour.getCondition().getText()));
@@ -76,10 +72,5 @@ public class HourlyTempAdapter extends RecyclerView.Adapter<HourlyForecastViewHo
             hour = (TextView) itemView.findViewById(R.id.row_forecast_details_hour);
             icon = (ImageView) itemView.findViewById(R.id.row_forecast_details_icon);
         }
-    }
-
-    public void removeItem(int position) {
-        forecast.remove(position);
-        notifyItemRemoved(position);
     }
 }

@@ -1,6 +1,5 @@
 package com.pavel_bojidar.vineweather.task;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 
 import com.pavel_bojidar.vineweather.WeatherActivity;
@@ -20,7 +19,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -85,17 +83,7 @@ import static com.pavel_bojidar.vineweather.Constants.NODE_FORECASTDAY;
 import static com.pavel_bojidar.vineweather.Constants.NODE_HOUR;
 import static com.pavel_bojidar.vineweather.Constants.NODE_LOCATION;
 
-/**
- * Created by Pavel Pavlov on 3/15/2017.
- */
-
 public class GetForecast extends AsyncTask<String, Void, String> {
-
-    private WeakReference<Activity> activityWeakReference;
-
-    protected GetForecast(WeakReference<Activity> activityWeakReference) {
-        this.activityWeakReference = activityWeakReference;
-    }
 
     @Override
     protected String doInBackground(String... params) {
@@ -104,13 +92,13 @@ public class GetForecast extends AsyncTask<String, Void, String> {
         try {
             validInput = URLEncoder.encode(params[0], "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            WeatherActivity.isConnected = false;
         }
         try {
             URL url = new URL(
                     "http://api.apixu.com/v1/forecast.json?key=" + API_KEY + "&q=" + validInput + "&days=10");
-            HttpURLConnection http = (HttpURLConnection)url.openConnection();
-            if(http.getResponseCode() > 400){
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            if (http.getResponseCode() > 400) {
                 WeatherActivity.isConnected = false;
             } else {
                 WeatherActivity.isConnected = true;
@@ -121,7 +109,7 @@ public class GetForecast extends AsyncTask<String, Void, String> {
                 }
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+            WeatherActivity.isConnected = false;
         }
         return result.toString();
     }
@@ -225,13 +213,9 @@ public class GetForecast extends AsyncTask<String, Void, String> {
             }
             forecast.setDayForecasts(dayForecasts);
         } catch (JSONException e) {
-            e.printStackTrace();
+            WeatherActivity.isConnected = false;
         }
         AppManager.getInstance().getCurrentLocation().setName(locationCallbackName);
         AppManager.getInstance().getCurrentLocation().setForecast(forecast);
-        Activity activity = activityWeakReference.get();
-        if (activity != null && activity instanceof WeatherActivity) {
-            ((WeatherActivity) activity).onLocationUpdated();
-        }
     }
 }

@@ -19,10 +19,6 @@ import com.pavel_bojidar.vineweather.adapter.FutureForecastAdapter.RowAnimation;
 import com.pavel_bojidar.vineweather.model.maindata.Forecast;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 
-/**
- * Created by Pavel Pavlov on 3/10/2017.
- */
-
 public class FragmentForecast extends WeatherFragment {
 
     private RecyclerView recyclerView;
