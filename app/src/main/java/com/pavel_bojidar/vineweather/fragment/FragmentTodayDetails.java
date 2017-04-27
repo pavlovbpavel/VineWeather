@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.pavel_bojidar.vineweather.BroadcastActions;
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
 import com.pavel_bojidar.vineweather.WeatherActivity;
@@ -57,7 +58,9 @@ public class FragmentTodayDetails extends WeatherFragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (AppManager.getInstance().getCurrentLocation() != null) {
-                    bindData();
+                    if (intent.getAction().equals(BroadcastActions.ACTION_UNIT_SWAPPED) || intent.getAction().equals(BroadcastActions.ACTION_LOCATION_UPDATED)) {
+                        bindData();
+                    }
                 }
             }
         };

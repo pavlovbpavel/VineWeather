@@ -11,9 +11,9 @@
 
     <application
         android:allowBackup="false"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/mapa_weather_icon"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/weather_icon"
+        android:roundIcon="@drawable/mapa_weather_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup">

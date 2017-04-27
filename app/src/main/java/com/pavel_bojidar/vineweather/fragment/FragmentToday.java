@@ -127,10 +127,8 @@ public class FragmentToday extends WeatherFragment {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(BroadcastActions.ACTION_UNIT_SWAPPED)) {
-                    bindData();
-                } else {
-                    if (AppManager.getInstance().getCurrentLocation() != null) {
+                if (AppManager.getInstance().getCurrentLocation() != null) {
+                    if (intent.getAction().equals(BroadcastActions.ACTION_UNIT_SWAPPED) || intent.getAction().equals(BroadcastActions.ACTION_LOCATION_UPDATED)) {
                         bindData();
                     }
                 }
