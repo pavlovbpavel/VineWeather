@@ -1,23 +1,28 @@
 package com.pavel_bojidar.vineweather.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.widget.RemoteViews;
 
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
+import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.helper.Helper;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Implementation of App Widget functionality.
  */
 public class MaPaWidgetProvider extends AppWidgetProvider {
 
-    public static int[] allWidgetIds;
+    private static int[] allWidgetIds;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -25,7 +30,13 @@ public class MaPaWidgetProvider extends AppWidgetProvider {
          ComponentName thisWidget = new ComponentName(context, MaPaWidgetProvider.class);
          allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
 
-         startService(context.getApplicationContext());
+        SharedPreferences prefs = context.getSharedPreferences(context.getPackageName(), MODE_PRIVATE);
+        String widgetLocation = prefs.getString(Constants.KEY_LOCATION_NAME, null);
+        Intent intent = new Intent(context.getApplicationContext(), WidgetService.class);
+        if (widgetLocation != null) {
+            intent.putExtra("location", widgetLocation);
+        }
+            context.startService(intent);
 
         for (int widgetId : allWidgetIds) {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ma_pa_widget);
@@ -39,8 +50,11 @@ public class MaPaWidgetProvider extends AppWidgetProvider {
             if(WidgetService.condition != null) {
                 Drawable drawable = Helper.chooseConditionIcon(context, WidgetService.isDay == 1, false, WidgetService.condition);
             }
-
             views.setImageViewResource(R.id.image_view_widget, Helper.imageWidget);
+
+            Intent intent1 = new Intent(context.getApplicationContext(), WeatherActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent1, 0);
+            views.setOnClickPendingIntent(R.id.widget_layout, pendingIntent);
 
             appWidgetManager.updateAppWidget(widgetId, views);
         }
@@ -61,5 +75,8 @@ public class MaPaWidgetProvider extends AppWidgetProvider {
         // Enter relevant functionality for when the last widget is disabled
     }
 
+    public static int[] getAllWidgetIds() {
+        return allWidgetIds;
+    }
 }
 

@@ -33,7 +33,6 @@ public class AppManager {
         Intent intent = new Intent(BroadcastActions.ACTION_LOCATION_UPDATED);
         intent.putExtra(Constants.KEY_LOCATION_NAME, currentLocation.getName());
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-        WeatherActivity.widgetLocation = currentLocation.getName();
     }
 
     public void onUnitSwapped(Context context) {
