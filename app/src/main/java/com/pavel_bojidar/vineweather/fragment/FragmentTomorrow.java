@@ -25,7 +25,7 @@ import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.adapter.HourlyTempAdapter;
 import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.HourForecast;
-import com.pavel_bojidar.vineweather.model.maindata.Day;
+import com.pavel_bojidar.vineweather.model.DayDetails;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class FragmentTomorrow extends WeatherFragment {
 
     protected RelativeLayout mainLayout;
     private RecyclerView hourlyTempForecast;
-    protected Day tomorrow;
+    protected DayDetails tomorrow;
     private TextView date, condition, temp;
     private ImageView conditionImage;
     protected ArrayList<HourForecast> tomorrowHourly;
@@ -106,7 +106,7 @@ public class FragmentTomorrow extends WeatherFragment {
 
     private void bindData() {
         tomorrowHourly = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getHourForecasts();
-        tomorrow = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getDay();
+        tomorrow = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getDayDetails();
         int unixTS = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getDateEpoch();
         date.setText(Helper.getWeekDay(Helper.getUnixDate(unixTS)).concat(Helper.getUnixCustomDate(unixTS)));
         condition.setText(tomorrow.getCondition().getText());

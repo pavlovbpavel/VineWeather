@@ -15,8 +15,8 @@ import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
 import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.helper.Helper;
-import com.pavel_bojidar.vineweather.model.Astro;
-import com.pavel_bojidar.vineweather.model.maindata.Day;
+import com.pavel_bojidar.vineweather.model.DayDetails;
+import com.pavel_bojidar.vineweather.model.DayForecast;
 import com.pavel_bojidar.vineweather.model.maindata.Location;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 
@@ -41,19 +41,19 @@ public class FragmentTomorrowDetails extends WeatherFragment {
 
     private void bindData() {
         Location currentLocation = AppManager.getInstance().getCurrentLocation();
-        Day tomorrow = currentLocation.getForecast().getDayForecasts().get(1).getDay();
-        Astro tomorrowAstro = currentLocation.getForecast().getDayForecasts().get(1).getAstro();
-        humidity.setText(String.valueOf(Helper.decimalFormat(tomorrow.getAvgHumidity()).concat(HUMIDITY_SYMBOL)));
+        DayForecast tomorrowForecast = currentLocation.getForecast().getDayForecasts().get(1);
+        DayDetails tomorrowDetails = currentLocation.getForecast().getDayForecasts().get(1).getDayDetails();
+        humidity.setText(String.valueOf(Helper.decimalFormat(tomorrowDetails.getAvgHumidity()).concat(HUMIDITY_SYMBOL)));
         if (WeatherActivity.isImperialUnits) {
-            max.setText(String.valueOf(Helper.decimalFormat(tomorrow.getMaxtempF()).concat(CELSIUS_SYMBOL).concat(", ")));
-            min.setText(String.valueOf(Helper.decimalFormat(tomorrow.getMintempF()).concat(CELSIUS_SYMBOL)));
-            visibility.setText(String.valueOf(Helper.decimalFormat(tomorrow.getAvgVisibility_miles()).concat(" " + Constants.M)));
+            max.setText(String.valueOf(Helper.decimalFormat(tomorrowDetails.getMaxtempF()).concat(CELSIUS_SYMBOL).concat(", ")));
+            min.setText(String.valueOf(Helper.decimalFormat(tomorrowDetails.getMintempF()).concat(CELSIUS_SYMBOL)));
+            visibility.setText(String.valueOf(Helper.decimalFormat(tomorrowDetails.getAvgVisibilityMiles()).concat(" " + Constants.M)));
         } else {
-            max.setText(String.valueOf(Helper.decimalFormat(tomorrow.getMaxtempC()).concat(CELSIUS_SYMBOL).concat(", ")));
-            min.setText(String.valueOf(Helper.decimalFormat(tomorrow.getMintempC()).concat(CELSIUS_SYMBOL)));
-            visibility.setText(String.valueOf(Helper.decimalFormat(tomorrow.getAvgVisibility_km()).concat(" " + Constants.KM)));
+            max.setText(String.valueOf(Helper.decimalFormat(tomorrowDetails.getMaxtempC()).concat(CELSIUS_SYMBOL).concat(", ")));
+            min.setText(String.valueOf(Helper.decimalFormat(tomorrowDetails.getMintempC()).concat(CELSIUS_SYMBOL)));
+            visibility.setText(String.valueOf(Helper.decimalFormat(tomorrowDetails.getAvgVisibilityKm()).concat(" " + Constants.KM)));
         }
-        astro.setText(tomorrowAstro.getSunrise().concat(", ").concat(tomorrowAstro.getSunset()));
+        astro.setText(tomorrowForecast.getSunrise().concat(", ").concat(tomorrowForecast.getSunset()));
     }
 
     @Override

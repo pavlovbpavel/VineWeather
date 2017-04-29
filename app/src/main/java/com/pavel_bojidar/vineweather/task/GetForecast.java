@@ -3,12 +3,13 @@ package com.pavel_bojidar.vineweather.task;
 import android.os.AsyncTask;
 
 import com.pavel_bojidar.vineweather.WeatherActivity;
-import com.pavel_bojidar.vineweather.model.Astro;
 import com.pavel_bojidar.vineweather.model.Condition;
+import com.pavel_bojidar.vineweather.model.DayDetails;
 import com.pavel_bojidar.vineweather.model.DayForecast;
 import com.pavel_bojidar.vineweather.model.HourForecast;
-import com.pavel_bojidar.vineweather.model.maindata.Day;
+import com.pavel_bojidar.vineweather.model.maindata.CurrentWeather;
 import com.pavel_bojidar.vineweather.model.maindata.Forecast;
+import com.pavel_bojidar.vineweather.model.maindata.Location;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 
 import org.json.JSONArray;
@@ -43,6 +44,8 @@ import static com.pavel_bojidar.vineweather.Constants.KEY_HEATINDEX_F;
 import static com.pavel_bojidar.vineweather.Constants.KEY_HUMIDITY;
 import static com.pavel_bojidar.vineweather.Constants.KEY_ICON;
 import static com.pavel_bojidar.vineweather.Constants.KEY_IS_DAY;
+import static com.pavel_bojidar.vineweather.Constants.KEY_LAST_UPDATED;
+import static com.pavel_bojidar.vineweather.Constants.KEY_LAST_UPDATED_EPOCH;
 import static com.pavel_bojidar.vineweather.Constants.KEY_MAXTEMP_C;
 import static com.pavel_bojidar.vineweather.Constants.KEY_MAXTEMP_F;
 import static com.pavel_bojidar.vineweather.Constants.KEY_MAXWIND_KPH;
@@ -77,6 +80,7 @@ import static com.pavel_bojidar.vineweather.Constants.KEY_WIND_KPH;
 import static com.pavel_bojidar.vineweather.Constants.KEY_WIND_MPH;
 import static com.pavel_bojidar.vineweather.Constants.NODE_ASTRO;
 import static com.pavel_bojidar.vineweather.Constants.NODE_CONDITION;
+import static com.pavel_bojidar.vineweather.Constants.NODE_CURRENT;
 import static com.pavel_bojidar.vineweather.Constants.NODE_DAY;
 import static com.pavel_bojidar.vineweather.Constants.NODE_FORECAST;
 import static com.pavel_bojidar.vineweather.Constants.NODE_FORECASTDAY;
@@ -92,7 +96,7 @@ public class GetForecast extends AsyncTask<String, Void, String> {
         try {
             validInput = URLEncoder.encode(params[0], "UTF-8");
         } catch (UnsupportedEncodingException e) {
-
+            e.printStackTrace();
         }
         try {
             URL url = new URL(
@@ -109,7 +113,7 @@ public class GetForecast extends AsyncTask<String, Void, String> {
                 }
             }
         } catch (IOException ex) {
-
+            ex.printStackTrace();
         }
         return result.toString();
     }
@@ -118,12 +122,47 @@ public class GetForecast extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
         String locationCallbackName = null;
+        CurrentWeather currentWeather = new CurrentWeather();
         Forecast forecast = new Forecast();
         ArrayList<DayForecast> dayForecasts = new ArrayList<>();
         try {
             JSONObject jo = new JSONObject(result);
             JSONArray daysJsonArray = jo.getJSONObject(NODE_FORECAST).getJSONArray(NODE_FORECASTDAY);
             locationCallbackName = jo.getJSONObject(NODE_LOCATION).getString(KEY_NAME);
+
+            //current weather data
+            if (jo.has(NODE_CURRENT)) {
+                JSONObject currentJo = jo.getJSONObject(NODE_CURRENT);
+                JSONObject conditionJo = currentJo.getJSONObject(NODE_CONDITION);
+
+                currentWeather.setLastUpdated(currentJo.getString(KEY_LAST_UPDATED));
+                currentWeather.setLastUpdateEpoch(currentJo.getInt(KEY_LAST_UPDATED_EPOCH));
+                currentWeather.setTempC(currentJo.getDouble(KEY_TEMP_C));
+                currentWeather.setTempF(currentJo.getDouble(KEY_TEMP_F));
+                currentWeather.setIsDay(currentJo.getInt(KEY_IS_DAY));
+                currentWeather.setWindKph(currentJo.getDouble(KEY_WIND_KPH));
+                currentWeather.setWindMph(currentJo.getDouble(KEY_WIND_MPH));
+                currentWeather.setWindDegree(currentJo.getInt(KEY_WIND_DEGREE));
+                currentWeather.setWindDir(currentJo.getString(KEY_WIND_DIR));
+                currentWeather.setPressureMb(currentJo.getDouble(KEY_PRESSURE_MB));
+                currentWeather.setPressureIn(currentJo.getDouble(KEY_PRESSURE_IN));
+                currentWeather.setPrecipMm(currentJo.getDouble(KEY_PRECIP_MM));
+                currentWeather.setPrecipIn(currentJo.getDouble(KEY_PRECIP_IN));
+                currentWeather.setHumidity(currentJo.getInt(KEY_HUMIDITY));
+                currentWeather.setCloud(currentJo.getInt(KEY_CLOUD));
+                currentWeather.setFeelslikeC(currentJo.getDouble(KEY_FEELSLIKE_C));
+                currentWeather.setFeelslikeF(currentJo.getDouble(KEY_FEELSLIKE_F));
+                currentWeather.setVisabilityKm(currentJo.getDouble(KEY_VIS_KM));
+                currentWeather.setVisabilityMi(currentJo.getDouble(KEY_VIS_MILES));
+
+                Condition condition = new Condition();
+                condition.setText(conditionJo.getString(KEY_TEXT));
+                condition.setIcon(conditionJo.getString(KEY_ICON));
+                condition.setCode(conditionJo.getInt(KEY_CODE));
+                currentWeather.setCondition(condition);
+            }
+
+            //forecast data
             for (int i = 0; i < daysJsonArray.length(); i++) {
                 JSONObject currentDayJo = daysJsonArray.getJSONObject(i);
                 DayForecast currentDayForecast = new DayForecast();
@@ -133,35 +172,34 @@ public class GetForecast extends AsyncTask<String, Void, String> {
                 currentDayForecast.setDateEpoch(currentDayJo.getInt(KEY_DATE_EPOCH));
 
                 //main day data
-                Day currentDay = new Day();
+                DayDetails currentDayDetails = new DayDetails();
                 JSONObject dayDataJo = currentDayJo.getJSONObject(NODE_DAY);
                 JSONObject conditionJo = dayDataJo.getJSONObject(NODE_CONDITION);
-                currentDay.setMaxtempC(dayDataJo.getDouble(KEY_MAXTEMP_C));
-                currentDay.setMaxtempF(dayDataJo.getDouble(KEY_MAXTEMP_F));
-                currentDay.setMintempC(dayDataJo.getDouble(KEY_MINTEMP_C));
-                currentDay.setMintempF(dayDataJo.getDouble(KEY_MINTEMP_F));
-                currentDay.setAvgtempC(dayDataJo.getDouble(KEY_AVGTEMP_C));
-                currentDay.setAvgtempF(dayDataJo.getDouble(KEY_AVGTEMP_F));
-                currentDay.setMaxwindKph(dayDataJo.getDouble(KEY_MAXWIND_KPH));
-                currentDay.setMaxwindMph(dayDataJo.getDouble(KEY_MAXWIND_MPH));
-                currentDay.setAvgHumidity(dayDataJo.getDouble(KEY_AVG_HUMIDITY));
-                currentDay.setTotalprecipMm(dayDataJo.getDouble(KEY_TOTALPRECIP_MM));
-                currentDay.setTotalprecipIn(dayDataJo.getDouble(KEY_TOTALPRECIP_IN));
-                currentDay.setAvgVisibility_km(dayDataJo.getDouble(KEY_AVGVIS_KM));
-                currentDay.setAvgVisibility_miles(dayDataJo.getDouble(KEY_AVGVIS_MILES));
+                currentDayDetails.setMaxtempC(dayDataJo.getDouble(KEY_MAXTEMP_C));
+                currentDayDetails.setMaxtempF(dayDataJo.getDouble(KEY_MAXTEMP_F));
+                currentDayDetails.setMintempC(dayDataJo.getDouble(KEY_MINTEMP_C));
+                currentDayDetails.setMintempF(dayDataJo.getDouble(KEY_MINTEMP_F));
+                currentDayDetails.setAvgtempC(dayDataJo.getDouble(KEY_AVGTEMP_C));
+                currentDayDetails.setAvgtempF(dayDataJo.getDouble(KEY_AVGTEMP_F));
+                currentDayDetails.setMaxwindKph(dayDataJo.getDouble(KEY_MAXWIND_KPH));
+                currentDayDetails.setMaxwindMph(dayDataJo.getDouble(KEY_MAXWIND_MPH));
+                currentDayDetails.setAvgHumidity(dayDataJo.getDouble(KEY_AVG_HUMIDITY));
+                currentDayDetails.setTotalprecipMm(dayDataJo.getDouble(KEY_TOTALPRECIP_MM));
+                currentDayDetails.setTotalprecipIn(dayDataJo.getDouble(KEY_TOTALPRECIP_IN));
+                currentDayDetails.setAvgVisibilityKm(dayDataJo.getDouble(KEY_AVGVIS_KM));
+                currentDayDetails.setAvgVisibilityMiles(dayDataJo.getDouble(KEY_AVGVIS_MILES));
                 Condition condition = new Condition();
                 condition.setText(conditionJo.getString(KEY_TEXT));
                 condition.setIcon(conditionJo.getString(KEY_ICON));
                 condition.setCode(conditionJo.getInt(KEY_CODE));
-                currentDay.setCondition(condition);
+                currentDayDetails.setCondition(condition);
 
                 //main astro data
-                Astro currentDayAstro = new Astro();
                 JSONObject astroJo = currentDayJo.getJSONObject(NODE_ASTRO);
-                currentDayAstro.setSunrise(astroJo.getString(KEY_SUNRISE));
-                currentDayAstro.setSunset(astroJo.getString(KEY_SUNSET));
-                currentDayAstro.setMoonrise(astroJo.getString(KEY_MOONRISE));
-                currentDayAstro.setMoonset(astroJo.getString(KEY_MOONSET));
+                currentDayForecast.setSunrise(astroJo.getString(KEY_SUNRISE));
+                currentDayForecast.setSunset(astroJo.getString(KEY_SUNSET));
+                currentDayForecast.setMoonrise(astroJo.getString(KEY_MOONRISE));
+                currentDayForecast.setMoonset(astroJo.getString(KEY_MOONSET));
 
                 //hourly data
                 JSONArray hourlyForecast = currentDayJo.getJSONArray(NODE_HOUR);
@@ -207,15 +245,16 @@ public class GetForecast extends AsyncTask<String, Void, String> {
                     hourForecasts.add(currentHourForecast);
                 }
                 currentDayForecast.setHourForecasts(hourForecasts);
-                currentDayForecast.setDay(currentDay);
-                currentDayForecast.setAstro(currentDayAstro);
+                currentDayForecast.setDayDetails(currentDayDetails);
                 dayForecasts.add(currentDayForecast);
             }
             forecast.setDayForecasts(dayForecasts);
         } catch (JSONException e) {
             WeatherActivity.isConnected = false;
         }
-        AppManager.getInstance().getCurrentLocation().setName(locationCallbackName);
-        AppManager.getInstance().getCurrentLocation().setForecast(forecast);
+        Location currentLocation = AppManager.getInstance().getCurrentLocation();
+        currentLocation.setName(locationCallbackName);
+        currentLocation.setCurrentWeather(currentWeather);
+        currentLocation.setForecast(forecast);
     }
 }

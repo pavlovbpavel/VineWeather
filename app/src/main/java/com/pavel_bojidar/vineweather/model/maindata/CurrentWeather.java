@@ -4,136 +4,132 @@ import com.pavel_bojidar.vineweather.model.Condition;
 
 import java.io.Serializable;
 
-/**
- * Created by Pavel Pavlov on 4/1/2017.
- */
-
 public class CurrentWeather implements Serializable {
 
-    private int last_updated_epoch;
-    private int wind_degree;
+    private int lastUpdatedEpoch;
+    private int windDegree;
     private int humidity;
     private int cloud;
-    private String last_updated;
-    private String wind_dir;
-    private double temp_c;
-    private double temp_f;
-    private double wind_mph;
-    private double wind_kph;
-    private double pressure_mb;
-    private double pressure_in;
-    private double precip_mm;
-    private double precip_in;
-    private double feelslike_c;
-    private double feelslike_f;
-    private int is_day;
-    private double visability_km;
-    private double visability_mi;
+    private String lastUpdated;
+    private String windDir;
+    private double tempC;
+    private double tempF;
+    private double windMph;
+    private double windKph;
+    private double pressureMb;
+    private double pressureIn;
+    private double precipMm;
+    private double precipIn;
+    private double feelslikeC;
+    private double feelslikeF;
+    private int isDay;
+    private double visabilityKm;
+    private double visabilityMi;
 
-    private Condition mCondition = new Condition();
+    private Condition condition = new Condition();
 
     public int getLastUpdateEpoch() {
-        return last_updated_epoch;
+        return lastUpdatedEpoch;
     }
 
     public void setLastUpdateEpoch(int mLastUpdateEpoch) {
-        this.last_updated_epoch = mLastUpdateEpoch;
+        this.lastUpdatedEpoch = mLastUpdateEpoch;
     }
 
     public String getLastUpdated() {
-        return last_updated;
+        return lastUpdated;
     }
 
     public void setLastUpdated(String mLastUpdated) {
-        this.last_updated = mLastUpdated;
+        this.lastUpdated = mLastUpdated;
     }
 
     public double getTempC() {
-        return temp_c;
+        return tempC;
     }
 
     public void setTempC(Double mTempC) {
-        this.temp_c = mTempC;
+        this.tempC = mTempC;
     }
 
     public double getTempF() {
-        return temp_f;
+        return tempF;
     }
 
     public void setTempF(Double mTempF) {
-        this.temp_f = mTempF;
+        this.tempF = mTempF;
     }
 
     public Condition getCondition() {
-        return mCondition;
+        return condition;
     }
 
     public void setCondition(Condition mCondition) {
-        this.mCondition = mCondition;
+        this.condition = mCondition;
     }
 
     public double getWindMph() {
-        return wind_mph;
+        return windMph;
     }
 
     public void setWindMph(double mWindMph) {
-        this.wind_mph = mWindMph;
+        this.windMph = mWindMph;
     }
 
     public double getWindKph() {
-        return wind_kph;
+        return windKph;
     }
 
     public void setWindKph(double mWindKph) {
-        this.wind_kph = mWindKph;
+        this.windKph = mWindKph;
     }
 
     public int getWindDegree() {
-        return wind_degree;
+        return windDegree;
     }
 
     public void setWindDegree(int mWindDegree) {
-        this.wind_degree = mWindDegree;
+        this.windDegree = mWindDegree;
     }
 
     public String getWindDir() {
-        return wind_dir;
+        return windDir;
     }
 
     public void setWindDir(String mWindDir) {
-        this.wind_dir = mWindDir;
+        this.windDir = mWindDir;
     }
 
     public double getPressureMb() {
-        return pressure_mb;
+        return pressureMb;
     }
 
     public void setPressureMb(double mPressureMb) {
-        this.pressure_mb = mPressureMb;
+        this.pressureMb = mPressureMb;
     }
 
     public double getPressureIn() {
-        return pressure_in;
+        return pressureIn;
     }
 
     public void setPressureIn(double mPressureIn) {
-        this.pressure_in = mPressureIn;
+        this.pressureIn = mPressureIn;
     }
 
     public double getPrecipMm() {
-        return precip_mm;
+        return precipMm;
     }
 
     public void setPrecipMm(double mPrecipMm) {
-        this.precip_mm = mPrecipMm;
+        this.precipMm = mPrecipMm;
     }
 
     public double getPrecipIn() {
-        return precip_in;
+        return precipIn;
     }
 
     public void setPrecipIn(double mPrecipIn) {
-        this.precip_in = mPrecipIn;
+        this.precipIn = mPrecipIn;
     }
 
     public int getHumidity() {
@@ -153,42 +149,42 @@ public class CurrentWeather implements Serializable {
     }
 
     public double getFeelslikeC() {
-        return feelslike_c;
+        return feelslikeC;
     }
 
     public void setFeelslikeC(double mFeelslikeC) {
-        this.feelslike_c = mFeelslikeC;
+        this.feelslikeC = mFeelslikeC;
     }
 
     public double getFeelslikeF() {
-        return feelslike_f;
+        return feelslikeF;
     }
 
     public void setFeelslikeF(double mFeelslikeF) {
-        this.feelslike_f = mFeelslikeF;
+        this.feelslikeF = mFeelslikeF;
     }
 
-    public int getIs_day() {
-        return is_day;
+    public int getIsDay() {
+        return isDay;
     }
 
-    public void setIs_day(int is_day) {
-        this.is_day = is_day;
+    public void setIsDay(int isDay) {
+        this.isDay = isDay;
     }
 
-    public double getVisability_km() {
-        return visability_km;
+    public double getVisabilityKm() {
+        return visabilityKm;
     }
 
-    public void setVisability_km(double visability_km) {
-        this.visability_km = visability_km;
+    public void setVisabilityKm(double visabilityKm) {
+        this.visabilityKm = visabilityKm;
     }
 
-    public double getVisability_mi() {
-        return visability_mi;
+    public double getVisabilityMi() {
+        return visabilityMi;
     }
 
-    public void setVisability_mi(double visability_mi) {
-        this.visability_mi = visability_mi;
+    public void setVisabilityMi(double visabilityMi) {
+        this.visabilityMi = visabilityMi;
     }
 }

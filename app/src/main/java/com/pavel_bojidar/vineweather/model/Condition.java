@@ -2,10 +2,6 @@ package com.pavel_bojidar.vineweather.model;
 
 import java.io.Serializable;
 
-/**
- * Created by Pavel Pavlov on 4/1/2017.
- */
-
 public class Condition implements Serializable {
 
     private String text;

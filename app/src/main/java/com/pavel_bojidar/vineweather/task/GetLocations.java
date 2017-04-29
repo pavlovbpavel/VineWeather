@@ -21,7 +21,7 @@ public class GetLocations extends AsyncTask<String, Void, String> {
         try {
             validInput = URLEncoder.encode(params[0], "UTF-8");
         } catch (UnsupportedEncodingException e) {
-
+            e.printStackTrace();
         }
         try {
             URL url = new URL(
@@ -37,7 +37,7 @@ public class GetLocations extends AsyncTask<String, Void, String> {
                 }
             }
         } catch (IOException ex) {
-
+            ex.printStackTrace();
         }
         return strJSON;
     }

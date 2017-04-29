@@ -2,48 +2,43 @@ package com.pavel_bojidar.vineweather.model;
 
 import java.io.Serializable;
 
-/**
- * Created by Pavel Pavlov on 4/1/2017.
- */
-
 public class HourForecast implements Serializable {
 
-    private int time_epoch;
-    private int wind_degree;
+    private int timeEpoch;
+    private int windDegree;
     private int humidity;
     private int cloud;
-    private int will_it_rain;
-    private int will_it_snow;
-    private String time;
-    private String wind_dir;
-    private double temp_c;
-    private double temp_f;
-    private double wind_mph;
-    private double wind_kph;
-    private double pressure_mb;
-    private double pressure_in;
-    private double precip_mm;
-    private double precip_in;
-    private double feelslike_c;
-    private double feelslike_f;
-    private double windchill_c;
-    private double windchill_f;
-    private double heatindex_c;
-    private double heatindex_f;
-    private double dewpoint_c;
-    private double dewpoint_f;
+    private int willItRain;
+    private int willItSnow;
     private int isDay;
+    private double tempC;
+    private double tempF;
+    private double windMph;
+    private double windKph;
+    private double pressureMb;
+    private double pressureIn;
+    private double precipMm;
+    private double precipIn;
+    private double feelslikeC;
+    private double feelslikeF;
+    private double windchillC;
+    private double windchillF;
+    private double heatindexC;
+    private double heatindexF;
+    private double dewpointC;
+    private double dewpointF;
     private double visibilityKm;
     private double visibilityMiles;
-
-    Condition condition = new Condition();
+    private String time;
+    private String windDir;
+    private Condition condition;
 
     public int getTimeEpoch() {
-        return time_epoch;
+        return timeEpoch;
     }
 
     public void setTimeEpoch(int mTimeEpoch) {
-        this.time_epoch = mTimeEpoch;
+        this.timeEpoch = mTimeEpoch;
     }
 
     public String getTime() {
@@ -55,19 +50,19 @@ public class HourForecast implements Serializable {
     }
 
     public double getTempC() {
-        return temp_c;
+        return tempC;
     }
 
     public void setTempC(Double mTempC) {
-        this.temp_c = mTempC;
+        this.tempC = mTempC;
     }
 
     public double getTempF() {
-        return temp_f;
+        return tempF;
     }
 
     public void setTempF(Double mTempF) {
-        this.temp_f = mTempF;
+        this.tempF = mTempF;
     }
 
     public Condition getCondition() {
@@ -79,67 +74,67 @@ public class HourForecast implements Serializable {
     }
 
     public double getWindMph() {
-        return wind_mph;
+        return windMph;
     }
 
     public void setWindMph(double mWindMph) {
-        this.wind_mph = mWindMph;
+        this.windMph = mWindMph;
     }
 
     public double getWindKph() {
-        return wind_kph;
+        return windKph;
     }
 
     public void setWindKph(double mWindKph) {
-        this.wind_kph = mWindKph;
+        this.windKph = mWindKph;
     }
 
     public int getWindDegree() {
-        return wind_degree;
+        return windDegree;
     }
 
     public void setWindDegree(int mWindDegree) {
-        this.wind_degree = mWindDegree;
+        this.windDegree = mWindDegree;
     }
 
     public String getWindDir() {
-        return wind_dir;
+        return windDir;
     }
 
     public void setWindDir(String mWindDir) {
-        this.wind_dir = mWindDir;
+        this.windDir = mWindDir;
     }
 
     public double getPressureMb() {
-        return pressure_mb;
+        return pressureMb;
     }
 
     public void setPressureMb(double mPressureMb) {
-        this.pressure_mb = mPressureMb;
+        this.pressureMb = mPressureMb;
     }
 
     public double getPressureIn() {
-        return pressure_in;
+        return pressureIn;
     }
 
     public void setPressureIn(double mPressureIn) {
-        this.pressure_in = mPressureIn;
+        this.pressureIn = mPressureIn;
     }
 
     public double getPrecipMm() {
-        return precip_mm;
+        return precipMm;
     }
 
     public void setPrecipMm(double mPrecipMm) {
-        this.precip_mm = mPrecipMm;
+        this.precipMm = mPrecipMm;
     }
 
     public double getPrecipIn() {
-        return precip_in;
+        return precipIn;
     }
 
     public void setPrecipIn(double mPrecipIn) {
-        this.precip_in = mPrecipIn;
+        this.precipIn = mPrecipIn;
     }
 
     public int getHumidity() {
@@ -159,83 +154,83 @@ public class HourForecast implements Serializable {
     }
 
     public double getFeelslikeC() {
-        return feelslike_c;
+        return feelslikeC;
     }
 
     public void setFeelslikeC(double mFeelslikeC) {
-        this.feelslike_c = mFeelslikeC;
+        this.feelslikeC = mFeelslikeC;
     }
 
     public double getFeelslikeF() {
-        return feelslike_f;
+        return feelslikeF;
     }
 
     public void setFeelslikeF(double mFeelslikeF) {
-        this.feelslike_f = mFeelslikeF;
+        this.feelslikeF = mFeelslikeF;
     }
 
     public double getWindchillC() {
-        return windchill_c;
+        return windchillC;
     }
 
     public void setWindchillC(double mWindchillC) {
-        this.windchill_c = mWindchillC;
+        this.windchillC = mWindchillC;
     }
 
     public double getWindchillF() {
-        return windchill_f;
+        return windchillF;
     }
 
     public void setWindchillF(double mWindchillF) {
-        this.windchill_f = mWindchillF;
+        this.windchillF = mWindchillF;
     }
 
     public double getHeatindexC() {
-        return heatindex_c;
+        return heatindexC;
     }
 
     public void setHeatindexC(double mHeatindexC) {
-        this.heatindex_c = mHeatindexC;
+        this.heatindexC = mHeatindexC;
     }
 
     public double getHeatindexF() {
-        return heatindex_f;
+        return heatindexF;
     }
 
     public void setHeatindexF(double mHeatIndexF) {
-        this.heatindex_f = mHeatIndexF;
+        this.heatindexF = mHeatIndexF;
     }
 
     public double getDewpointC() {
-        return dewpoint_c;
+        return dewpointC;
     }
 
     public void setDewpointC(double mDewpointC) {
-        this.dewpoint_c = mDewpointC;
+        this.dewpointC = mDewpointC;
     }
 
     public double getDewpointF() {
-        return dewpoint_f;
+        return dewpointF;
     }
 
     public void setDewpointF(double mDewpointF) {
-        this.dewpoint_f = mDewpointF;
+        this.dewpointF = mDewpointF;
     }
 
     public int getWillItRain() {
-        return will_it_rain;
+        return willItRain;
     }
 
     public void setWillItRain(int mWillItRain) {
-        this.will_it_rain = mWillItRain;
+        this.willItRain = mWillItRain;
     }
 
     public int getWillItSnow() {
-        return will_it_snow;
+        return willItSnow;
     }
 
     public void setWillItSnow(int mWillItSnow) {
-        this.will_it_snow = mWillItSnow;
+        this.willItSnow = mWillItSnow;
     }
 
     public int getIsDay() {

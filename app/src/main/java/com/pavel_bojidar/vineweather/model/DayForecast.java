@@ -1,52 +1,73 @@
 package com.pavel_bojidar.vineweather.model;
 
-import com.pavel_bojidar.vineweather.model.maindata.Day;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-
-/**
- * Created by Pavel Pavlov on 3/25/2017.
- */
 
 public class DayForecast implements Serializable {
 
     private String date;
-    private int date_epoch;
-    private Day day = new Day();
-    private Astro astro = new Astro();
-    private ArrayList<HourForecast> hourForecasts = new ArrayList<>();
+    private int dateEpoch;
+    private DayDetails dayDetails;
+    private ArrayList<HourForecast> hourForecasts;
+    private String sunrise;
+    private String sunset;
+    private String moonrise;
+    private String moonset;
+
+    public String getSunrise() {
+        return sunrise;
+    }
+
+    public void setSunrise(String sunrise) {
+        this.sunrise = sunrise;
+    }
+
+    public String getSunset() {
+        return sunset;
+    }
+
+    public void setSunset(String sunset) {
+        this.sunset = sunset;
+    }
+
+    public String getMoonrise() {
+        return moonrise;
+    }
+
+    public void setMoonrise(String moonrise) {
+        this.moonrise = moonrise;
+    }
+
+    public String getMoonset() {
+        return moonset;
+    }
+
+    public void setMoonset(String moonset) {
+        this.moonset = moonset;
+    }
 
     public String getDate() {
         return date;
     }
 
-    public void setDate(String mDate) {
-        this.date = mDate;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public int getDateEpoch() {
-        return date_epoch;
+        return dateEpoch;
     }
 
-    public void setDateEpoch(int mDateEpoch) {
-        this.date_epoch = mDateEpoch;
+    public void setDateEpoch(int dateEpoch) {
+        this.dateEpoch = dateEpoch;
     }
 
-    public Day getDay() {
-        return day;
+    public DayDetails getDayDetails() {
+        return dayDetails;
     }
 
-    public void setDay(Day mDay) {
-        this.day = mDay;
-    }
-
-    public Astro getAstro() {
-        return astro;
-    }
-
-    public void setAstro(Astro mAstro) {
-        this.astro = mAstro;
+    public void setDayDetails(DayDetails dayDetails) {
+        this.dayDetails = dayDetails;
     }
 
     public ArrayList<HourForecast> getHourForecasts() {

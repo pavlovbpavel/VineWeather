@@ -58,7 +58,6 @@ public class FragmentToday extends WeatherFragment {
         windDirection = (ImageView) view.findViewById(R.id.today_wind_direction);
         recyclerView = (RecyclerView) view.findViewById(R.id.layout_rv_hours_forecast);
         lastUpdated = (TextView) view.findViewById(R.id.last_updated_tv);
-        currentLocation = AppManager.getInstance().getCurrentLocation();
         return view;
     }
 
@@ -95,13 +94,14 @@ public class FragmentToday extends WeatherFragment {
     }
 
     private void bindData() {
+        currentLocation = AppManager.getInstance().getCurrentLocation();
 
         forecast = AppManager.getInstance().getCurrentLocation().getForecast();
         currentDay = forecast.getDayForecasts().get(0);
 
         lastUpdated.setText(LAST_UPDATED.concat(AppManager.getInstance().getCurrentLocation().getCurrentWeather().getLastUpdated()));
         weatherIcon.setImageDrawable(Helper.chooseConditionIcon(weatherIcon.getContext(),
-                currentLocation.getCurrentWeather().getIs_day() == 1, false,
+                currentLocation.getCurrentWeather().getIsDay() == 1, false,
                 currentLocation.getCurrentWeather().getCondition().getText()));
 
         if (WeatherActivity.isImperialUnits) {
@@ -119,7 +119,7 @@ public class FragmentToday extends WeatherFragment {
 
         parent.setBackgroundDrawable(Helper.chooseFragmentBackground(parent.getContext(),
                 currentLocation.getCurrentWeather().getCondition().getText(),
-                currentLocation.getCurrentWeather().getIs_day() == 1));
+                currentLocation.getCurrentWeather().getIsDay() == 1));
     }
 
     @Override

@@ -108,20 +108,20 @@ public class FutureForecastAdapter extends RecyclerView.Adapter<ForecastViewHold
         } else {
             holder.date.setText(Helper.getWeekDay(Helper.getUnixDate(currentDay.getDateEpoch())).concat(Helper.getUnixCustomDate(currentDay.getDateEpoch())));
         }
-        holder.condition.setText(currentDay.getDay().getCondition().getText());
-        holder.sun.setText(currentDay.getAstro().getSunrise().concat(", ").concat(currentDay.getAstro().getSunset()));
-        holder.moon.setText(currentDay.getAstro().getMoonrise().concat(", ").concat(currentDay.getAstro().getMoonset()));
+        holder.condition.setText(currentDay.getDayDetails().getCondition().getText());
+        holder.sun.setText(currentDay.getSunrise().concat(", ").concat(currentDay.getSunset()));
+        holder.moon.setText(currentDay.getMoonrise().concat(", ").concat(currentDay.getMoonset()));
         if (!WeatherActivity.isImperialUnits) {
-            holder.tempMax.setText(Helper.decimalFormat(currentDay.getDay().getMaxtempC()).concat(Constants.CELSIUS_SYMBOL));
-            holder.tempMin.setText(Helper.decimalFormat(currentDay.getDay().getMintempC()).concat(Constants.CELSIUS_SYMBOL));
-            holder.wind.setText(String.valueOf(Helper.decimalFormat(currentDay.getDay().getMaxwindKph())).concat(" " + Constants.KM_H));
+            holder.tempMax.setText(Helper.decimalFormat(currentDay.getDayDetails().getMaxtempC()).concat(Constants.CELSIUS_SYMBOL));
+            holder.tempMin.setText(Helper.decimalFormat(currentDay.getDayDetails().getMintempC()).concat(Constants.CELSIUS_SYMBOL));
+            holder.wind.setText(String.valueOf(Helper.decimalFormat(currentDay.getDayDetails().getMaxwindKph())).concat(" " + Constants.KM_H));
         } else {
-            holder.tempMax.setText(Helper.decimalFormat(currentDay.getDay().getMaxtempF()).concat(Constants.CELSIUS_SYMBOL));
-            holder.tempMin.setText(Helper.decimalFormat(currentDay.getDay().getMintempF()).concat(Constants.CELSIUS_SYMBOL));
-            holder.wind.setText(String.valueOf(Helper.decimalFormat(currentDay.getDay().getMaxwindMph())).concat(" " + Constants.MPH));
+            holder.tempMax.setText(Helper.decimalFormat(currentDay.getDayDetails().getMaxtempF()).concat(Constants.CELSIUS_SYMBOL));
+            holder.tempMin.setText(Helper.decimalFormat(currentDay.getDayDetails().getMintempF()).concat(Constants.CELSIUS_SYMBOL));
+            holder.wind.setText(String.valueOf(Helper.decimalFormat(currentDay.getDayDetails().getMaxwindMph())).concat(" " + Constants.MPH));
         }
-        holder.humidity.setText(String.valueOf(Helper.decimalFormat(currentDay.getDay().getAvgHumidity()).concat(Constants.HUMIDITY_SYMBOL)));
-        holder.conditionImage.setImageDrawable(Helper.chooseConditionIcon((holder.itemView.getContext()), true, true, currentDay.getDay().getCondition().getText()));
+        holder.humidity.setText(String.valueOf(Helper.decimalFormat(currentDay.getDayDetails().getAvgHumidity()).concat(Constants.HUMIDITY_SYMBOL)));
+        holder.conditionImage.setImageDrawable(Helper.chooseConditionIcon((holder.itemView.getContext()), true, true, currentDay.getDayDetails().getCondition().getText()));
     }
 
     @Override

@@ -18,7 +18,7 @@ import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.adapter.HourlyPrecipAdapter;
 import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.HourForecast;
-import com.pavel_bojidar.vineweather.model.maindata.Day;
+import com.pavel_bojidar.vineweather.model.DayDetails;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 
 import java.util.ArrayList;
@@ -72,12 +72,12 @@ public class PrecipitationFragment extends WeatherFragment {
         hourlyPrecipForecast = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(isTomorrow ? 1 : 0).getHourForecasts();
         rvPrecipitation.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         rvPrecipitation.setAdapter(new HourlyPrecipAdapter(hourlyPrecipForecast));
-        Day currentDay = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(isTomorrow ? 1 : 0).getDay();
+        DayDetails currentDayDetails = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(isTomorrow ? 1 : 0).getDayDetails();
         if (WeatherActivity.isImperialUnits) {
-            dailyVolume.setText("  ".concat(String.valueOf(currentDay.getTotalprecipIn() == 0 ? Helper.decimalFormat(currentDay.getTotalprecipIn()) : currentDay.getTotalprecipIn()).concat(IN)));
+            dailyVolume.setText("  ".concat(String.valueOf(currentDayDetails.getTotalprecipIn() == 0 ? Helper.decimalFormat(currentDayDetails.getTotalprecipIn()) : currentDayDetails.getTotalprecipIn()).concat(IN)));
             volume.setText(VOLUME_IN);
         } else {
-            dailyVolume.setText("  ".concat(String.valueOf(currentDay.getTotalprecipMm() == 0 ? Helper.decimalFormat(currentDay.getTotalprecipMm()) : currentDay.getTotalprecipMm()).concat(MM)));
+            dailyVolume.setText("  ".concat(String.valueOf(currentDayDetails.getTotalprecipMm() == 0 ? Helper.decimalFormat(currentDayDetails.getTotalprecipMm()) : currentDayDetails.getTotalprecipMm()).concat(MM)));
             volume.setText(VOLUME_MM);
         }
     }

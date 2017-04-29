@@ -63,7 +63,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -84,7 +83,6 @@ import com.pavel_bojidar.vineweather.popupwindow.CitySearchPopupWindow;
 import com.pavel_bojidar.vineweather.receiver.NetworkReceiver;
 import com.pavel_bojidar.vineweather.receiver.NetworkReceiver.ConnectivityChanged;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
-import com.pavel_bojidar.vineweather.task.GetCurrentWeather;
 import com.pavel_bojidar.vineweather.task.GetForecast;
 import com.pavel_bojidar.vineweather.task.GetLocations;
 import com.pavel_bojidar.vineweather.widget.MaPaWidgetProvider;
@@ -116,7 +114,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     private ProgressBar loadingView;
     private EditText searchField;
     private RelativeLayout headerContainer;
-    final boolean[] weatherTasksCompleted = {false, false};
     private CitySearchPopupWindow searchPopupWindow;
     private Toolbar toolbar;
     private ArrayList<String> recentList = new ArrayList<>();
@@ -202,20 +199,11 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                 noLocationSelected.setVisibility(View.GONE);
             }
             loadingView.setVisibility(View.VISIBLE);
-            new GetCurrentWeather() {
-                @Override
-                protected void onPostExecute(String result) {
-                    super.onPostExecute(result);
-                    weatherTasksCompleted[0] = true;
-                    onLocationUpdated();
-                }
-            }.execute(currentLocationName);
 
             new GetForecast() {
                 @Override
                 protected void onPostExecute(String result) {
                     super.onPostExecute(result);
-                    weatherTasksCompleted[1] = true;
                     onLocationUpdated();
                 }
             }.execute(currentLocationName);
@@ -225,23 +213,18 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     }
 
     public void onLocationUpdated() {
-        if (!weatherTasksCompleted[0] || !weatherTasksCompleted[1]) {
-            return;
-        }
         if (!isConnected) {
             showAlertDialog(SERVER_CONNECTION_FAILURE);
             return;
         }
-        weatherTasksCompleted[0] = false;
-        weatherTasksCompleted[1] = false;
         viewPager.setVisibility(View.VISIBLE);
         loadingView.setVisibility(View.GONE);
 
         CurrentWeather currentWeather = AppManager.getInstance().getCurrentLocation().getCurrentWeather();
 
-        isDay = AppManager.getInstance().getCurrentLocation().getCurrentWeather().getIs_day() == 1;
-        conditionToday = AppManager.getInstance().getCurrentLocation().getCurrentWeather().getCondition().getText();
-        conditionTomorrow = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getDay().getCondition().getText();
+        isDay = currentWeather.getIsDay() == 1;
+        conditionToday = currentWeather.getCondition().getText();
+        conditionTomorrow = AppManager.getInstance().getCurrentLocation().getForecast().getDayForecasts().get(1).getDayDetails().getCondition().getText();
         conditionTodayColorSet = Helper.chooseConditionColorSet(conditionToday, isDay);
         conditionTomorrowColorSet = Helper.chooseConditionColorSet(conditionTomorrow, true);
 
@@ -267,8 +250,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
         swipeRefresh.setColorSchemeResources((currentTabColor));
 
-        navDrawerImage.setImageDrawable(Helper.chooseConditionIcon(this, currentWeather.getIs_day() == 1, false,
-                currentWeather.getCondition().getText()));
+        navDrawerImage.setImageDrawable(Helper.chooseConditionIcon(this, currentWeather.getIsDay() == 1, false, currentWeather.getCondition().getText()));
         navDrawerCondition.setText(currentWeather.getCondition().getText());
         if (!isImperialUnits) {
             navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempC()).concat(Constants.CELSIUS_SYMBOL));
@@ -291,17 +273,19 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         }
         navDrawerLocation.setText(Helper.filterCityName(currentLocationName));
 
-        if (currentWeather.getCondition().getText().length() >= 25 && currentWeather.getCondition().getText().length() < 30) {
+        int conditionNameLength = currentWeather.getCondition().getText().length();
+        if (conditionNameLength >= 25 && conditionNameLength < 30) {
             navDrawerCondition.setTextSize(14);
-        } else if (currentWeather.getCondition().getText().length() >= 35) {
+        } else if (conditionNameLength >= 35) {
             navDrawerCondition.setTextSize(10);
         } else {
             navDrawerCondition.setTextSize(16);
         }
 
-        if (Helper.filterCityName(currentLocationName).length() >= 14 && Helper.filterCityName(currentLocationName).length() <= 18) {
+        int locationNameLength = Helper.filterCityName(currentLocationName).length();
+        if (locationNameLength >= 14 && locationNameLength <= 18) {
             navDrawerLocation.setTextSize(18);
-        } else if (Helper.filterCityName(currentLocationName).length() > 18) {
+        } else if (locationNameLength > 18) {
             navDrawerLocation.setTextSize(14);
         } else {
             navDrawerLocation.setTextSize(24);

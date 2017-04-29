@@ -20,6 +20,7 @@ import java.util.TimeZone;
 public class Helper {
 
     public static int imageWidget;
+    //todo get timezone from device timezone
 
     public static String getUnixAmPmHour(long unixTS) {
         Date date = new Date(unixTS * 1000L);
@@ -79,46 +80,49 @@ public class Helper {
     }
 
     public static Drawable choosePrecipitationIcon(Context context, double amount){
+
+        Resources resources = context.getResources();
+
         if(amount <= 0.1){
-            return context.getResources().getDrawable(R.drawable.droplet1);
+            return resources.getDrawable(R.drawable.droplet1);
         }
         if(amount > 0.1 && amount <= 0.5){
-            return context.getResources().getDrawable(R.drawable.droplet2);
+            return resources.getDrawable(R.drawable.droplet2);
         }
         if(amount > 0.5 && amount <= 1){
-            return context.getResources().getDrawable(R.drawable.droplet3);
+            return resources.getDrawable(R.drawable.droplet3);
         }
         if(amount > 1 && amount <= 1.5){
-            return context.getResources().getDrawable(R.drawable.droplet4);
+            return resources.getDrawable(R.drawable.droplet4);
         }
         if(amount > 1.5 && amount <= 2){
-            return context.getResources().getDrawable(R.drawable.droplet5);
+            return resources.getDrawable(R.drawable.droplet5);
         }
         if(amount > 2 && amount <= 3){
-            return context.getResources().getDrawable(R.drawable.droplet6);
+            return resources.getDrawable(R.drawable.droplet6);
         }
         if(amount > 3 && amount <= 4){
-            return context.getResources().getDrawable(R.drawable.droplet7);
+            return resources.getDrawable(R.drawable.droplet7);
         }
         if(amount > 4 && amount <= 5){
-            return context.getResources().getDrawable(R.drawable.droplet8);
+            return resources.getDrawable(R.drawable.droplet8);
         }
         if(amount > 5 && amount <= 6.5){
-            return context.getResources().getDrawable(R.drawable.droplet9);
+            return resources.getDrawable(R.drawable.droplet9);
         }
         if(amount > 6.5 && amount <= 7.5){
-            return context.getResources().getDrawable(R.drawable.droplet10);
+            return resources.getDrawable(R.drawable.droplet10);
         }
         if(amount > 7.5 && amount <= 8.5){
-            return context.getResources().getDrawable(R.drawable.droplet11);
+            return resources.getDrawable(R.drawable.droplet11);
         }
         if(amount > 8.5 && amount <= 10){
-            return context.getResources().getDrawable(R.drawable.droplet12);
+            return resources.getDrawable(R.drawable.droplet12);
         }
         if(amount > 10){
-            return context.getResources().getDrawable(R.drawable.droplet13);
+            return resources.getDrawable(R.drawable.droplet13);
         }
-        return context.getResources().getDrawable(R.drawable.droplet1);
+        return resources.getDrawable(R.drawable.droplet1);
     }
 
     public static Drawable chooseConditionIcon(Context context, boolean isDay, boolean isForecast, String condition) {
