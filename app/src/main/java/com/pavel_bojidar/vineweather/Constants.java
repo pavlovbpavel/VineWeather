@@ -8,6 +8,8 @@ public class Constants {
     public static final String KEY_RECENT_PLACES = "recent_places";
     public static final String UNITS_IMPERIAL = "unitType";
     public static final String CELSIUS_SYMBOL = "\u00b0";
+    public static final String CELSIUS = "C";
+    public static final String FAHRENHEIT = "F";
     public static final String HUMIDITY_SYMBOL = "%";
     public static final String KM_H = "km/h";
     public static final String MPH = "mph";

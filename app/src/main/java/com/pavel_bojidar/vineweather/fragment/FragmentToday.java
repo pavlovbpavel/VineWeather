@@ -42,13 +42,13 @@ public class FragmentToday extends WeatherFragment {
     private Location currentLocation;
     private RecyclerView recyclerView;
     protected ImageView weatherIcon, windDirection;
-    protected TextView degrees, condition, windCondition, windSpeed, feelsLike, lastUpdated;
+    protected TextView degrees, condition, windCondition, windSpeed, feelsLike, lastUpdated, deegreType;
     protected FragmentManager fragmentManager;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_todayy, null, false);
+        View view = inflater.inflate(R.layout.fragment_today, null, false);
         windSpeed = (TextView) view.findViewById(R.id.today_wind_speed);
         degrees = (TextView) view.findViewById(R.id.fragment_1_degrees);
         weatherIcon = (ImageView) view.findViewById(R.id.fragment_1_image);
@@ -58,6 +58,7 @@ public class FragmentToday extends WeatherFragment {
         windDirection = (ImageView) view.findViewById(R.id.today_wind_direction);
         recyclerView = (RecyclerView) view.findViewById(R.id.layout_rv_hours_forecast);
         lastUpdated = (TextView) view.findViewById(R.id.last_updated_tv);
+        deegreType = (TextView) view.findViewById(R.id.degree_symbol);
         return view;
     }
 
@@ -107,9 +108,11 @@ public class FragmentToday extends WeatherFragment {
         if (WeatherActivity.isImperialUnits) {
             degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempF()).concat(Constants.CELSIUS_SYMBOL));
             feelsLike.setText(FEELS_LIKE.concat(Helper.decimalFormat(currentLocation.getCurrentWeather().getFeelslikeF())).concat(Constants.CELSIUS_SYMBOL));
+            deegreType.setText(Constants.FAHRENHEIT);
         } else {
             degrees.setText(Helper.decimalFormat(currentLocation.getCurrentWeather().getTempC()).concat(Constants.CELSIUS_SYMBOL));
             feelsLike.setText(FEELS_LIKE.concat(Helper.decimalFormat(currentLocation.getCurrentWeather().getFeelslikeC())).concat(Constants.CELSIUS_SYMBOL));
+            deegreType.setText(Constants.CELSIUS);
         }
 
         condition.setText(currentLocation.getCurrentWeather().getCondition().getText());

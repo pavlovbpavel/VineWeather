@@ -32,6 +32,7 @@ import android.support.design.widget.TabLayout.Tab;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -242,7 +243,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                 currentTabColorDark = conditionTodayColorSet[1];
                 currentTabColor = conditionTodayColorSet[0];
                 gradient = Helper.chooseHeaderColorSet(this, conditionTodayColorSet);
-                headerContainer.setBackgroundDrawable(gradient);
+                headerContainer.setBackground(gradient);
             }
         } else if (viewPager.getCurrentItem() == 1) {
             if (conditionTomorrowColorSet != null) {
@@ -251,7 +252,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                 currentTabColorDark = conditionTomorrowColorSet[1];
                 currentTabColor = conditionTomorrowColorSet[0];
                 gradient = Helper.chooseHeaderColorSet(this, conditionTomorrowColorSet);
-                headerContainer.setBackgroundDrawable(gradient);
+                headerContainer.setBackground(gradient);
             }
         }
 
@@ -368,7 +369,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             @Override
             public void onClick(View v) {
                 isImperialUnits = false;
-                preferences.edit().putBoolean(Constants.UNITS_IMPERIAL, false).apply();
                 celsiusButton.getBackground().clearColorFilter();
                 fahrenheitButton.getBackground().setColorFilter(Color.TRANSPARENT, PorterDuff.Mode.MULTIPLY);
                 drawer.closeDrawer(GravityCompat.START);
@@ -380,7 +380,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             @Override
             public void onClick(View v) {
                 isImperialUnits = true;
-                preferences.edit().putBoolean(Constants.UNITS_IMPERIAL, true).apply();
                 fahrenheitButton.getBackground().clearColorFilter();
                 celsiusButton.getBackground().setColorFilter(Color.TRANSPARENT, PorterDuff.Mode.MULTIPLY);
                 drawer.closeDrawer(GravityCompat.START);
@@ -481,7 +480,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                 search.setIcon(R.drawable.ic_search_black_24dp);
             }
         };
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         loadingView = (ProgressBar) findViewById(R.id.loading_view);
@@ -496,7 +495,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
         appBar = (AppBarLayout) findViewById(R.id.app_bar);
 
-        tabLayout.setOnTabSelectedListener(new OnTabSelectedListener() {
+        tabLayout.addOnTabSelectedListener(new OnTabSelectedListener() {
             @Override
             public void onTabSelected(Tab tab) {
 
@@ -507,7 +506,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                         currentTabColorDark = conditionTodayColorSet[1];
                         currentTabColor = conditionTodayColorSet[0];
                         gradient = Helper.chooseHeaderColorSet(WeatherActivity.this, conditionTodayColorSet);
-                        headerContainer.setBackgroundDrawable(gradient);
+                        headerContainer.setBackground(gradient);
                         break;
                     case 1:
                         animateColorChange(appBar, currentTabColor, conditionTomorrowColorSet[0]);
@@ -515,7 +514,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                         currentTabColorDark = conditionTomorrowColorSet[1];
                         currentTabColor = conditionTomorrowColorSet[0];
                         gradient = Helper.chooseHeaderColorSet(WeatherActivity.this, conditionTomorrowColorSet);
-                        headerContainer.setBackgroundDrawable(gradient);
+                        headerContainer.setBackground(gradient);
                         break;
                     case 2:
                         animateColorChange(appBar, currentTabColor, R.color.forecastAppBarColor);
@@ -524,7 +523,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                         currentTabColor = R.color.forecastAppBarColor;
                         gradient = new GradientDrawable(Orientation.TOP_BOTTOM, new int[]{Color.parseColor("#006064"), Color.parseColor("#004749")});
                         gradient.setCornerRadius(0f);
-                        headerContainer.setBackgroundDrawable(gradient);
+                        headerContainer.setBackground(gradient);
                         break;
                 }
                 swipeRefresh.setColorSchemeResources((currentTabColor));
@@ -823,8 +822,8 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     }
 
     private void animateColorChange(final View view, int from, int to) {
-        int colorFrom = getResources().getColor(from);
-        int colorTo = getResources().getColor(to);
+        int colorFrom = ContextCompat.getColor(getApplicationContext(), from);
+        int colorTo = ContextCompat.getColor(getApplicationContext(), to);
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
         colorAnimation.setDuration(300);
         colorAnimation.addUpdateListener(new AnimatorUpdateListener() {
@@ -837,8 +836,8 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     }
 
     private void animateStatusBarColorChange(int from, int to) {
-        int colorFrom = getResources().getColor(from);
-        int colorTo = getResources().getColor(to);
+        int colorFrom = ContextCompat.getColor(getApplicationContext(), from);
+        int colorTo = ContextCompat.getColor(getApplicationContext(), to);
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
         colorAnimation.setDuration(300);
         colorAnimation.addUpdateListener(new AnimatorUpdateListener() {
