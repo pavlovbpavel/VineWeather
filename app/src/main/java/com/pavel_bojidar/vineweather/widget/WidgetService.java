@@ -10,7 +10,6 @@ import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.helper.Helper;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,8 +26,6 @@ public class WidgetService extends Service {
     static String condition;
     static int isDay;
     static double degree;
-    static double min;
-    static double max;
 
     public WidgetService() {}
 
@@ -39,6 +36,11 @@ public class WidgetService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        String widgetLocation = null;
+        if (intent.getStringExtra("location") != null) {
+            widgetLocation = intent.getStringExtra("location");
+        }
 
         new AsyncTask<String, Void, String>() {
             @Override
@@ -55,7 +57,7 @@ public class WidgetService extends Service {
                 try {
 
                     URL url = new URL(
-                            "http://api.apixu.com/v1/forecast.json?key=954d7898a6e84f25a6f123340172604&q=" + validInput + "&days=1");
+                            "http://api.apixu.com/v1/current.json?key=954d7898a6e84f25a6f123340172604&q=" + validInput);
 
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
@@ -97,21 +99,11 @@ public class WidgetService extends Service {
                     JSONObject conditionObj = currentObj.getJSONObject(Constants.NODE_CONDITION);
                     condition = conditionObj.getString(Constants.KEY_TEXT);
 
-                    JSONObject forecastObj = callObject.getJSONObject(Constants.NODE_FORECAST);
-                    JSONArray forecastDays = forecastObj.getJSONArray(Constants.NODE_FORECASTDAY);
-                    JSONObject todayObj = forecastDays.getJSONObject(0).getJSONObject(Constants.NODE_DAY);
-                    if (WeatherActivity.isImperialUnits) {
-                        min = todayObj.getDouble(Constants.KEY_MINTEMP_F);
-                        max = todayObj.getDouble(Constants.KEY_MAXTEMP_F);
-                    } else {
-                        min = todayObj.getDouble(Constants.KEY_MINTEMP_C);
-                        max = todayObj.getDouble(Constants.KEY_MAXTEMP_C);
-                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-        }.execute(Helper.filterCityName(intent.getStringExtra("location")));
+        }.execute(Helper.filterCityName(widgetLocation));
 
         stopSelf();
         return START_STICKY;

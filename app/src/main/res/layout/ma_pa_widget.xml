@@ -62,28 +62,14 @@
     <TextView
         android:id="@+id/degree_widget"
         android:layout_width="70dp"
-        android:layout_height="48dp"
+        android:layout_height="80dp"
         android:text="2.5"
         android:textAlignment="textStart"
         android:textColor="#ffffff"
-        android:paddingTop="16dp"
+        android:paddingTop="24dp"
         android:paddingStart="8dp"
-        android:textSize="26sp"
+        android:textSize="30sp"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/location_widget"/>
-
-    <TextView
-        android:id="@+id/min_max_degree_widget"
-        android:layout_width="70dp"
-        android:layout_height="32dp"
-        android:text="Min/Max"
-        android:gravity="start"
-        android:textAlignment="textStart"
-        android:textColor="#ffffff"
-        android:paddingTop="2dp"
-        android:paddingStart="8dp"
-        android:textSize="12sp"
-        android:layout_below="@+id/degree_widget"
-        android:layout_toEndOf="@+id/condition_widget"/>
 
 </RelativeLayout>
