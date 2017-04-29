@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.WeatherActivity;
+import com.pavel_bojidar.vineweather.helper.Helper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,6 +43,7 @@ public class WidgetService extends Service {
         new AsyncTask<String, Void, String>() {
             @Override
             protected String doInBackground(String... params) {
+
                 String strJSON = "";
                 String validInput = null;
 
@@ -51,7 +53,7 @@ public class WidgetService extends Service {
                     e.printStackTrace();
                 }
                 try {
-                    Log.e("mimi", "1");
+
                     URL url = new URL(
                             "http://api.apixu.com/v1/forecast.json?key=954d7898a6e84f25a6f123340172604&q=" + validInput + "&days=1");
 
@@ -59,14 +61,13 @@ public class WidgetService extends Service {
                     connection.setRequestMethod("GET");
                     connection.setDoInput(true);
                     connection.connect();
-                    Log.e("mimi", "2");
 
                     Scanner sc = new Scanner(connection.getInputStream());
-                    Log.e("mimi", "3");
+
                     while (sc.hasNextLine()) {
                         strJSON = sc.nextLine();
                     }
-                    Log.e("mimi", "4");
+
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -110,8 +111,9 @@ public class WidgetService extends Service {
                     e.printStackTrace();
                 }
             }
-        }.execute(WeatherActivity.widgetLocation != null ? WeatherActivity.widgetLocation : "Sofia");
+        }.execute(Helper.filterCityName(intent.getStringExtra("location")));
 
+        stopSelf();
         return START_STICKY;
     }
 }

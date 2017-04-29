@@ -86,6 +86,7 @@ import com.pavel_bojidar.vineweather.singleton.AppManager;
 import com.pavel_bojidar.vineweather.task.GetForecast;
 import com.pavel_bojidar.vineweather.task.GetLocations;
 import com.pavel_bojidar.vineweather.widget.MaPaWidgetProvider;
+import com.pavel_bojidar.vineweather.widget.WidgetService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -128,7 +129,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     private int currentTabColorDark = R.color.todayAppBarColorDark;
     private GoogleApiClient mGoogleApiClient;
     private SwipeRefreshLayout swipeRefresh;
-    public static String widgetLocation;
     protected boolean fromLocation, isDay;
     private RecentListAdapter recentAdapter;
     private Gson gson = new Gson();
@@ -175,6 +175,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         if (currentLocationName == null) {
             mGoogleApiClient.connect();
         }
+        requestWidgetUpdate();
     }
 
     @Override
@@ -182,14 +183,20 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         super.onStop();
         mGoogleApiClient.disconnect();
         preferences.edit().putBoolean(Constants.UNITS_IMPERIAL, isImperialUnits).apply();
-        requestWidgetUpdate();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(networkReceiver);
+        requestWidgetUpdate();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        requestWidgetUpdate();
     }
 
     private void requestWidgetUpdate() {
         Intent intent = new Intent(this, MaPaWidgetProvider.class);
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, MaPaWidgetProvider.allWidgetIds);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, MaPaWidgetProvider.getAllWidgetIds());
         sendBroadcast(intent);
     }
 
@@ -268,7 +275,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             fromLocation = false;
             currentLocationName = AppManager.getInstance().getCurrentLocation().getName();
             searchField.setHint(currentLocationName);
-            widgetLocation = currentLocationName;
             addToRecentList(currentLocationName);
         }
         navDrawerLocation.setText(Helper.filterCityName(currentLocationName));
@@ -292,7 +298,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         }
 
         swipeRefresh.setRefreshing(false);
-        MaPaWidgetProvider.startService(this);
+        requestWidgetUpdate();
     }
 
     public void onUnitSwapped() {
@@ -653,14 +659,11 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         if (!recentList.contains(cityName)) {
             if (recentList.size() >= 10) {
                 recentList.remove(recentList.get(9));
-                recentList.add(0, cityName);
-            } else {
-                recentList.add(0, cityName);
             }
         } else {
             recentList.remove(cityName);
-            recentList.add(0, cityName);
         }
+        recentList.add(0, cityName);
 
         preferences.edit().putString(KEY_RECENT_PLACES, gson.toJson(recentList)).apply();
         recentAdapter.notifyDataSetChanged();
