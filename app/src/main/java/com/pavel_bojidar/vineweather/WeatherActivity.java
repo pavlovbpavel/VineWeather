@@ -258,8 +258,8 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
         swipeRefresh.setColorSchemeResources((currentTabColor));
 
-        navDrawerImage.setImageDrawable(Helper.chooseConditionIcon(this, currentWeather.getIsDay() == 1, false, currentWeather.getCondition().getText()));
-        navDrawerCondition.setText(currentWeather.getCondition().getText());
+        navDrawerImage.setImageDrawable(Helper.chooseConditionIcon(this, isDay, false, currentWeather.getCondition().getText()));
+        navDrawerCondition.setText(conditionToday);
         if (!isImperialUnits) {
             navDrawerDegree.setText(Helper.decimalFormat(currentWeather.getTempC()).concat(Constants.CELSIUS_SYMBOL));
         } else {
@@ -280,10 +280,10 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         }
         navDrawerLocation.setText(Helper.filterCityName(currentLocationName));
 
-        int conditionNameLength = currentWeather.getCondition().getText().length();
+        int conditionNameLength = conditionToday.length();
         if (conditionNameLength >= 25 && conditionNameLength < 30) {
             navDrawerCondition.setTextSize(14);
-        } else if (conditionNameLength >= 35) {
+        } else if (conditionNameLength >= 30) {
             navDrawerCondition.setTextSize(10);
         } else {
             navDrawerCondition.setTextSize(16);
@@ -353,6 +353,8 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
     private void initViews() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         noLocationSelected = (TextView) findViewById(R.id.no_location);
         celsiusButton = (Button) findViewById(R.id.nav_drawer_celsius_button);
         fahrenheitButton = (Button) findViewById(R.id.nav_drawer_fahrenheit_button);
@@ -404,18 +406,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         navDrawerLocation = (TextView) hView.findViewById(R.id.nav_drawer_location);
         headerContainer = (RelativeLayout) hView.findViewById(R.id.header_container_layout);
 
-
-        setSupportActionBar(toolbar);
-
         searchField = (EditText) findViewById(R.id.search_field);
-        searchField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (searchField.hasFocus()) {
-                    search.setIcon(R.drawable.ic_close_black_24dp);
-                }
-            }
-        });
         searchField.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -617,8 +608,8 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                             searchPopupWindow.setForceIgnoreOutsideTouch(true);
                         }
                         searchPopupWindow.updateSuggestionsList(cityNames);
-                        if (!cityNames.isEmpty()) {
 
+                        if (!cityNames.isEmpty()) {
                             searchPopupWindow.show();
                         } else {
                             searchPopupWindow.dismiss();
