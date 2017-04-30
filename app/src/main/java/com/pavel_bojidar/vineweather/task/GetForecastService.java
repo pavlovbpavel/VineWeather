@@ -289,7 +289,7 @@ public class GetForecastService extends IntentService {
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
                 RemoteViews views = new RemoteViews(this.getPackageName(), R.layout.ma_pa_widget);
 
-                views.setTextViewText(R.id.location_widget, locationName);
+                views.setTextViewText(R.id.location_widget, Helper.filterCityName(locationName));
                 views.setTextViewText(R.id.degree_widget, Helper.decimalFormat(currentWeather.getTempC()).concat(Constants.CELSIUS_SYMBOL));
                 views.setTextViewText(R.id.condition_widget, currentWeather.getCondition().getText());
 

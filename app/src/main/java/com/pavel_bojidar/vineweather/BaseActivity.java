@@ -77,6 +77,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void initViews() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         searchField = (EditText) findViewById(R.id.search_field);
+        setSupportActionBar(toolbar);
     }
 
     private void initSearchField() {

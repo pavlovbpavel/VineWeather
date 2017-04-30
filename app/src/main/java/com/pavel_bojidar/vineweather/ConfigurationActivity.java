@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.RemoteViews;
@@ -34,7 +35,17 @@ public class ConfigurationActivity extends BaseActivity {
 
     @Override
     public OnItemClickListener getSearchPopupListener() {
-        return null;
+        return new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String currentLocationName = (String) searchPopupWindow.getListView().getItemAtPosition(position);
+                searchPopupWindow.dismiss();
+                searchMenu.setIcon(R.drawable.ic_search_black_24dp);
+                Intent intent = new Intent(ConfigurationActivity.this, GetForecastService.class);
+                intent.putExtra(GetForecastService.EXTRA_LOCATION_NAME, currentLocationName);
+                startService(intent);
+            }
+        };
     }
 
     private int appWidgetId;
@@ -91,10 +102,11 @@ public class ConfigurationActivity extends BaseActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(ConfigurationActivity.this, GetForecastService.class);
                 intent.putExtra(GetForecastService.EXTRA_LOCATION_NAME, searchField.getText().toString());
-                Log.e("confinguration", searchField.getText().toString());
                 startService(intent);
             }
         });
+
+        showKeyboard(this.getCurrentFocus());
 
     }
 
