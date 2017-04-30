@@ -22,11 +22,10 @@ public class CitySearchPopupWindow extends ListPopupWindow {
     private Context context;
     private ArrayList<String> items = new ArrayList();
 
-    public CitySearchPopupWindow(@NonNull Context context, ArrayList<String> cityList) {
+    public CitySearchPopupWindow(@NonNull Context context) {
         super(context);
         this.context = context;
         setInputMethodMode(ListPopupWindow.INPUT_METHOD_NEEDED);
-        updateSuggestionsList(cityList);
     }
 
     public void updateSuggestionsList(ArrayList<String> cityList) {

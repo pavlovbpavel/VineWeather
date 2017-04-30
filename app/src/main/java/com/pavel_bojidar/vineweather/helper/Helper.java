@@ -5,6 +5,8 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v4.content.res.ResourcesCompat;
 
 import com.pavel_bojidar.vineweather.R;
@@ -20,6 +22,8 @@ public class Helper {
 
     public static int imageWidget;
     //todo get timezone from device timezone
+
+
 
     public static String getUnixAmPmHour(long unixTS) {
         Date date = new Date(unixTS * 1000L);

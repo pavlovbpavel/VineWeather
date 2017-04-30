@@ -4,9 +4,6 @@ import android.Manifest;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
-import android.appwidget.AppWidgetManager;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -16,12 +13,9 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.location.Location;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -41,28 +35,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -80,31 +62,22 @@ import com.pavel_bojidar.vineweather.fragment.FragmentToday;
 import com.pavel_bojidar.vineweather.fragment.FragmentTomorrow;
 import com.pavel_bojidar.vineweather.helper.Helper;
 import com.pavel_bojidar.vineweather.model.maindata.CurrentWeather;
-import com.pavel_bojidar.vineweather.popupwindow.CitySearchPopupWindow;
-import com.pavel_bojidar.vineweather.receiver.NetworkReceiver;
-import com.pavel_bojidar.vineweather.receiver.NetworkReceiver.ConnectivityChanged;
+import com.pavel_bojidar.vineweather.model.maindata.Forecast;
+import com.pavel_bojidar.vineweather.receiver.ForecastResponseReceiver;
+import com.pavel_bojidar.vineweather.receiver.ForecastResponseReceiver.ForecastUpdate;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
-import com.pavel_bojidar.vineweather.task.GetForecast;
-import com.pavel_bojidar.vineweather.task.GetLocations;
-import com.pavel_bojidar.vineweather.widget.MaPaWidgetProvider;
-import com.pavel_bojidar.vineweather.widget.WidgetService;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.pavel_bojidar.vineweather.task.GetForecastService;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static android.support.v4.view.ViewPager.SCROLL_STATE_DRAGGING;
+import static com.pavel_bojidar.vineweather.BroadcastActions.ACTION_DOWNLOAD_FINISHED;
 import static com.pavel_bojidar.vineweather.Constants.INTERNET_CONNECTION;
 import static com.pavel_bojidar.vineweather.Constants.KEY_LOCATION_NAME;
-import static com.pavel_bojidar.vineweather.Constants.KEY_NAME;
 import static com.pavel_bojidar.vineweather.Constants.KEY_RECENT_PLACES;
 import static com.pavel_bojidar.vineweather.Constants.SERVER_CONNECTION_FAILURE;
 
-public class WeatherActivity extends AppCompatActivity implements RecentSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class WeatherActivity extends BaseActivity implements RecentSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private DrawerLayout drawer;
     private AppBarLayout appBar;
@@ -114,17 +87,11 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     private SharedPreferences preferences;
     private String currentLocationName;
     private ProgressBar loadingView;
-    private EditText searchField;
     private RelativeLayout headerContainer;
-    private CitySearchPopupWindow searchPopupWindow;
-    private Toolbar toolbar;
     private ArrayList<String> recentList = new ArrayList<>();
-    private MenuItem search;
-    private Timer inputDelay;
     private ImageView navDrawerImage;
     private TextView navDrawerDegree, navDrawerCondition, noLocationSelected, navDrawerLocation;
     private Button celsiusButton, fahrenheitButton;
-    private AlertDialog alertDialog;
     public static boolean isImperialUnits;
     private int currentTabColor = R.color.todayAppBarColor;
     private int currentTabColorDark = R.color.todayAppBarColorDark;
@@ -138,21 +105,29 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     int[] conditionTodayColorSet, conditionTomorrowColorSet;
     private GradientDrawable gradient;
 
-    private NetworkReceiver networkReceiver = new NetworkReceiver(new ConnectivityChanged() {
+    private ForecastResponseReceiver responseReceiver = new ForecastResponseReceiver(new ForecastUpdate() {
+        Bundle bundle;
+
         @Override
-        public void onConnected() {
-            if (alertDialog != null) {
-                alertDialog.hide();
-            }
-            startWeatherTasks();
-            LocalBroadcastManager.getInstance(WeatherActivity.this).unregisterReceiver(networkReceiver);
+        public void onLocationUpdate(String currentLocationName, CurrentWeather currentWeather, Forecast forecast) {
+            AppManager.getInstance().getCurrentLocation().setForecast(forecast);
+            AppManager.getInstance().getCurrentLocation().setCurrentWeather(currentWeather);
+            bundle = new Bundle();
+            bundle.putSerializable("forecast", forecast);
+            bundle.putSerializable("currentWeather", currentWeather);
+            bundle.putString("locationName", currentLocationName);
+            onLocationUpdated();
         }
     });
 
     @Override
+    protected int getContentView() {
+        return R.layout.activity_navigation_drawer;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_navigation_drawer);
 
         preferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
         isImperialUnits = preferences.getBoolean(Constants.UNITS_IMPERIAL, false); // default metric
@@ -163,7 +138,8 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             recentList = gson.fromJson(json, ArrayList.class);
         }
 
-        initViews();
+        recentAdapter = new RecentListAdapter(recentList, this);
+        recentLocationRecyclerView.setAdapter(recentAdapter);
 
         buildGoogleApiClient();
 
@@ -173,10 +149,11 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     @Override
     protected void onStart() {
         super.onStart();
+
         if (currentLocationName == null) {
             mGoogleApiClient.connect();
         }
-        requestWidgetUpdate();
+        LocalBroadcastManager.getInstance(this).registerReceiver(responseReceiver, new IntentFilter(ACTION_DOWNLOAD_FINISHED));
     }
 
     @Override
@@ -185,38 +162,52 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         mGoogleApiClient.disconnect();
         preferences.edit().putBoolean(Constants.UNITS_IMPERIAL, isImperialUnits).apply();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(networkReceiver);
-        requestWidgetUpdate();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(responseReceiver);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        requestWidgetUpdate();
     }
 
-    private void requestWidgetUpdate() {
-        Intent intent = new Intent(this, MaPaWidgetProvider.class);
-        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, MaPaWidgetProvider.getAllWidgetIds());
-        sendBroadcast(intent);
-    }
-
-    private void startWeatherTasks() {
+    private void startWeatherTask() {
         if (isNetworkAvailable()) {
             if (noLocationSelected != null) {
                 noLocationSelected.setVisibility(View.GONE);
             }
             loadingView.setVisibility(View.VISIBLE);
-
-            new GetForecast() {
-                @Override
-                protected void onPostExecute(String result) {
-                    super.onPostExecute(result);
-                    onLocationUpdated();
-                }
-            }.execute(currentLocationName);
+            Intent intent = new Intent(WeatherActivity.this, GetForecastService.class);
+            intent.putExtra(GetForecastService.EXTRA_LOCATION_NAME, currentLocationName);
+            startService(intent);
         } else {
             showAlertDialog(INTERNET_CONNECTION);
+        }
+    }
+
+    @Override
+    public OnItemClickListener getSearchPopupListener() {
+        return new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                currentLocationName = (String) searchPopupWindow.getListView().getItemAtPosition(position);
+                searchPopupWindow.dismiss();
+                addToRecentList(currentLocationName);
+                preferences.edit().putString(Constants.KEY_LOCATION_NAME, currentLocationName).apply();
+                hideKeyboard();
+                searchField.setText(null);
+                searchField.setHint(Helper.filterCityName(currentLocationName));
+                searchField.clearFocus();
+                getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_PAN);
+                searchMenu.setIcon(R.drawable.ic_search_black_24dp);
+                startWeatherTask();
+            }
+        };
+    }
+
+    @Override
+    protected void onSearchCanceled() {
+        if (currentLocationName != null && !currentLocationName.isEmpty()) {
+            searchField.setHint(Helper.filterCityName(currentLocationName));
         }
     }
 
@@ -299,7 +290,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         }
 
         swipeRefresh.setRefreshing(false);
-        requestWidgetUpdate();
     }
 
     public void onUnitSwapped() {
@@ -312,47 +302,10 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             }
         }
         AppManager.getInstance().onUnitSwapped(this);
-        requestWidgetUpdate();
     }
 
-    public void showAlertDialog(String event) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        if (event.equals(INTERNET_CONNECTION)) {
-            builder.setTitle("No internet Connection");
-            builder.setMessage("Please turn on internet connection to continue");
-            builder.setCancelable(false);
-            builder.setNegativeButton("Quit", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                }
-            });
-            builder.setPositiveButton("Connect to WIFI", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                }
-            });
-            alertDialog = builder.create();
-            alertDialog.show();
-            LocalBroadcastManager.getInstance(this).registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        }
-        if (event.equals(SERVER_CONNECTION_FAILURE)) {
-            builder.setTitle("Error");
-            builder.setMessage("Sorry, something went wrong. A team of highly trained monkeys has been dispatched to deal with this situation");
-            builder.setCancelable(false);
-            builder.setNegativeButton("Quit", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                }
-            });
-            alertDialog = builder.create();
-            alertDialog.show();
-        }
-    }
-
-    private void initViews() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+    protected void initViews() {
+        super.initViews();
         noLocationSelected = (TextView) findViewById(R.id.no_location);
         celsiusButton = (Button) findViewById(R.id.nav_drawer_celsius_button);
         fahrenheitButton = (Button) findViewById(R.id.nav_drawer_fahrenheit_button);
@@ -394,7 +347,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         swipeRefresh.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh() {
-                startWeatherTasks();
+                startWeatherTask();
             }
         });
 
@@ -406,62 +359,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
 
         setSupportActionBar(toolbar);
-
-        searchField = (EditText) findViewById(R.id.search_field);
-        searchField.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (searchField.hasFocus()) {
-                    search.setIcon(R.drawable.ic_close_black_24dp);
-                }
-            }
-        });
-        searchField.setOnFocusChangeListener(new OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    search.setIcon(R.drawable.ic_close_black_24dp);
-                } else {
-                    searchField.clearFocus();
-                    search.setIcon(R.drawable.ic_search_black_24dp);
-                }
-            }
-        });
-        searchField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void afterTextChanged(final Editable s) {
-                //api returns result after 3 input symbols
-                if (s.length() > 2) {
-                    if (inputDelay != null) {
-                        inputDelay.cancel();
-                    }
-                    inputDelay = new Timer();
-                    inputDelay.schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    performSearch(s);
-                                }
-                            });
-                        }
-                    }, 200);
-                } else {
-                    if (searchPopupWindow != null) {
-                        searchPopupWindow.dismiss();
-                    }
-                }
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
@@ -477,7 +374,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                     searchField.setText(null);
                     searchField.setHint("Select a city");
                 }
-                search.setIcon(R.drawable.ic_search_black_24dp);
+                searchMenu.setIcon(R.drawable.ic_search_black_24dp);
             }
         };
         drawer.addDrawerListener(toggle);
@@ -561,8 +458,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         });
 
         recentLocationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recentAdapter = new RecentListAdapter(recentList, this);
-        recentLocationRecyclerView.setAdapter(recentAdapter);
     }
 
     private void setViewPagerAdapter() {
@@ -594,64 +489,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                 return tabTitles[position];
             }
         });
-    }
-
-    private void performSearch(Editable s) {
-        if (isNetworkAvailable()) {
-            new GetLocations() {
-                @Override
-                protected void onPostExecute(String result) {
-                    super.onPostExecute(result);
-                    try {
-                        //callback is the returned result from the API call
-                        JSONArray callback = new JSONArray(result);
-                        ArrayList<String> cityNames = new ArrayList<>();
-                        for (int i = 0; i < callback.length(); i++) {
-                            JSONObject currentItem = callback.getJSONObject(i);
-                            cityNames.add(currentItem.getString(KEY_NAME));
-                        }
-                        if (searchPopupWindow == null) {
-                            searchPopupWindow = new CitySearchPopupWindow(WeatherActivity.this, cityNames);
-                            searchPopupWindow.setAnchorView(toolbar);
-                            searchPopupWindow.setInputMethodMode(ListPopupWindow.INPUT_METHOD_NEEDED);
-                            searchPopupWindow.setForceIgnoreOutsideTouch(true);
-                        }
-                        searchPopupWindow.updateSuggestionsList(cityNames);
-                        if (!cityNames.isEmpty()) {
-
-                            searchPopupWindow.show();
-                        } else {
-                            searchPopupWindow.dismiss();
-                        }
-                        if (searchPopupWindow.isShowing()) {
-                            searchPopupWindow.setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-                            showKeyboard();
-                            searchPopupWindow.getListView().setOnItemClickListener(new OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                    String chosenCity = (String) searchPopupWindow.getListView().getItemAtPosition(position);
-                                    searchPopupWindow.dismiss();
-                                    currentLocationName = chosenCity;
-                                    addToRecentList(currentLocationName);
-                                    preferences.edit().putString(Constants.KEY_LOCATION_NAME, currentLocationName).apply();
-                                    hideKeyboard();
-                                    searchField.setText(null);
-                                    searchField.setHint(Helper.filterCityName(chosenCity));
-                                    searchField.clearFocus();
-                                    getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_PAN);
-                                    search.setIcon(R.drawable.ic_search_black_24dp);
-                                    startWeatherTasks();
-                                }
-                            });
-                        }
-                    } catch (JSONException e) {
-
-                    }
-                }
-            }.execute(s.toString());
-        } else {
-            showAlertDialog(INTERNET_CONNECTION);
-        }
     }
 
     private void addToRecentList(String cityName) {
@@ -688,7 +525,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
             @Override
             protected Void doInBackground(String... params) {
-                startWeatherTasks();
+                startWeatherTask();
                 return null;
             }
 
@@ -698,46 +535,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                 searchField.setHint(Helper.filterCityName(currentLocationName));
             }
         }.execute(selectedLocation);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        search = menu.add("Search");
-        if (!searchField.hasFocus()) {
-            search.setIcon(R.drawable.ic_search_black_24dp);
-        } else {
-            search.setIcon(R.drawable.ic_close_black_24dp);
-        }
-        search.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        search.setOnMenuItemClickListener(new OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if (!searchField.hasFocus()) {
-                    searchField.requestFocus();
-                    search.setIcon(R.drawable.ic_close_black_24dp);
-                    showKeyboard();
-                } else {
-                    if (searchField.getText().length() > 0) {
-                        searchField.setText(null);
-                    } else {
-                        search.setIcon(R.drawable.ic_search_black_24dp);
-                        if (currentLocationName != null && !currentLocationName.isEmpty()) {
-                            searchField.setHint(Helper.filterCityName(currentLocationName));
-                        }
-                        searchField.clearFocus();
-                        hideKeyboard();
-                    }
-                }
-                return true;
-            }
-        });
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     private void buildGoogleApiClient() {
@@ -762,7 +559,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             if (mLastLocation != null) {
                 fromLocation = true;
                 currentLocationName = String.valueOf(mLastLocation.getLatitude()).concat(" ").concat(String.valueOf(mLastLocation.getLongitude()));
-                startWeatherTasks();
+                startWeatherTask();
             }
         }
     }
@@ -775,12 +572,12 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                 if (mLastLocation != null) {
                     currentLocationName = String.valueOf(mLastLocation.getLatitude()).concat(" ").concat(String.valueOf(mLastLocation.getLongitude()));
                     fromLocation = true;
-                    startWeatherTasks();
+                    startWeatherTask();
                 }
             } else {
                 if (preferences.getString(Constants.KEY_LOCATION_NAME, null) != null) {
                     currentLocationName = preferences.getString(Constants.KEY_LOCATION_NAME, null);
-                    startWeatherTasks();
+                    startWeatherTask();
                     searchField.setHint(Helper.filterCityName(currentLocationName));
                 } else {
                     Toast.makeText(this, "Permission not granted, please choose a location.", Toast.LENGTH_SHORT).show();
@@ -802,14 +599,14 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     public void onConnectionSuspended(int i) {
         Toast.makeText(this, "Connection to Google Location Services timed out.", Toast.LENGTH_SHORT).show();
         currentLocationName = preferences.getString(KEY_LOCATION_NAME, null);
-        startWeatherTasks();
+        startWeatherTask();
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Toast.makeText(this, "Cannot connect to Google Location Services.", Toast.LENGTH_SHORT).show();
         currentLocationName = preferences.getString(KEY_LOCATION_NAME, null);
-        startWeatherTasks();
+        startWeatherTask();
     }
 
     private void changeStatusBarColor(int resID) {
@@ -861,24 +658,5 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             return;
         }
         super.onBackPressed();
-    }
-
-    public void showKeyboard() {
-        showKeyboard(getCurrentFocus());
-    }
-
-    public void showKeyboard(View focusedView) {
-        if (focusedView != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(focusedView, InputMethodManager.SHOW_IMPLICIT);
-        }
-    }
-
-    public void hideKeyboard() {
-        View view = this.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
     }
 }
