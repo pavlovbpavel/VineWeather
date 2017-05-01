@@ -137,6 +137,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     protected String conditionToday, conditionTomorrow;
     int[] conditionTodayColorSet, conditionTomorrowColorSet;
     private GradientDrawable gradient;
+    public static String widgetLocation;
 
     private NetworkReceiver networkReceiver = new NetworkReceiver(new ConnectivityChanged() {
         @Override
@@ -176,16 +177,15 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         if (currentLocationName == null) {
             mGoogleApiClient.connect();
         }
-        requestWidgetUpdate();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        requestWidgetUpdate();
         mGoogleApiClient.disconnect();
         preferences.edit().putBoolean(Constants.UNITS_IMPERIAL, isImperialUnits).apply();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(networkReceiver);
-        requestWidgetUpdate();
     }
 
     @Override
@@ -197,12 +197,13 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
     private void requestWidgetUpdate() {
         Intent intent = new Intent(this, MaPaWidgetProvider.class);
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, MaPaWidgetProvider.getAllWidgetIds());
         sendBroadcast(intent);
     }
 
     private void startWeatherTasks() {
         if (isNetworkAvailable()) {
+            widgetLocation = currentLocationName;
+            requestWidgetUpdate();
             if (noLocationSelected != null) {
                 noLocationSelected.setVisibility(View.GONE);
             }
@@ -275,6 +276,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         if (fromLocation) {
             fromLocation = false;
             currentLocationName = AppManager.getInstance().getCurrentLocation().getRegion();
+            preferences.edit().putString(KEY_LOCATION_NAME, currentLocationName).apply();
             searchField.setHint(currentLocationName);
             addToRecentList(currentLocationName);
         }
@@ -299,7 +301,6 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         }
 
         swipeRefresh.setRefreshing(false);
-        requestWidgetUpdate();
     }
 
     public void onUnitSwapped() {
@@ -763,17 +764,17 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         if (requestCode == 123) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                if (mLastLocation != null) {
+                if (mLastLocation != null) { // from location services
                     currentLocationName = String.valueOf(mLastLocation.getLatitude()).concat(" ").concat(String.valueOf(mLastLocation.getLongitude()));
                     fromLocation = true;
                     startWeatherTasks();
                 }
-            } else {
+            } else { //from shared prefs
                 if (preferences.getString(Constants.KEY_LOCATION_NAME, null) != null) {
                     currentLocationName = preferences.getString(Constants.KEY_LOCATION_NAME, null);
                     startWeatherTasks();
                     searchField.setHint(Helper.filterCityName(currentLocationName));
-                } else {
+                } else { // if shared prefs is empty
                     Toast.makeText(this, "Permission not granted, please choose a location.", Toast.LENGTH_SHORT).show();
                     viewPager.setVisibility(View.GONE);
                     loadingView.setVisibility(View.GONE);

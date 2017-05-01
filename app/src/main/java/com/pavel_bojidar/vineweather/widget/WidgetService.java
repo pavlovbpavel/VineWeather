@@ -4,11 +4,9 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.IBinder;
-import android.util.Log;
 
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.WeatherActivity;
-import com.pavel_bojidar.vineweather.helper.Helper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,8 +71,6 @@ public class WidgetService extends Service {
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
-                Log.e("mimi", strJSON);
-
                 return strJSON;
             }
 
@@ -103,7 +99,7 @@ public class WidgetService extends Service {
                     e.printStackTrace();
                 }
             }
-        }.execute(Helper.filterCityName(widgetLocation));
+        }.execute(WeatherActivity.widgetLocation == null ? widgetLocation : WeatherActivity.widgetLocation);
 
         stopSelf();
         return START_STICKY;

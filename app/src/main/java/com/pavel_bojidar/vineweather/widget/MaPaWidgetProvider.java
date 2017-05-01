@@ -22,21 +22,21 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class MaPaWidgetProvider extends AppWidgetProvider {
 
-    private static int[] allWidgetIds;
+    private int[] allWidgetIds;
 
     @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-
-         ComponentName thisWidget = new ComponentName(context, MaPaWidgetProvider.class);
-         allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
+        ComponentName thisWidget = new ComponentName(context, MaPaWidgetProvider.class);
+        allWidgetIds = AppWidgetManager.getInstance(context).getAppWidgetIds(thisWidget);
 
         SharedPreferences prefs = context.getSharedPreferences(context.getPackageName(), MODE_PRIVATE);
         String widgetLocation = prefs.getString(Constants.KEY_LOCATION_NAME, null);
-        Intent intent = new Intent(context.getApplicationContext(), WidgetService.class);
+        Intent ServiceIntent = new Intent(context.getApplicationContext(), WidgetService.class);
         if (widgetLocation != null) {
-            intent.putExtra("location", widgetLocation);
+            ServiceIntent.putExtra("location", widgetLocation);
         }
-            context.startService(intent);
+        context.startService(ServiceIntent);
 
         for (int widgetId : allWidgetIds) {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ma_pa_widget);
@@ -45,7 +45,7 @@ public class MaPaWidgetProvider extends AppWidgetProvider {
             views.setTextViewText(R.id.degree_widget, Helper.decimalFormat(WidgetService.degree) + Constants.CELSIUS_SYMBOL);
             views.setTextViewText(R.id.condition_widget, WidgetService.condition);
 
-            if(WidgetService.condition != null) {
+            if (WidgetService.condition != null) {
                 Drawable drawable = Helper.chooseConditionIcon(context, WidgetService.isDay == 1, false, WidgetService.condition);
             }
             views.setImageViewResource(R.id.image_view_widget, Helper.imageWidget);
@@ -54,7 +54,7 @@ public class MaPaWidgetProvider extends AppWidgetProvider {
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent1, 0);
             views.setOnClickPendingIntent(R.id.widget_layout, pendingIntent);
 
-            appWidgetManager.updateAppWidget(widgetId, views);
+            AppWidgetManager.getInstance(context).updateAppWidget(widgetId, views);
         }
     }
 
@@ -65,16 +65,11 @@ public class MaPaWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onEnabled(Context context) {
-        // Enter relevant functionality for when the first widget is created
     }
 
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
-    }
-
-    public static int[] getAllWidgetIds() {
-        return allWidgetIds;
     }
 }
 
