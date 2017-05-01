@@ -24,8 +24,8 @@ import com.pavel_bojidar.vineweather.R;
 import com.pavel_bojidar.vineweather.WeatherActivity;
 import com.pavel_bojidar.vineweather.adapter.HourlyTempAdapter;
 import com.pavel_bojidar.vineweather.helper.Helper;
-import com.pavel_bojidar.vineweather.model.HourForecast;
 import com.pavel_bojidar.vineweather.model.DayDetails;
+import com.pavel_bojidar.vineweather.model.HourForecast;
 import com.pavel_bojidar.vineweather.singleton.AppManager;
 
 import java.util.ArrayList;

@@ -274,7 +274,7 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
 
         if (fromLocation) {
             fromLocation = false;
-            currentLocationName = AppManager.getInstance().getCurrentLocation().getName();
+            currentLocationName = AppManager.getInstance().getCurrentLocation().getRegion();
             searchField.setHint(currentLocationName);
             addToRecentList(currentLocationName);
         }

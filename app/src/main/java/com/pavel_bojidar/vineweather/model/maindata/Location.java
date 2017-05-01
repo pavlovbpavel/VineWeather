@@ -7,6 +7,8 @@ public class Location implements Serializable {
 
     private String name;
 
+    private String region;
+
     private CurrentWeather currentWeather;
 
     private Forecast forecast;
@@ -17,6 +19,14 @@ public class Location implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
     }
 
     public CurrentWeather getCurrentWeather() {

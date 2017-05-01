@@ -59,6 +59,7 @@ import static com.pavel_bojidar.vineweather.Constants.KEY_PRECIP_IN;
 import static com.pavel_bojidar.vineweather.Constants.KEY_PRECIP_MM;
 import static com.pavel_bojidar.vineweather.Constants.KEY_PRESSURE_IN;
 import static com.pavel_bojidar.vineweather.Constants.KEY_PRESSURE_MB;
+import static com.pavel_bojidar.vineweather.Constants.KEY_REGION;
 import static com.pavel_bojidar.vineweather.Constants.KEY_SUNRISE;
 import static com.pavel_bojidar.vineweather.Constants.KEY_SUNSET;
 import static com.pavel_bojidar.vineweather.Constants.KEY_TEMP_C;
@@ -122,6 +123,7 @@ public class GetForecast extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
         String locationCallbackName = null;
+        String locationCallbackRegion = null;
         CurrentWeather currentWeather = new CurrentWeather();
         Forecast forecast = new Forecast();
         ArrayList<DayForecast> dayForecasts = new ArrayList<>();
@@ -129,6 +131,7 @@ public class GetForecast extends AsyncTask<String, Void, String> {
             JSONObject jo = new JSONObject(result);
             JSONArray daysJsonArray = jo.getJSONObject(NODE_FORECAST).getJSONArray(NODE_FORECASTDAY);
             locationCallbackName = jo.getJSONObject(NODE_LOCATION).getString(KEY_NAME);
+            locationCallbackRegion = jo.getJSONObject(NODE_LOCATION).getString(KEY_REGION);
 
             //current weather data
             if (jo.has(NODE_CURRENT)) {
@@ -254,6 +257,7 @@ public class GetForecast extends AsyncTask<String, Void, String> {
         }
         Location currentLocation = AppManager.getInstance().getCurrentLocation();
         currentLocation.setName(locationCallbackName);
+        currentLocation.setRegion(locationCallbackRegion);
         currentLocation.setCurrentWeather(currentWeather);
         currentLocation.setForecast(forecast);
     }

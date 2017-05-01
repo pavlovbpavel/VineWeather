@@ -46,6 +46,7 @@ public class Constants {
     public static final String NODE_ASTRO = "astro";
     public static final String NODE_HOUR = "hour";
     public static final String KEY_NAME = "name";
+    public static final String KEY_REGION = "region";
     public static final String KEY_DATE = "date";
     public static final String KEY_DATE_EPOCH = "date_epoch";
     public static final String KEY_LAST_UPDATED = "last_updated";

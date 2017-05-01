@@ -93,7 +93,7 @@ public class WindFragment extends WeatherFragment {
         double average;
         for (int i = 0; i < forecast.getDayForecasts().get(1).getHourForecasts().size(); i++) {
             HourForecast currentHour = forecast.getDayForecasts().get(1).getHourForecasts().get(i);
-            if(WeatherActivity.isImperialUnits){
+            if (WeatherActivity.isImperialUnits) {
                 if (currentHour.getWindKph() > maxWind) {
                     maxWind = currentHour.getWindMph();
                 }
@@ -112,7 +112,7 @@ public class WindFragment extends WeatherFragment {
         rvWind.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         if (isTomorrow) {
             rvWind.setAdapter(new HourlyWindAdapter(forecast.getDayForecasts().get(1).getHourForecasts()));
-            if(WeatherActivity.isImperialUnits){
+            if (WeatherActivity.isImperialUnits) {
                 speed.setText(Helper.decimalFormat(minWind).concat("-").concat(Helper.decimalFormat(maxWind).concat(" " + MPH)));
             } else {
                 speed.setText(Helper.decimalFormat(minWind).concat("-").concat(Helper.decimalFormat(maxWind).concat(" " + KM_H)));
