@@ -22,6 +22,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.provider.Settings.SettingNotFoundException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -48,6 +49,7 @@ import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -87,7 +89,6 @@ import com.pavel_bojidar.vineweather.singleton.AppManager;
 import com.pavel_bojidar.vineweather.task.GetForecast;
 import com.pavel_bojidar.vineweather.task.GetLocations;
 import com.pavel_bojidar.vineweather.widget.MaPaWidgetProvider;
-import com.pavel_bojidar.vineweather.widget.WidgetService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -97,6 +98,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS;
 import static android.support.v4.view.ViewPager.SCROLL_STATE_DRAGGING;
 import static com.pavel_bojidar.vineweather.Constants.INTERNET_CONNECTION;
 import static com.pavel_bojidar.vineweather.Constants.KEY_LOCATION_NAME;
@@ -345,6 +347,24 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     finish();
+                }
+            });
+            alertDialog = builder.create();
+            alertDialog.show();
+        }
+        if(event.equals(ACTION_LOCATION_SOURCE_SETTINGS)){
+            builder.setTitle("Location services are off");
+            builder.setMessage("Please turn on location services to continue");
+            builder.setCancelable(false);
+            builder.setNegativeButton("Select a city", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    requestLocationFromUser();
+                }
+            });
+            builder.setPositiveButton("Turn on location", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    startActivity(new Intent(ACTION_LOCATION_SOURCE_SETTINGS));
                 }
             });
             alertDialog = builder.create();
@@ -752,9 +772,22 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         } else { //has permission
             Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (mLastLocation != null) {
-                fromLocation = true;
-                currentLocationName = String.valueOf(mLastLocation.getLatitude()).concat(" ").concat(String.valueOf(mLastLocation.getLongitude()));
-                startWeatherTasks();
+                if(isLocationEnabled(this)) {
+                    currentLocationName = String.valueOf(mLastLocation.getLatitude()).concat(" ").concat(String.valueOf(mLastLocation.getLongitude()));
+                    fromLocation = true;
+                    startWeatherTasks();
+                } else {
+                    showAlertDialog(ACTION_LOCATION_SOURCE_SETTINGS);
+                }
+            } else { //from shared prefs
+                if (preferences.getString(Constants.KEY_LOCATION_NAME, null) != null) {
+                    currentLocationName = preferences.getString(Constants.KEY_LOCATION_NAME, null);
+                    startWeatherTasks();
+                    searchField.setHint(Helper.filterCityName(currentLocationName));
+                } else { // if shared prefs is empty
+                    Toast.makeText(this, "Permission not granted, please choose a location.", Toast.LENGTH_SHORT).show();
+                    requestLocationFromUser();
+                }
             }
         }
     }
@@ -765,9 +798,15 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                 if (mLastLocation != null) { // from location services
-                    currentLocationName = String.valueOf(mLastLocation.getLatitude()).concat(" ").concat(String.valueOf(mLastLocation.getLongitude()));
-                    fromLocation = true;
-                    startWeatherTasks();
+                    if(isLocationEnabled(this)) {
+                        currentLocationName = String.valueOf(mLastLocation.getLatitude()).concat(" ").concat(String.valueOf(mLastLocation.getLongitude()));
+                        fromLocation = true;
+                        startWeatherTasks();
+                    } else {
+                        showAlertDialog(ACTION_LOCATION_SOURCE_SETTINGS);
+                    }
+                } else {
+                    showAlertDialog(ACTION_LOCATION_SOURCE_SETTINGS);
                 }
             } else { //from shared prefs
                 if (preferences.getString(Constants.KEY_LOCATION_NAME, null) != null) {
@@ -776,18 +815,22 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
                     searchField.setHint(Helper.filterCityName(currentLocationName));
                 } else { // if shared prefs is empty
                     Toast.makeText(this, "Permission not granted, please choose a location.", Toast.LENGTH_SHORT).show();
-                    viewPager.setVisibility(View.GONE);
-                    loadingView.setVisibility(View.GONE);
-                    noLocationSelected.setVisibility(View.VISIBLE);
-                    setTitle(null);
-                    searchField.setHint("Select a city");
-                    searchField.clearFocus();
-                    searchField.requestFocus();
-                    searchField.performClick();
-                    showKeyboard(searchField);
+                    requestLocationFromUser();
                 }
             }
         }
+    }
+
+    private void requestLocationFromUser() {
+        viewPager.setVisibility(View.GONE);
+        loadingView.setVisibility(View.GONE);
+        noLocationSelected.setVisibility(View.VISIBLE);
+        setTitle(null);
+        searchField.setHint("Select a city");
+        searchField.clearFocus();
+        searchField.requestFocus();
+        searchField.performClick();
+        showKeyboard(searchField);
     }
 
     @Override
@@ -802,6 +845,28 @@ public class WeatherActivity extends AppCompatActivity implements RecentSelected
         Toast.makeText(this, "Cannot connect to Google Location Services.", Toast.LENGTH_SHORT).show();
         currentLocationName = preferences.getString(KEY_LOCATION_NAME, null);
         startWeatherTasks();
+    }
+
+    public static boolean isLocationEnabled(Context context) {
+        int locationMode;
+        String locationProviders;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            try {
+                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+
+            } catch (SettingNotFoundException e) {
+                e.printStackTrace();
+                return false;
+            }
+            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
+
+        }else{
+            locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+            return !TextUtils.isEmpty(locationProviders);
+        }
+
+
     }
 
     private void changeStatusBarColor(int resID) {

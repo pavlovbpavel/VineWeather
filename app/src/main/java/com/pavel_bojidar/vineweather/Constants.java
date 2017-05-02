@@ -33,6 +33,7 @@ public class Constants {
     public static final String COLOR_DARK_BLUE = "#fa3085b6";
     public static final String COLOR_GREEN = "#fa2d9684";
     public static final String COLOR_RED = "#faa93230";
+    public static final String DEFAULT_LOCATION = "Sofia";
     /*
     API CALL KEYS
      */

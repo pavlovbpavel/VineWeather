@@ -18,6 +18,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Scanner;
 
+import static com.pavel_bojidar.vineweather.Constants.DEFAULT_LOCATION;
+
 public class WidgetService extends Service {
 
     static String locationName;
@@ -99,7 +101,7 @@ public class WidgetService extends Service {
                     e.printStackTrace();
                 }
             }
-        }.execute(WeatherActivity.widgetLocation == null ? widgetLocation : WeatherActivity.widgetLocation);
+        }.execute(widgetLocation != null ? widgetLocation : DEFAULT_LOCATION);
 
         stopSelf();
         return START_STICKY;

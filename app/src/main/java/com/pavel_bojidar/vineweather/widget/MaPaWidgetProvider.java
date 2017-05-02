@@ -35,6 +35,8 @@ public class MaPaWidgetProvider extends AppWidgetProvider {
         Intent ServiceIntent = new Intent(context.getApplicationContext(), WidgetService.class);
         if (widgetLocation != null) {
             ServiceIntent.putExtra("location", widgetLocation);
+        } else {
+            ServiceIntent.putExtra("location", WeatherActivity.widgetLocation);
         }
         context.startService(ServiceIntent);
 
