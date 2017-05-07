@@ -1,0 +1,75 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/widget_shape"
+                android:id="@+id/widget_layout"
+                android:padding="@dimen/widget_margin">
+
+    <TextView
+        android:text="MapaWeather"
+        android:textSize="10sp"
+        android:textStyle="italic"
+        android:paddingStart="12dp"
+        android:textColor="@color/mapaWidgetLogoColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:id="@+id/textView"/>
+
+    <TextView
+        android:layout_below="@+id/textView"
+        android:layout_centerInParent="true"
+        android:layout_width="330dp"
+        android:layout_height="1px"
+        android:background="@color/mapaWidgetSeparatorColor"/>
+
+    <ImageView
+        android:id="@+id/image_view_widget"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/clear_night_icon"
+        android:padding="8dp"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentStart="true"
+        android:layout_alignBottom="@+id/condition_widget"/>
+
+    <TextView
+        android:id="@+id/location_widget"
+        android:layout_width="180dp"
+        android:layout_height="48dp"
+        android:text="City"
+        android:textAlignment="viewStart"
+        android:textColor="#ffffff"
+        android:textSize="24sp"
+        android:paddingTop="18dp"
+        android:paddingStart="7dp"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/image_view_widget" />
+
+    <TextView
+        android:id="@+id/condition_widget"
+        android:layout_width="180dp"
+        android:layout_height="32dp"
+        android:text="Condition"
+        android:textAlignment="viewStart"
+        android:textColor="#ffffff"
+        android:textSize="12sp"
+        android:paddingTop="2dp"
+        android:paddingStart="8dp"
+        android:layout_below="@+id/location_widget"
+        android:layout_toEndOf="@+id/image_view_widget" />
+
+    <TextView
+        android:id="@+id/degree_widget"
+        android:layout_width="70dp"
+        android:layout_height="80dp"
+        android:text="2.5"
+        android:textAlignment="textStart"
+        android:textColor="#ffffff"
+        android:paddingTop="24dp"
+        android:paddingStart="8dp"
+        android:textSize="30sp"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/location_widget"/>
+
+</RelativeLayout>

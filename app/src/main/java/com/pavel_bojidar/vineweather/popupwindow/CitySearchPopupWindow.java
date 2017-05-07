@@ -12,32 +12,27 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.pavel_bojidar.vineweather.R;
-import com.pavel_bojidar.vineweather.model.Location.CityInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Pavel Pavlov on 3/16/2017.
- */
-
 public class CitySearchPopupWindow extends ListPopupWindow {
 
-    SearchAdapter searchAdapter;
-    Context context;
-    ArrayList<CityInfo> items = new ArrayList();
+    private SearchAdapter searchAdapter;
+    private Context context;
+    private ArrayList<String> items = new ArrayList();
 
-    public CitySearchPopupWindow(@NonNull Context context, ArrayList<CityInfo> cityList) {
+    public CitySearchPopupWindow(@NonNull Context context, ArrayList<String> cityList) {
         super(context);
         this.context = context;
         setInputMethodMode(ListPopupWindow.INPUT_METHOD_NEEDED);
         updateSuggestionsList(cityList);
     }
 
-    public void updateSuggestionsList(ArrayList<CityInfo> cityList) {
+    public void updateSuggestionsList(ArrayList<String> cityList) {
         items.clear();
-        for (CityInfo entry : cityList) {
-            items.add(new CityInfo(entry.getName(), entry.getId()));
+        for (String entry : cityList) {
+            items.add(entry);
         }
         if (searchAdapter == null) {
             searchAdapter = new SearchAdapter(context, R.layout.row_autocomplete_search, items);
@@ -47,9 +42,9 @@ public class CitySearchPopupWindow extends ListPopupWindow {
         }
     }
 
-    private class SearchAdapter extends ArrayAdapter<CityInfo> {
+    private class SearchAdapter extends ArrayAdapter<String> {
 
-        public SearchAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<CityInfo> objects) {
+        SearchAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<String> objects) {
             super(context, resource, objects);
         }
 
@@ -68,7 +63,7 @@ public class CitySearchPopupWindow extends ListPopupWindow {
             } else {
                 holder = (SearchViewHolder) convertView.getTag();
             }
-            holder.cityName.setText(getItem(position).getName());
+            holder.cityName.setText(getItem(position));
 
             return convertView;
         }

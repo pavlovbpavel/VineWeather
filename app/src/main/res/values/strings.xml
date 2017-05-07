@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Vine Weather</string>
+    <string name="app_name">MapaWeather</string>
     <string name="title_activity_navigation_drawer">NavigationDrawerActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -9,7 +9,19 @@
     <string name="title_activity_login">Sign in</string>
 
     <string name="units">UNITS</string>
-    <string name="c">C</string>
-    <string name="f">F</string>
+    <string name="c">°C</string>
+    <string name="metric">Me</string>
+    <string name="f">°F</string>
+    <string name="imperial">Im</string>
     <string name="favotite_locations">RECENT LOCATIONS</string>
+    <string name="wind">Wind</string>
+    <string name="humidity">Humidity</string>
+    <string name="sunrise_sunset">Sunrise/sunset</string>
+    <string name="moonrise_moonset">Moonrise/moonset</string>
+
+    <string name="km_h">km/h</string>
+    <string name="TodayText">Today</string>
+    <string name="PrecipitationChance">Chance</string>
+    <string name="volume_mm">Volume (mm)</string>
+    <string name="total_daily_volume">Total daily volume </string>
 </resources>

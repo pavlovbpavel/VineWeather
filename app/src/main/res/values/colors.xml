@@ -1,8 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#0D47A1</color>
+    <color name="colorPrimaryDark">#06347e</color>
     <color name="colorAccent">#d7d7d7</color>
     <color name="separator">#8098a3a4</color>
-    <color name="highlightedRow">#fbfbfb</color>
+    <color name="separatorTomorrow">#80bcc9ca</color>
+
+    <color name="buttonSelected">#8098a3a4</color>
+    <color name="buttonUnselected">#e0e0e0</color>
+
+    <color name="highlightedRow">#FAFAFA</color>
+    <color name="row">#FFFFFF</color>
+
+    <color name="todayBackground">#9fccda</color>
+    <color name="tomorrowBackground">#4FC3F7</color>
+
+    <color name="mapaWidgetLogoColor">#e0e0e0</color>
+    <color name="mapaWidgetSeparatorColor">#64e0e0e0</color>
+    <color name="mapaDrawerSeparatorColor">#8ce0e0e0</color>
+
+    <color name="todayAppBarColor">#0D47A1</color>
+    <color name="todayAppBarColorDark">#06347e</color>
+
+    <color name="tomorrowAppBarColor">#0277BD</color>
+    <color name="tomorrowAppBarColorDark">#01579B</color>
+
+    <color name="forecastAppBarColor">#006064</color>
+    <color name="forecastAppBarColorDark">#004749</color>
+
+    <color name="transperantWhite">#bbffffff</color>
+
+    <color name="transperant">#00136770</color>
+    <color name="windLow">#fa599ec6</color>
+    <color name="windAverage">#fa3085b6</color>
+    <color name="windHigh">#fa2d9684</color>
+    <color name="windExtreme">#faa93230</color>
+
+    <color name="conditionClearDay">#0277BD</color>
+    <color name="conditionClearDayDark">#01579B</color>
+    <color name="conditionClearNight">#01579b</color>
+    <color name="conditionClearNightDark">#003e70</color>
+
+    <color name="conditionOvercastDay">#546E7A</color>
+    <color name="conditionOvercastDayDark">#455A64</color>
+    <color name="conditionOvercastNight">#37474F</color>
+    <color name="conditionOvercastNightDark">#263238</color>
+
+    <color name="conditionRainyDay">#305471</color>
+    <color name="conditionRainyDayDark">#26445c</color>
+    <color name="conditionRainyNight">#131e3b</color>
+    <color name="conditionRainyNightDark">#0b1328</color>
+
+    <color name="conditionSnowyDay">#63656b</color>
+    <color name="conditionSnowyDayDark">#57595e</color>
+    <color name="conditionSnowyNight">#616161</color>
+    <color name="conditionSnowyNightDark">#424242</color>
+
+    <color name="conditionThunderyDay">#4b5570</color>
+    <color name="conditionThunderyDayDark">#3b445b</color>
+    <color name="conditionThunderyNight">#3a4258</color>
+    <color name="conditionThunderyNightDark">#282e3e</color>
 </resources>
