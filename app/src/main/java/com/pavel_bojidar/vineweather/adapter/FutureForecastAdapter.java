@@ -1,5 +1,6 @@
 package com.pavel_bojidar.vineweather.adapter;
 
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.transition.AutoTransition;
 import android.support.transition.ChangeBounds;
@@ -8,13 +9,16 @@ import android.support.transition.Transition.TransitionListener;
 import android.support.transition.TransitionManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.pavel_bojidar.vineweather.Constants;
 import com.pavel_bojidar.vineweather.R;
 import com.pavel_bojidar.vineweather.WeatherActivity;
@@ -58,10 +62,17 @@ public class FutureForecastAdapter extends RecyclerView.Adapter<ForecastViewHold
             public void onClick(View v) {
                 if (!visible) {
                     transition = new ChangeBounds();
-                    transition.setDuration(400);
+                    transition.setDuration(300);
+                    holder.date.setTypeface(Typeface.DEFAULT_BOLD);
+
+                    String token = FirebaseInstanceId.getInstance().getToken();
+                    Toast.makeText(v.getContext(), "Current token: "+token, Toast.LENGTH_LONG).show();
+                    Log.d("App", "Token: "+token);
+
                 } else {
                     transition = new AutoTransition();
                     transition.setDuration(200);
+                    holder.date.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
                 }
                 transition.addListener(new TransitionListener() {
                     @Override
